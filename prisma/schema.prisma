@@ -1,0 +1,221 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// * Khusus WebAdmin
+
+model setup_agama {
+  agama_id   Int    @id @default(autoincrement())
+  agama_nama String @db.VarChar(30)
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+model setup_pendidikan {
+  pendidikan_id   Int    @id @default(autoincrement())
+  pendidikan_nama String @db.VarChar(50)
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+model setup_kawin {
+  status_kawin_id   Int    @id @default(autoincrement())
+  status_kawin_nama String @db.VarChar(30)
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+model setup_bidang {
+  bidang_id        Int    @id @default(autoincrement())
+  bidang_nama      String @db.Text()
+  bidang_singkatan String @db.VarChar(255)
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+model setup_status_pegawai {
+  status_pegawai_id   Int    @id @default(autoincrement())
+  status_pegawai_nama String @db.VarChar(50)
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+enum setup_kelamin {
+  L // Laki-laki
+  P // Perempuan
+}
+
+enum setup_status_aktif {
+  A // Aktif
+  TA // Tidak Aktif
+}
+
+enum setup_role {
+  A // Admin
+  K // Kasat
+  B // Bupati
+  G // Gakda
+  L // Lindam
+  T // Tibum
+  S // Sekretariat
+  O // Operator
+}
+
+model pegawai {
+  pegawai_nip             String             @id @unique @db.VarChar(20)
+  pegawai_nik             String             @db.VarChar(16)
+  pegawai_password        String             @db.Text
+  pegawai_nama            String             @db.VarChar(100)
+  pegawai_jk              setup_kelamin
+  pegawai_tempat_lahir    String             @db.VarChar(255)
+  pegawai_tanggal_lahir   DateTime           @db.Date
+  pegawai_phone           String             @db.VarChar(16)
+  pegawai_email           String             @db.VarChar(100)
+  pegawai_alamat          String             @db.Text
+  pegawai_foto            String             @db.Text
+  pegawai_jabatan         String             @db.Text
+  agama_id                Int                
+  pendidikan_id           Int                
+  status_pegawai_id       Int                
+  status_kawin_id         Int                
+  pegawai_kewarganegaraan String             @db.VarChar(20)
+  pegawai_status          setup_status_aktif @default(A)
+  pegawai_role            setup_role
+  bidang_id               Int                
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+// * Khusus Mobile
+
+enum asset_status {
+  C // Carausel
+  S // Stats
+  I // Icon
+}
+
+model assets_mobile {
+  asset_id    Int          @id @default(autoincrement())
+  asset_photo String       @db.Text
+  asset_title String       @db.VarChar(50)
+  asset_url   String?      @db.VarChar(255)
+  asset_type  asset_status
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+enum verify_status {
+  NV // Not Verified
+  V // Verified
+}
+
+model user_verification {
+  user_ktp           String        @id @db.VarChar(16)
+  user_code          String        @db.VarChar(6)
+  user_verify_status verify_status @default(NV)
+  user_expired       DateTime      @db.Timestamp()
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+model reset_pass_verification {
+  user_ktp           String        @id @db.VarChar(16)
+  user_code          String        @db.VarChar(6)
+  user_verify_status verify_status @default(NV)
+  user_expired       DateTime      @db.Timestamp()
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+enum user_status {
+  A // Aktif
+  S // Suspended
+  B // Banned
+}
+
+model users {
+  user_ktp      String @id @db.VarChar(16)
+  user_password String @db.Text
+  user_fullname String @db.VarChar(255)
+  user_phone    String @db.VarChar(13)
+  user_alamat   String @db.Text
+
+  user_warning Int         @db.TinyInt
+  user_status  user_status @default(A)
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+enum status_laporan {
+  S // Terkirim
+  C // Terkonfirmasi
+  P // Sedang Ditindak
+  R // Rejected
+  D // Selesai
+}
+
+enum type_laporan {
+  P // Laporan Pengaduan
+  B // Laporan Permohonan
+}
+
+model laporan {
+  laporan_id            String         @id @unique @db.VarChar(36)
+  user_ktp              String         @db.VarChar(16)
+  laporan_title         String         @db.VarChar(100) 
+  laporan_description   String         @db.Text 
+  laporan_location      String         @db.Text 
+  laporan_document      String         @db.Text 
+  laporan_status        status_laporan @default(S) 
+  laporan_type          type_laporan 
+  laporan_action        setup_role? 
+
+  laporan_tgl_send      DateTime       @db.Timestamp() 
+  laporan_tgl_confirm   DateTime?      @db.Timestamp(0) 
+  laporan_tgl_progress  DateTime?      @db.Timestamp(0) 
+  laporan_tgl_reject    DateTime?      @db.Timestamp(0) 
+  laporan_tgl_done      DateTime?      @db.Timestamp(0) 
+
+  created_at            DateTime       @db.Timestamp()
+  updated_at            DateTime?      @db.Timestamp(0)
+}
+
+
+// enum status_inbox {
+//   NR // Belum dibaca
+//   R // Sudah dibaca
+// }
+//
+// model notification {
+//   notif_id          String       @id @unique @db.VarChar(32)
+//   user_id           String       @db.VarChar(32)
+//   notif_title       String       @db.VarChar(100)
+//   notif_description String       @db.Text
+//   notif_tgl_send    DateTime     @db.Timestamp()
+//   notif_status      status_inbox @default(NR)
+//
+//   created_at DateTime @db.Timestamp()
+//   updated_at DateTime @db.Timestamp()
+// }

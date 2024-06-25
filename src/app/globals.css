@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.login {
+    background: url("/images/background/bg-login.webp") top no-repeat;
+    background-size: cover;
+}
