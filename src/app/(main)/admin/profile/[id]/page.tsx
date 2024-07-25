@@ -51,7 +51,7 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [params.id]);
 
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <MenuBreadCrumbs
         title={"Profil"}
         linkArray={["Dashboard"]}

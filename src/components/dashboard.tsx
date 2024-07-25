@@ -25,12 +25,20 @@ ChartJS.register(
 );
 
 export function VerticalBarChart({
-  dataChart,
+  dataChartUnconfirm,
+  dataChartConfirm,
+  dataChartProgress,
+  dataChartReject,
+  dataChartDone,
   icon,
   title,
   color,
 }: {
-  dataChart: number[];
+  dataChartUnconfirm: number[];
+  dataChartConfirm: number[];
+  dataChartProgress: number[];
+  dataChartReject: number[];
+  dataChartDone: number[];
   icon: React.ReactNode;
   title: string;
   color: string;
@@ -53,9 +61,33 @@ export function VerticalBarChart({
     labels: labels,
     datasets: [
       {
-        label: "",
-        backgroundColor: "rgb(163, 212, 234)",
-        data: dataChart,
+        label: "Laporan Belum Dikonfirmasi",
+        backgroundColor: "rgb(255, 255, 102)",
+        data: dataChartUnconfirm,
+        fill: false,
+      },
+      {
+        label: "Laporan Sudah Dikonfirmasi",
+        backgroundColor: "rgb(102, 255, 102)",
+        data: dataChartConfirm,
+        fill: false,
+      },
+      {
+        label: "Laporan Sedang Ditindak",
+        backgroundColor: "rgb(102, 178, 255)",
+        data: dataChartProgress,
+        fill: false,
+      },
+      {
+        label: "Laporan Ditolak",
+        backgroundColor: "rgb(255, 102, 102)",
+        data: dataChartReject,
+        fill: false,
+      },
+      {
+        label: "Laporan Selesai",
+        backgroundColor: "rgb(0, 153, 76)",
+        data: dataChartDone,
         fill: false,
       },
     ],
@@ -97,6 +129,7 @@ export function VerticalBarChart({
           font: {
             style: "normal" as const,
           },
+          precision: 0,
         },
       },
     },
@@ -104,9 +137,9 @@ export function VerticalBarChart({
   };
 
   return (
-    <div className="h-fit w-1/2 bg-white rounded shadow">
+    <div className="h-fit w-full bg-white rounded shadow">
       <div
-        className={`${color} rounded flex items-center gap-2.5 rounded-b-none px-5 py-3.5 text-white font-bold`}
+        className={`${color} rounded flex items-center gap-2.5 rounded-b-none px-5 py-3.5 text-white font-semibold`}
       >
         <i className="text-xl">{icon}</i> {title}
       </div>

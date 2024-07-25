@@ -50,6 +50,50 @@ export async function GetAllPengaduan() {
   return pengaduanWithUser;
 }
 
+export async function GetAllPengaduanBidang(userRole: string) {
+  const queryPengaduan = await prisma.laporan.findMany({
+    where: {
+      laporan_type: type_laporan.P,
+      laporan_action: inputRoleType[userRole],
+    },
+    select: {
+      laporan_id: true,
+      laporan_tgl_send: true,
+      user_ktp: true,
+      laporan_title: true,
+      laporan_description: true,
+      laporan_location: true,
+      laporan_action: true,
+      laporan_status: true,
+      laporan_document: true,
+    },
+  });
+
+  const pengaduanWithUser = await Promise.all(
+    queryPengaduan.map(async (pengaduan) => {
+      const queryUser = await prisma.users.findUnique({
+        where: {
+          user_ktp: pengaduan.user_ktp,
+        },
+        select: {
+          user_fullname: true,
+          user_alamat: true,
+          user_phone: true,
+        },
+      });
+
+      return {
+        ...pengaduan,
+        user_fullname: queryUser ? queryUser.user_fullname : null,
+        user_alamat: queryUser ? queryUser.user_alamat : null,
+        user_phone: queryUser ? queryUser.user_phone : null,
+      };
+    })
+  );
+
+  return pengaduanWithUser;
+}
+
 export async function DeletePengaduan(id: string) {
   await prisma.laporan.delete({
     where: {
@@ -172,6 +216,7 @@ export async function ApproveLaporanKasat(pengaduanId: string, role: string) {
     },
     data: {
       laporan_action: inputRoleType[role!],
+      laporan_status: status_laporan.P,
       updated_at: date.toISOString(),
     },
   });

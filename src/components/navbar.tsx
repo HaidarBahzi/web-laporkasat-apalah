@@ -13,14 +13,17 @@ import {
   FaHeadSideCough,
   FaHandsHelping,
   FaWindowRestore,
+  FaNetworkWired,
 } from "react-icons/fa";
 
 import { IoDocumentTextSharp } from "react-icons/io5";
 import { IoMdPhonePortrait } from "react-icons/io";
 import { GoDatabase } from "react-icons/go";
 import { useEffect, useState } from "react";
-import { getDataSession } from "@/utils/lib/session";
+import { getDataSession, updateSession } from "@/utils/lib/session";
 import Image from "next/image";
+import { LuDot } from "react-icons/lu";
+import { PiDetective } from "react-icons/pi";
 
 export function NavbarAdmin({ link }: { link: string }) {
   const [detailNavbar, setDetailNavbar] = useState({
@@ -31,6 +34,8 @@ export function NavbarAdmin({ link }: { link: string }) {
 
   useEffect(() => {
     async function fetchDetailNavbar() {
+      await updateSession();
+
       const session = await getDataSession();
 
       setDetailNavbar({
@@ -114,6 +119,31 @@ export function NavbarAdmin({ link }: { link: string }) {
                 link={`/${link}/menu_user/pegawai`}
                 title={"Pegawai"}
                 icon={<FaUserFriends />}
+              />
+              <NavbarComponentDropdownLink
+                link={`/${link}/menu_user/penyidik`}
+                title={"Penyidik"}
+                icon={<PiDetective />}
+              />
+            </NavbarComponentDropdownSingle>
+          </li>
+
+          <li>
+            <NavbarComponentDropdownSingle
+              link={`/${link}/menu_tindak`}
+              title={"Menu Tindak Lanjut"}
+              icon={<FaNetworkWired />}
+            >
+              <NavbarComponentDropdownLink
+                link={`/${link}/menu_tindak/non_justitia`}
+                title={"Tindak Lanjut Non Justitia"}
+                icon={<LuDot />}
+              />
+
+              <NavbarComponentDropdownLink
+                link={`/${link}/menu_tindak/pro_justitia`}
+                title={"Tindak Lanjut Pro Justitia"}
+                icon={<LuDot />}
               />
             </NavbarComponentDropdownSingle>
           </li>
@@ -229,6 +259,113 @@ export function NavbarOperator({ link }: { link: string }) {
   );
 }
 
+export function NavbarBidang({ link }: { link: string }) {
+  const [detailNavbar, setDetailNavbar] = useState({
+    imgUser: "",
+    namaUser: "",
+    userId: "",
+  });
+
+  useEffect(() => {
+    async function fetchDetailNavbar() {
+      const session = await getDataSession();
+
+      setDetailNavbar({
+        imgUser: session.imgUser!,
+        namaUser: session.namaUser!,
+        userId: session.idUser!,
+      });
+    }
+
+    fetchDetailNavbar();
+  }, []);
+
+  return (
+    <nav className="shadow-lg">
+      <div className="navbar bg-blue-600 justify-between px-20">
+        <NavbarComponentLogo imageLogo={"/images/logo/logo-header.webp"} />
+
+        <NavbarComponentProfile
+          username={detailNavbar?.namaUser!}
+          userImage={detailNavbar?.imgUser!}
+          link={`/${link}/profile/${detailNavbar?.userId!}`}
+        />
+      </div>
+
+      <div className="navbar justify-center h-16 bg-white">
+        <ul className="menu menu-horizontal gap-4">
+          <li>
+            <NavbarComponentLink
+              link={`/${link}/dashboard`}
+              title={"Dashboard"}
+              icon={<IoGrid />}
+            />
+          </li>
+
+          <li>
+            <NavbarComponentDropdownSingle
+              link={`/${link}/menu_layanan`}
+              title={"Menu Layanan"}
+              icon={<FaRegNewspaper />}
+            >
+              <NavbarComponentDropdownLink
+                link={`/${link}/menu_layanan/pengaduan`}
+                title={"Pengaduan Masyarakat"}
+                icon={<FaHeadSideCough />}
+              />
+
+              <NavbarComponentDropdownLink
+                link={`/${link}/menu_layanan/permohonan_bantuan`}
+                title={"Permohonan Bantuan"}
+                icon={<FaHandsHelping />}
+              />
+            </NavbarComponentDropdownSingle>
+          </li>
+
+          <li>
+            <NavbarComponentDropdownSingle
+              link={`/${link}/menu_tindak`}
+              title={"Menu Tindak Lanjut"}
+              icon={<FaNetworkWired />}
+            >
+              <NavbarComponentDropdownLink
+                link={`/${link}/menu_tindak/non_justitia`}
+                title={"Tindak Lanjut Non Justitia"}
+                icon={<LuDot />}
+              />
+
+              <NavbarComponentDropdownLink
+                link={`/${link}/menu_tindak/pro_justitia`}
+                title={"Tindak Lanjut Pro Justitia"}
+                icon={<LuDot />}
+              />
+            </NavbarComponentDropdownSingle>
+          </li>
+
+          <li>
+            <NavbarComponentDropdownSingle
+              link={`/${link}/menu_laporan`}
+              title={"Menu Laporan"}
+              icon={<FaWindowRestore />}
+            >
+              <NavbarComponentDropdownLink
+                link={`/${link}/menu_laporan/lap_pengaduan`}
+                title={"Lap. Pengaduan"}
+                icon={<IoDocumentTextSharp />}
+              />
+              <NavbarComponentDropdownLink
+                link={`/${link}/menu_laporan/lap_permohonan`}
+                title={"Lap. Permohonan"}
+                icon={<IoDocumentTextSharp />}
+              />
+            </NavbarComponentDropdownSingle>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  );
+}
+
 function NavbarComponentLink({
   link,
   title,
@@ -243,7 +380,7 @@ function NavbarComponentLink({
   return (
     <Link
       href={link}
-      className={`hover:bg-transparent font-bold hover:!text-blue-400 text-sm !bg-transparent ${
+      className={`hover:bg-transparent font-medium hover:!text-blue-400 text-sm !bg-transparent ${
         pathname == link ? "!text-blue-400 !bg-gray-100" : "!text-gray-500"
       }`}
     >
@@ -262,56 +399,12 @@ function NavbarComponentDropdownLink({
   icon: React.ReactNode;
 }) {
   return (
-    <Link
+    <a
       href={link}
-      className="hover:bg-transparent hover:!text-blue-400 text-gray-500 text-sm flex w-64 items-center !bg-transparent"
+      className="hover:bg-transparent hover:!text-blue-400 text-gray-500 text-sm font-medium flex w-64 items-center !bg-transparent"
     >
       <i>{icon}</i> {title}
-    </Link>
-  );
-}
-
-function NavbarComponentDropdownMultiple({
-  link,
-  linkSecond,
-  title,
-  icon,
-  children,
-}: {
-  link: string;
-  linkSecond: string;
-  title: string;
-  icon: React.ReactNode;
-  children: React.ReactNode[];
-}) {
-  const pathname = usePathname();
-
-  return (
-    <div className="dropdown !bg-white">
-      <div
-        tabIndex={0}
-        role="button"
-        className={`btn p-0 btn-ghost hover:!bg-white text-sm !bg-white ${
-          pathname?.includes(link) || pathname?.includes(linkSecond)
-            ? "!text-blue-400 !bg-gray-100"
-            : "!text-gray-500"
-        }`}
-      >
-        <i>{icon}</i>
-
-        {title}
-
-        <i>
-          <FaAngleDown />
-        </i>
-      </div>
-      <ul
-        tabIndex={0}
-        className="dropdown-content z-[1] menu p-2 bg-white rounded flex flex-col gap-1 shadow-lg"
-      >
-        <li>{children}</li>
-      </ul>
-    </div>
+    </a>
   );
 }
 
@@ -332,10 +425,10 @@ function NavbarComponentDropdownSingle({
 
   return (
     <div className="dropdown dropdown-bottom !bg-white">
-      <div
+      <button
         tabIndex={0}
-        role="button"
-        className={`btn p-0 btn-ghost hover:!bg-white text-sm !bg-white ${
+        type="button"
+        className={`btn p-0 btn-ghost font-medium hover:!bg-white text-sm !bg-white ${
           pathname?.includes(link)
             ? "!text-blue-400 !bg-gray-100"
             : "!text-gray-500"
@@ -345,7 +438,8 @@ function NavbarComponentDropdownSingle({
         <i>
           <FaAngleDown />
         </i>
-      </div>
+      </button>
+
       <ul
         tabIndex={0}
         className="dropdown-content z-[1] menu p-2 bg-white rounded rounded-t-none flex flex-col gap-1 shadow-lg"
@@ -366,6 +460,7 @@ function NavbarComponentLogo({ imageLogo }: { imageLogo: string }) {
           width={0}
           height={0}
           sizes="100vw"
+          style={{ width: "100%", height: "auto" }}
           src={imageLogo}
           alt="Logo Navbar"
           className="max-h-8"
@@ -399,8 +494,8 @@ function NavbarComponentProfile({
   return (
     <Link href={link} className="flex items-center gap-5">
       <h2 className="text-white text-sm">
-        <span className="text-gray-100 font-extralight">Halo, </span>
-        <span className="font-extrabold">{username}</span>
+        <span className="text-gray-100 font-medium">Halo, </span>
+        <span className="font-bold">{username}</span>
       </h2>
 
       <Image

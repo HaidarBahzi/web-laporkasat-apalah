@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       minHeight: {
-        "128": "32rem",
+        128: "32rem",
       },
     },
   },

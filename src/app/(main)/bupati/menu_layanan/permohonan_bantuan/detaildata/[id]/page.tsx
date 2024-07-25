@@ -60,7 +60,7 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [params.id, FetchDetailData]);
 
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <ModalAlertApprove
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -90,7 +90,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <hr />
 
         <div className="form-control gap-5">
-          <span className="text-lg font-bold">Data Pemohon</span>
+          <span className="text-lg font-semibold">Data Pemohon</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
               labelText={"KTP Pemohon"}
@@ -127,7 +127,7 @@ export default function Page({ params }: { params: { id: string } }) {
         </div>
 
         <div className="form-control gap-5">
-          <span className="text-lg font-bold">Data Permohonan</span>
+          <span className="text-lg font-semibold">Data Permohonan</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
               labelText={"Judul"}

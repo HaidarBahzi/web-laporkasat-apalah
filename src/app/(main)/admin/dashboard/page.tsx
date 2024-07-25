@@ -9,8 +9,8 @@ import {
   FaUserFriends,
   FaHandsHelping,
 } from "react-icons/fa";
-import { GetDashboard } from "@/utils/server/dashboard/dashboard";
-import { IoCheckmarkDoneSharp } from "react-icons/io5";
+import { GetDashboardAdmin } from "@/utils/server/dashboard/dashboard";
+import { getDataSession } from "@/utils/lib/session";
 
 export default function Page() {
   const [detailDashboard, setDetailDashboard] = useState({
@@ -19,30 +19,44 @@ export default function Page() {
     permohonan: 0,
     user: 0,
     pegawai: 0,
-    chart_send: Array(12).fill(0),
+    chart_unconfirm: Array(12).fill(0),
+    chart_confirm: Array(12).fill(0),
+    chart_progress: Array(12).fill(0),
+    chart_reject: Array(12).fill(0),
     chart_done: Array(12).fill(0),
   });
 
   useEffect(() => {
     async function fetchDetailDashboard() {
-      const statistic = await GetDashboard();
+      try {
+        const session = await getDataSession();
 
-      setDetailDashboard({
-        username: statistic.session.namaUser!,
-        pengaduan: statistic.pengaduan,
-        permohonan: statistic.permohonan,
-        user: statistic.user,
-        pegawai: statistic.pegawai,
-        chart_send: statistic.statistkSend.map((item) => item.count),
-        chart_done: statistic.statistkDone.map((item) => item.count),
-      });
+        const statistic = await GetDashboardAdmin();
+
+        setDetailDashboard({
+          username: session.namaUser!,
+          pengaduan: statistic.pengaduan,
+          permohonan: statistic.permohonan,
+          user: statistic.user,
+          pegawai: statistic.pegawai,
+          chart_unconfirm: statistic.statistkUnconfirm.map(
+            (item) => item.count
+          ),
+          chart_confirm: statistic.statistikConfirmed.map((item) => item.count),
+          chart_progress: statistic.statistikProgress.map((item) => item.count),
+          chart_reject: statistic.statistikRejected.map((item) => item.count),
+          chart_done: statistic.statistkDone.map((item) => item.count),
+        });
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     fetchDetailDashboard();
   }, []);
 
   return (
-    <section className="container mx-auto px-32">
+    <section className="container mx-auto px-16">
       <MenuBreadCrumbs
         title={"Dashboard"}
         linkArray={[]}
@@ -51,7 +65,7 @@ export default function Page() {
       />
 
       <div className="form-control gap-10">
-        <div className="flex gap-5">
+        <div className="flex gap-5 z-0">
           <StatsMenu
             color={"#0D9276"}
             count={detailDashboard.pegawai}
@@ -85,18 +99,15 @@ export default function Page() {
           />
         </div>
 
-        <div className="flex gap-5">
+        <div>
           <VerticalBarChart
-            dataChart={detailDashboard.chart_send}
+            dataChartUnconfirm={detailDashboard.chart_unconfirm}
+            dataChartConfirm={detailDashboard.chart_confirm}
+            dataChartProgress={detailDashboard.chart_progress}
+            dataChartReject={detailDashboard.chart_reject}
+            dataChartDone={detailDashboard.chart_done}
             icon={<FaHeadSideCough />}
-            title={"Pengaduan Dilaporkan"}
-            color={"bg-yellow-400"}
-          />
-
-          <VerticalBarChart
-            dataChart={detailDashboard.chart_done}
-            icon={<IoCheckmarkDoneSharp />}
-            title={"Pengaduan Diselesaikan"}
+            title={"Statistik Laporan Tahun ini"}
             color={"bg-green-400"}
           />
         </div>

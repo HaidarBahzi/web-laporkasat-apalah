@@ -1,7 +1,7 @@
 "use server";
 
+import { inputRoleType } from "@/components/options";
 import prisma from "@/utils/lib/prisma";
-import { getDataSession } from "@/utils/lib/session";
 import {
   setup_status_aktif,
   status_laporan,
@@ -9,9 +9,7 @@ import {
   user_status,
 } from "@prisma/client";
 
-export async function GetDashboard() {
-  const session = await getDataSession();
-
+export async function GetDashboardAdmin() {
   const queryPengaduan = await prisma.laporan.count({
     where: {
       laporan_type: type_laporan.P,
@@ -38,47 +36,108 @@ export async function GetDashboard() {
 
   const currentYear = new Date().getFullYear();
 
-  const queryCountsSend = await Promise.all(
-    Array.from({ length: 12 }, (_, i) => {
+  const queryCountsUnconfirm = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
       const startDate = new Date(
         `${currentYear}-${String(month).padStart(2, "0")}-01`
       );
       const endDate = new Date(currentYear, month, 0);
 
-      return prisma.laporan
-        .count({
-          where: {
-            laporan_status: status_laporan.S,
-            laporan_tgl_send: {
-              gte: startDate,
-              lte: endDate,
-            },
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.S,
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
           },
-        })
-        .then((count) => ({ month, count }));
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsConfirmed = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const startDate = new Date(
+        `${currentYear}-${String(month).padStart(2, "0")}-01`
+      );
+      const endDate = new Date(currentYear, month, 0);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.C,
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsProgress = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const startDate = new Date(
+        `${currentYear}-${String(month).padStart(2, "0")}-01`
+      );
+      const endDate = new Date(currentYear, month, 0);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.P,
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsRejected = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const startDate = new Date(
+        `${currentYear}-${String(month).padStart(2, "0")}-01`
+      );
+      const endDate = new Date(currentYear, month, 0);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.R,
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
     })
   );
 
   const queryCountsDone = await Promise.all(
-    Array.from({ length: 12 }, (_, i) => {
+    Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
       const startDate = new Date(
         `${currentYear}-${String(month).padStart(2, "0")}-01`
       );
       const endDate = new Date(currentYear, month, 0);
 
-      return prisma.laporan
-        .count({
-          where: {
-            laporan_status: status_laporan.D,
-            laporan_tgl_done: {
-              gte: startDate,
-              lte: endDate,
-            },
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.D,
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
           },
-        })
-        .then((count) => ({ month, count }));
+        },
+      });
+      return { month, count };
     })
   );
 
@@ -87,8 +146,148 @@ export async function GetDashboard() {
     pegawai: queryPegawai,
     user: queryUser,
     permohonan: queryPermohonan,
-    statistkSend: queryCountsSend,
+    statistkUnconfirm: queryCountsUnconfirm,
+    statistikConfirmed: queryCountsConfirmed,
+    statistikProgress: queryCountsProgress,
+    statistikRejected: queryCountsRejected,
     statistkDone: queryCountsDone,
-    session: session,
+  };
+}
+
+export async function GetDashboardBidang(userRole: string) {
+  const queryPengaduan = await prisma.laporan.count({
+    where: {
+      laporan_type: type_laporan.P,
+      laporan_action: inputRoleType[userRole],
+    },
+  });
+
+  const queryPermohonan = await prisma.laporan.count({
+    where: {
+      laporan_type: type_laporan.B,
+      laporan_action: inputRoleType[userRole],
+    },
+  });
+
+  const currentYear = new Date().getFullYear();
+
+  const queryCountsUnconfirm = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const startDate = new Date(
+        `${currentYear}-${String(month).padStart(2, "0")}-01`
+      );
+      const endDate = new Date(currentYear, month, 0);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.S,
+          laporan_action: inputRoleType[userRole],
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsConfirmed = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const startDate = new Date(
+        `${currentYear}-${String(month).padStart(2, "0")}-01`
+      );
+      const endDate = new Date(currentYear, month, 0);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.C,
+          laporan_action: inputRoleType[userRole],
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsProgress = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const startDate = new Date(
+        `${currentYear}-${String(month).padStart(2, "0")}-01`
+      );
+      const endDate = new Date(currentYear, month, 0);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.P,
+          laporan_action: inputRoleType[userRole],
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsRejected = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const startDate = new Date(
+        `${currentYear}-${String(month).padStart(2, "0")}-01`
+      );
+      const endDate = new Date(currentYear, month, 0);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.R,
+          laporan_action: inputRoleType[userRole],
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsDone = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const startDate = new Date(
+        `${currentYear}-${String(month).padStart(2, "0")}-01`
+      );
+      const endDate = new Date(currentYear, month, 0);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.D,
+          laporan_action: inputRoleType[userRole],
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  return {
+    pengaduan: queryPengaduan,
+    permohonan: queryPermohonan,
+    statistkUnconfirm: queryCountsUnconfirm,
+    statistikConfirmed: queryCountsConfirmed,
+    statistikProgress: queryCountsProgress,
+    statistikRejected: queryCountsRejected,
+    statistkDone: queryCountsDone,
   };
 }

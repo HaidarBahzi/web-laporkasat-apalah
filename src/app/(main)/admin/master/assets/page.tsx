@@ -15,24 +15,30 @@ import {
 
 import { useEffect, useState } from "react";
 import { asset_status } from "@prisma/client";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaPencilAlt, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { assetType } from "@/components/options";
 import { ModalAlertDelete } from "@/components/form";
 import Image from "next/image";
 
-export default function Page() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+type Asset = {
+  asset_id: number;
+  asset_photo: string;
+  asset_title: string;
+  asset_url: string | null;
+  asset_type: asset_status;
+};
 
-  const [assets, setAssets] = useState<
-    {
-      asset_id: number;
-      asset_photo: string;
-      asset_title: string;
-      asset_url: string | null;
-      asset_type: asset_status;
-    }[]
-  >([]);
+type SortKey = keyof Asset;
+
+export default function Page() {
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [sortConfig, setSortConfig] = useState<{
+    key: SortKey;
+    direction: "ascending" | "descending";
+  } | null>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchAssets = async () => {
     try {
@@ -57,8 +63,46 @@ export default function Page() {
     fetchAssets();
   }, []);
 
+  const sortData = (key: SortKey) => {
+    let direction: "ascending" | "descending" = "ascending";
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === "ascending"
+    ) {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedAsset = () => {
+    let sortableItems = [...assets];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key]! < b[sortConfig.key]!) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (a[sortConfig.key]! > b[sortConfig.key]!) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  };
+
+  const getSortIcon = (key: SortKey) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <FaSort />;
+    }
+    if (sortConfig.direction === "ascending") {
+      return <FaSortUp />;
+    }
+    return <FaSortDown />;
+  };
+
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <MenuBreadCrumbs
         title={"Users"}
         linkArray={["Dashboard", "Master"]}
@@ -75,22 +119,50 @@ export default function Page() {
 
         <hr />
 
-        <div className="overflow-x-auto">
-          {assets.length > 0 ? (
+        <div className="overflow-x-hidden">
+          {sortedAsset().length > 0 ? (
             <table className="table table-sm">
               <thead>
                 <tr>
                   <th></th>
-                  <th>NO</th>
-                  <th>NAMA ASET</th>
-                  <th>GAMBAR ASET</th>
-                  <th>URL ASET</th>
-                  <th>TIPE ASET</th>
+                  <th className="font-semibold">NO</th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("asset_title")}
+                    >
+                      NAMA ASET {getSortIcon("asset_title")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("asset_photo")}
+                    >
+                      GAMBAR ASET {getSortIcon("asset_photo")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("asset_url")}
+                    >
+                      URL ASET {getSortIcon("asset_url")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("asset_type")}
+                    >
+                      TIPE ASET {getSortIcon("asset_type")}
+                    </button>
+                  </th>
                 </tr>
               </thead>
 
               <tbody>
-                {assets.map((value, index) => (
+                {sortedAsset().map((value, index) => (
                   <tr key={index}>
                     <td>
                       <div className="flex gap-2 justify-center">
@@ -120,7 +192,7 @@ export default function Page() {
                     <td>
                       <Image
                         src={`${window.location.origin}/foto-aset/${value.asset_photo}`}
-                        className="w-26 h-20"
+                        className="w-36 h-20"
                         width={0}
                         height={0}
                         sizes="100vw"

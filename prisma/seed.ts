@@ -214,7 +214,7 @@ async function main() {
       pegawai_phone: "081226226318",
       pegawai_email: "biglamp.gang@gmail.com",
       pegawai_alamat: "Jl. Ganesha Barat No. 41",
-      pegawai_foto: "profile-Budianto Hartoyo-1715045536915.jpeg",
+      pegawai_foto: "imagesucok.jpeg",
       pegawai_jabatan: "KEPALA BIDANG",
       agama_id: 1,
       pendidikan_id: 1,

@@ -15,20 +15,26 @@ import { user_status } from "@prisma/client";
 import { useEffect, useState } from "react";
 
 import { CiViewList } from "react-icons/ci";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaPencilAlt, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
+type Users = {
+  user_ktp: string;
+  user_fullname: string;
+  user_phone: string;
+  user_alamat: string;
+  user_warning: number;
+  user_status: user_status;
+};
+
+type SortKey = keyof Users;
+
 export default function Page() {
-  const [users, setUsers] = useState<
-    {
-      user_ktp: string;
-      user_fullname: string;
-      user_phone: string;
-      user_alamat: string;
-      user_warning: number;
-      user_status: user_status;
-    }[]
-  >([]);
+  const [users, setUsers] = useState<Users[]>([]);
+  const [sortConfig, setSortConfig] = useState<{
+    key: SortKey;
+    direction: "ascending" | "descending";
+  } | null>(null);
 
   const fetchUser = async () => {
     try {
@@ -55,8 +61,46 @@ export default function Page() {
     fetchUser();
   }, []);
 
+  const sortData = (key: SortKey) => {
+    let direction: "ascending" | "descending" = "ascending";
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === "ascending"
+    ) {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedUser = () => {
+    let sortableItems = [...users];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key]! < b[sortConfig.key]!) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (a[sortConfig.key]! > b[sortConfig.key]!) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  };
+
+  const getSortIcon = (key: SortKey) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <FaSort />;
+    }
+    if (sortConfig.direction === "ascending") {
+      return <FaSortUp />;
+    }
+    return <FaSortDown />;
+  };
+
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <MenuBreadCrumbs
         title={"Users"}
         linkArray={["Dashboard", "Menu User"]}
@@ -73,24 +117,66 @@ export default function Page() {
 
         <hr />
 
-        <div className="overflow-x-auto">
-          {users.length > 0 ? (
+        <div className="overflow-x-hidden">
+          {sortedUser().length > 0 ? (
             <table className="table table-sm">
               <thead>
                 <tr>
                   <th></th>
-                  <th>NO</th>
-                  <th>NO KTP</th>
-                  <th>NAMA LENGKAP</th>
-                  <th>NO HP</th>
-                  <th>ALAMAT</th>
-                  <th>PERINGATAN</th>
-                  <th>STATUS</th>
+                  <th className="font-semibold">NO</th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("user_ktp")}
+                    >
+                      NO KTP {getSortIcon("user_ktp")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("user_fullname")}
+                    >
+                      NAMA LENGKAP {getSortIcon("user_fullname")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("user_phone")}
+                    >
+                      NO HP {getSortIcon("user_phone")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("user_alamat")}
+                    >
+                      ALAMAT {getSortIcon("user_alamat")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("user_warning")}
+                    >
+                      PERINGATAN {getSortIcon("user_warning")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("user_status")}
+                    >
+                      STATUS {getSortIcon("user_status")}
+                    </button>
+                  </th>
                 </tr>
               </thead>
 
               <tbody>
-                {users.map((user, index) => (
+                {sortedUser().map((user, index) => (
                   <tr key={index}>
                     <td>
                       <div className="flex gap-2 justify-center">

@@ -85,6 +85,65 @@ const formatter = new Intl.DateTimeFormat("id-ID", {
   year: "numeric",
 });
 
+interface FormDataCustom {
+  pelanggar: {
+    nama: string;
+    ayah: string;
+    tempat_lahir: string;
+    tanggal_lahir: string;
+    pelanggarJk: string;
+    agama: number;
+    pendidikan: number;
+    kewarganegaraan: string;
+    status_kawin: number;
+    phone: string;
+    alamat: string;
+  };
+  saksi1: {
+    nama: string;
+    tempat_lahir: string;
+    tanggal_lahir: string;
+    jenis_kelamin: string;
+    agama: number;
+    pendidikan: number;
+    kewarganegaraan: string;
+    status_kawin: number;
+    phone: string;
+    alamat: string;
+  };
+  saksi2: {
+    nama: string;
+    tempat_lahir: string;
+    tanggal_lahir: string;
+    jenis_kelamin: string;
+    agama: number;
+    pendidikan: number;
+    kewarganegaraan: string;
+    status_kawin: number;
+    phone: string;
+    alamat: string;
+  };
+  tindakan: {
+    penyidik: string;
+    tindak: string;
+    pelaksanaan: string;
+  };
+  bukti: {
+    dokumen_ktp: string;
+    dokumen_sp: string;
+    dokumen_sp1: string;
+    dokumen_sp2: string;
+    dokumen_sp3: string;
+    dokumen_lk: string;
+    dokumen_spp: string;
+    dokumen_bap: string;
+    dokumen_p3bb: string;
+    dokumen_psk: string;
+    dokumen_bapc: string;
+    dokumen_pst: string;
+  };
+}
+
 export {
   assetType,
   inputAssetType,
@@ -98,3 +157,4 @@ export {
   formatter,
   inputDataType,
 };
+export type { FormDataCustom };

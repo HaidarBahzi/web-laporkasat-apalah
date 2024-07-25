@@ -11,7 +11,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://root:@localhost:3306/db_laporkasat_"
 }
 
 // * Khusus WebAdmin
@@ -57,6 +57,14 @@ model setup_status_pegawai {
   updated_at DateTime? @db.Timestamp()
 }
 
+model setup_pekerjaan {
+  pekerjaan_id   Int    @id @default(autoincrement())
+  pekerjaan_nama String @db.VarChar(30)
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
 enum setup_kelamin {
   L // Laki-laki
   P // Perempuan
@@ -91,18 +99,99 @@ model pegawai {
   pegawai_alamat          String             @db.Text
   pegawai_foto            String             @db.Text
   pegawai_jabatan         String             @db.Text
-  agama_id                Int                
-  pendidikan_id           Int                
-  status_pegawai_id       Int                
-  status_kawin_id         Int                
+  agama_id                Int
+  pendidikan_id           Int
+  status_pegawai_id       Int
+  status_kawin_id         Int
   pegawai_kewarganegaraan String             @db.VarChar(20)
   pegawai_status          setup_status_aktif @default(A)
   pegawai_role            setup_role
-  bidang_id               Int                
+  bidang_id               Int
 
   created_at DateTime  @db.Timestamp()
   updated_at DateTime? @db.Timestamp()
 }
+
+model penyidik {
+  penyidik_id     String   @id @unique @db.VarChar(36)
+  pegawai_nip     String   @unique @db.VarChar(20)
+  penyidik_sk     String   @unique @db.VarChar(25)
+  penyidik_tgl_sk DateTime @db.Date
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+// Todo: tambahkan saksi, tindakan, barang bukti
+
+model pelanggaran {
+  pelanggaran_id String @id @unique @db.VarChar(36)
+  user_ktp       String @db.VarChar(16)
+  laporan_id     String @unique @db.VarChar(36)
+
+  pelanggar_fullname      String        @db.Text
+  pelanggar_ayah          String        @db.Text
+  pelanggar_tempat_lahir  String        @db.Text
+  pelanggar_tanggal_lahir DateTime      @db.Date
+  pelanggar_jk            setup_kelamin
+  pelanggar_agama         Int
+  pelanggar_pendidikan    Int
+  pelanggar_kewarnegaraan String        @db.VarChar(20)
+  pelanggar_kawin         Int
+  pelanggar_phone         String        @db.VarChar(16)
+  pelanggar_alamat        String        @db.Text
+
+  saksi_1_fullname      String        @db.Text
+  saksi_1_tempat_lahir  String        @db.Text
+  saksi_1_tanggal_lahir DateTime      @db.Date
+  saksi_1_jk            setup_kelamin
+  saksi_1_agama         Int
+  saksi_1_pendidikan    Int
+  saksi_1_kewarnegaraan String        @db.VarChar(20)
+  saksi_1_kawin         Int
+  saksi_1_phone         String        @db.VarChar(16)
+  saksi_1_alamat        String        @db.Text
+
+  saksi_2_fullname      String        @db.Text
+  saksi_2_tempat_lahir  String        @db.Text
+  saksi_2_tanggal_lahir DateTime      @db.Date
+  saksi_2_jk            setup_kelamin
+  saksi_2_agama         Int
+  saksi_2_pendidikan    Int
+  saksi_2_kewarnegaraan String        @db.VarChar(20)
+  saksi_2_kawin         Int
+  saksi_2_phone         String        @db.VarChar(16)
+  saksi_2_alamat        String        @db.Text
+
+  penyidik_id          String @db.VarChar(36)
+  tindakan_detail      String @db.Text
+  tindakan_pelaksanaan String @db.Text
+
+  dokumen_ktp  String @db.Text
+  dokumen_sp   String @db.Text
+  dokumen_sp1  String @db.Text
+  dokumen_sp2  String @db.Text
+  dokumen_sp3  String @db.Text
+  dokumen_lk   String @db.Text
+  dokumen_spp  String @db.Text
+  dokumen_bap  String @db.Text
+  dokumen_p3bb String @db.Text
+  dokumen_psk  String @db.Text
+  dokumen_bapc String @db.Text
+  dokumen_pst  String @db.Text
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
+
+// Todo: lanjutin table tindak lanjut
+
+// model tindak_lanjut {
+//   tindak_lanjut_id String @id
+
+//   created_at DateTime  @db.Timestamp()
+//   updated_at DateTime? @db.Timestamp()
+// }
 
 // * Khusus Mobile
 
@@ -182,40 +271,39 @@ enum type_laporan {
 }
 
 model laporan {
-  laporan_id            String         @id @unique @db.VarChar(36)
-  user_ktp              String         @db.VarChar(16)
-  laporan_title         String         @db.VarChar(100) 
-  laporan_description   String         @db.Text 
-  laporan_location      String         @db.Text 
-  laporan_document      String         @db.Text 
-  laporan_status        status_laporan @default(S) 
-  laporan_type          type_laporan 
-  laporan_action        setup_role? 
+  laporan_id          String         @id @unique @db.VarChar(36)
+  user_ktp            String         @db.VarChar(16)
+  laporan_title       String         @db.VarChar(100)
+  laporan_description String         @db.Text
+  laporan_location    String         @db.Text
+  laporan_document    String         @db.Text
+  laporan_status      status_laporan @default(S)
+  laporan_type        type_laporan
+  laporan_action      setup_role?
 
-  laporan_tgl_send      DateTime       @db.Timestamp() 
-  laporan_tgl_confirm   DateTime?      @db.Timestamp(0) 
-  laporan_tgl_progress  DateTime?      @db.Timestamp(0) 
-  laporan_tgl_reject    DateTime?      @db.Timestamp(0) 
-  laporan_tgl_done      DateTime?      @db.Timestamp(0) 
+  laporan_tgl_send     DateTime  @db.Timestamp()
+  laporan_tgl_confirm  DateTime? @db.Timestamp(0)
+  laporan_tgl_progress DateTime? @db.Timestamp(0)
+  laporan_tgl_reject   DateTime? @db.Timestamp(0)
+  laporan_tgl_done     DateTime? @db.Timestamp(0)
 
-  created_at            DateTime       @db.Timestamp()
-  updated_at            DateTime?      @db.Timestamp(0)
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp(0)
 }
 
+enum status_inbox {
+  NR // Belum dibaca
+  R // Sudah dibaca
+}
 
-// enum status_inbox {
-//   NR // Belum dibaca
-//   R // Sudah dibaca
-// }
-//
-// model notification {
-//   notif_id          String       @id @unique @db.VarChar(32)
-//   user_id           String       @db.VarChar(32)
-//   notif_title       String       @db.VarChar(100)
-//   notif_description String       @db.Text
-//   notif_tgl_send    DateTime     @db.Timestamp()
-//   notif_status      status_inbox @default(NR)
-//
-//   created_at DateTime @db.Timestamp()
-//   updated_at DateTime @db.Timestamp()
-// }
+model notification {
+  notif_id          String       @id @unique @db.VarChar(36)
+  user_ktp          String       @db.VarChar(16)
+  notif_title       String       @db.VarChar(100)
+  notif_description String       @db.Text
+  notif_tgl_send    DateTime     @db.Timestamp()
+  notif_status      status_inbox @default(NR)
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}

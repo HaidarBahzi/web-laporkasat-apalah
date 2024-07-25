@@ -15,6 +15,8 @@ export default function Page() {
   });
 
   async function handleClientSubmit(formData: FormData) {
+    setErrorMessage({ message: "" });
+
     const response = await WebLoginProcess(formData);
 
     setErrorMessage({ message: response?.message! });
@@ -38,16 +40,16 @@ export default function Page() {
           className="form-control gap-5 justify-center items-center w-full"
         >
           <div className="text-center flex flex-col gap-2">
-            <h3 className="text-slate-700 font-semibold text-sm md:text-lg">
+            <h3 className="text-slate-700 font-medium text-sm md:text-lg">
               Login ke Dashboard
             </h3>
-            <div className="text-slate-400 font-semibold text-xs">
+            <div className="text-slate-500 font-normal text-xs">
               Masukkan NIP dan Password Anda:
             </div>
           </div>
 
           <div className="w-full form-control gap-2">
-            <label className="text-xs font-thin text-gray-900">NIP</label>
+            <label className="text-xs font-normal text-gray-900">NIP</label>
             <input
               type="text"
               name="pegawaiNip"
@@ -70,20 +72,18 @@ export default function Page() {
 
           <HoneypotInput />
 
-          <div className="mx-auto">
-            <TextErrorLogin errorMessage={errorMessage.message} />
-          </div>
+          <TextErrorLogin errorMessage={errorMessage.message} />
 
           <button
             type="submit"
-            className="w-full rounded no-animation border-none text-xs font-extralight p-2.5 bg-blue-600 text-white hover:bg-blue-500"
+            className="w-full rounded no-animation border-none text-xs font-medium p-2.5 bg-blue-600 text-white hover:bg-blue-500"
           >
             Login
           </button>
         </form>
       </div>
 
-      <div className="text-xs font-thin text-slate-400">
+      <div className="text-xs font-normal text-slate-300">
         Hak Cipta © 2023 SATUAN POLISI PAMONG PRAJA
       </div>
     </section>

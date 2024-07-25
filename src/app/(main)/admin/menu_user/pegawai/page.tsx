@@ -18,31 +18,75 @@ import { setup_kelamin, setup_role, setup_status_aktif } from "@prisma/client";
 import { useEffect, useState } from "react";
 
 import { CiViewList } from "react-icons/ci";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaPencilAlt, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
 import { jkType, pegawaiStatusType, roleType } from "@/components/options";
 import { ModalAlertCantDelete, ModalAlertDelete } from "@/components/form";
-import { getDataSession, updateSession } from "@/utils/lib/session";
+import { getDataSession } from "@/utils/lib/session";
+
+type Pegawai = {
+  pegawai_nip: string;
+  pegawai_nama: string;
+  pegawai_jk: setup_kelamin;
+  pegawai_jabatan: string;
+  pendidikan_id: number;
+  status_pegawai_id: number;
+  pegawai_status: setup_status_aktif;
+  pegawai_role: setup_role;
+  bidang_id: number;
+  pegawai_foto: string;
+};
+
+type SortKey = keyof Pegawai;
 
 export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-  const [pegawai, setPegawai] = useState<
-    {
-      pegawai_nip: string;
-      pegawai_nama: string;
-      pegawai_jk: setup_kelamin;
-      pegawai_jabatan: string;
-      pendidikan_id: number;
-      status_pegawai_id: number;
-      pegawai_status: setup_status_aktif;
-      pegawai_role: setup_role;
-      bidang_id: number;
-      pegawai_foto: string;
-    }[]
-  >([]);
+  const [pegawai, setPegawai] = useState<Pegawai[]>([]);
+  const [sortConfig, setSortConfig] = useState<{
+    key: SortKey;
+    direction: "ascending" | "descending";
+  } | null>(null);
+
+  const sortData = (key: SortKey) => {
+    let direction: "ascending" | "descending" = "ascending";
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === "ascending"
+    ) {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedPegawai = () => {
+    let sortableItems = [...pegawai];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key]! < b[sortConfig.key]!) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (a[sortConfig.key]! > b[sortConfig.key]!) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  };
+
+  const getSortIcon = (key: SortKey) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <FaSort />;
+    }
+    if (sortConfig.direction === "ascending") {
+      return <FaSortUp />;
+    }
+    return <FaSortDown />;
+  };
 
   const [pegawaiPendidikan, setPegawaiPendidikan] = useState<{
     [key: number]: { pendidikan_nama: string };
@@ -81,7 +125,7 @@ export default function Page() {
   }, []);
 
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <MenuBreadCrumbs
         title={"Pegawai"}
         linkArray={["Dashboard", "Menu User"]}
@@ -98,27 +142,83 @@ export default function Page() {
 
         <hr />
 
-        <div className="overflow-x-auto">
-          {pegawai.length > 0 ? (
+        <div className="overflow-x-hidden">
+          {sortedPegawai().length > 0 ? (
             <table className="table table-auto">
               <thead>
                 <tr>
                   <th></th>
-                  <th>NO</th>
-                  <th>NIP</th>
-                  <th>NAMA</th>
-                  <th>BIDANG</th>
-                  <th>JABATAN</th>
-                  <th>JENIS KELAMIN</th>
-                  <th>PENDIDIKAN</th>
-                  <th>ROLE</th>
-                  <th>STATUS</th>
+                  <th className="font-semibold">NO</th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("pegawai_nip")}
+                    >
+                      NIP {getSortIcon("pegawai_nip")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("pegawai_nama")}
+                    >
+                      NAMA {getSortIcon("pegawai_nama")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("bidang_id")}
+                    >
+                      BIDANG {getSortIcon("bidang_id")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("pegawai_jabatan")}
+                    >
+                      JABATAN {getSortIcon("pegawai_jabatan")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("pegawai_jk")}
+                    >
+                      JENIS KELAMIN {getSortIcon("pegawai_jk")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("pendidikan_id")}
+                    >
+                      PENDIDIKAN {getSortIcon("pendidikan_id")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("pegawai_role")}
+                    >
+                      ROLE {getSortIcon("pegawai_role")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("status_pegawai_id")}
+                    >
+                      STATUS {getSortIcon("status_pegawai_id")}
+                    </button>
+                  </th>
                   <th></th>
                 </tr>
               </thead>
 
               <tbody>
-                {pegawai.map((user, index) => (
+                {sortedPegawai().map((user, index) => (
                   <tr key={index}>
                     <td>
                       <div className={"flex gap-2 justify-center"}>

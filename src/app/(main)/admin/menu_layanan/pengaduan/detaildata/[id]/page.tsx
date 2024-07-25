@@ -20,6 +20,7 @@ import {
 import { status_laporan } from "@prisma/client";
 import { FaCheck } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({
@@ -41,10 +42,20 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  async function approvePengaduan() {
+  async function approvePengaduan(userKtp: string) {
     try {
       await ApproveLaporan(params.id, status_laporan.C);
-      router.push("/admin/menu_layanan/pengaduan");
+
+      axios
+        .post("http://localhost:4000/notification/add", {
+          user_id: userKtp,
+          title: "Konfirmasi Laporan",
+          message:
+            "Laporan Anda telah dikonfirmasi, terima kasih atas laporannya!",
+        })
+        .then(() => {
+          router.push("/admin/menu_layanan/pengaduan");
+        });
     } catch (err) {
       console.error(err);
     }
@@ -66,12 +77,12 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [params.id, fetchFormValue]);
 
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <ModalAlertApprove
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={async () => {
-          await approvePengaduan();
+          await approvePengaduan(pelaporValues.user_ktp);
         }}
       />
 
@@ -96,7 +107,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <hr />
 
         <div className="form-control gap-5">
-          <span className="text-lg font-bold">Data Pelapor</span>
+          <span className="text-lg font-semibold">Data Pelapor</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
               labelText={"KTP Pelapor"}
@@ -133,7 +144,7 @@ export default function Page({ params }: { params: { id: string } }) {
         </div>
 
         <div className="form-control gap-5">
-          <span className="text-lg font-bold">Data Pengaduan</span>
+          <span className="text-lg font-semibold">Data Pengaduan</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
               labelText={"Judul"}

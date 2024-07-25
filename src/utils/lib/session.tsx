@@ -23,6 +23,7 @@ export async function getDataSession() {
     imgUser: session.img,
     namaUser: session.username,
     idUser: session.userId,
+    roleUser: session.role,
   };
 }
 
@@ -49,13 +50,9 @@ export async function updateSession() {
       pegawai_nip: true,
       pegawai_nama: true,
       pegawai_foto: true,
-      pegawai_status: true,
       pegawai_role: true,
-      pegawai_password: true,
     },
   });
-
-  console.log(query == null);
 
   if (query == null) {
     return await logout();

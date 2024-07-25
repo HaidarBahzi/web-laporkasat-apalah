@@ -18,6 +18,8 @@ import Link from "next/link";
 import { setup_role, status_laporan } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { ApproveLaporanKasat } from "@/utils/server/pengaduan/pengaduan";
+import axios from "axios";
+import { roleType } from "@/components/options";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pemohonValues, setPemohonValues] = useState({
@@ -50,10 +52,19 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const router = useRouter();
 
-  async function approvePermohonan(role: string) {
+  async function approvePermohonan(role: string, userKtp: string) {
     try {
       await ApproveLaporanKasat(params.id, role);
-      router.push("/kasat/menu_layanan/permohonan_bantuan");
+
+      axios
+        .post("http://localhost:4000/notification/add", {
+          user_id: userKtp,
+          title: "Tindak Laporan",
+          message: `Laporan Anda sedang ditindak oleh ${roleType[role]}, terima kasih atas laporannya!`,
+        })
+        .then(() => {
+          router.push("/kasat/menu_layanan/permohonan_bantuan");
+        });
     } catch (err) {
       console.error(err);
     }
@@ -74,12 +85,15 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [params.id, FetchDetailData]);
 
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <ModalAlertApproveBidang
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={async () => {
-          await approvePermohonan(formValues.input_role);
+          await approvePermohonan(
+            formValues.input_role,
+            pemohonValues.user_ktp
+          );
         }}
         handleChange={(selectedValue) =>
           handleDropdownChange(selectedValue, "input_role")
@@ -128,7 +142,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <hr />
 
         <div className="form-control gap-5">
-          <span className="text-lg font-bold">Data Pemohon</span>
+          <span className="text-lg font-semibold">Data Pemohon</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
               labelText={"KTP Pemohon"}
@@ -165,7 +179,7 @@ export default function Page({ params }: { params: { id: string } }) {
         </div>
 
         <div className="form-control gap-5">
-          <span className="text-lg font-bold">Data Permohonan</span>
+          <span className="text-lg font-semibold">Data Permohonan</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
               labelText={"Judul"}
@@ -217,7 +231,7 @@ export default function Page({ params }: { params: { id: string } }) {
                 <DetailButtonSubmit
                   onPress={() => setIsModalOpen(true)}
                   icon={<FaCheck />}
-                  title={"Approve"}
+                  title={"Tindak"}
                 />
               </div>
             </>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { FaPlusCircle } from "react-icons/fa";
+import { FaArrowRight, FaCheck, FaPlusCircle, FaUser } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io";
 import { MouseEventHandler } from "react";
 
@@ -27,13 +27,13 @@ export function MenuAddTitle({
 }) {
   return (
     <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2 font-bold">
+      <div className="flex items-center gap-2 font-medium">
         <i className="text-2xl">{titleIcon}</i>
         {title}
       </div>
       <div className="flex gap-2">
         <Link
-          className="btn btn-primary btn-sm h-9 rounded-md text-white font-thin"
+          className="btn btn-primary btn-sm h-9 rounded-md text-white font-normal"
           href={linkButton}
         >
           <i>
@@ -54,11 +54,9 @@ export function MenuNothing({
   titleIcon: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2 font-bold">
-        <i className="text-2xl">{titleIcon}</i>
-        {title}
-      </div>
+    <div className="flex items-center gap-2 font-medium">
+      <i className="text-2xl">{titleIcon}</i>
+      {title}
     </div>
   );
 }
@@ -74,12 +72,12 @@ export function MenuEditTitle({
 }) {
   return (
     <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2 font-bold">
+      <div className="flex items-center gap-2 font-medium">
         <i className="text-xl">{titleIcon}</i>
         {title}
       </div>
       <Link
-        className="btn !bg-gray-300 btn-sm h-9 rounded-md text-black font-thin"
+        className="btn !bg-gray-300 btn-sm h-9 rounded-md text-black font-normal"
         href={linkButton}
       >
         <i>
@@ -105,12 +103,12 @@ export function MenuBreadCrumbs({
   return (
     <div className="py-5 text-sm breadcrumbs">
       <ul>
-        <p className="pr-5 text-base font-bold">{title}</p>
+        <p className="pr-5 text-base font-medium">{title}</p>
 
         {linkArray.map((link, index) => (
           <li key={index}>
             <Link
-              className="text-gray-500 font-semibold text-xs"
+              className="text-gray-500 font-medium text-xs"
               href={titleLinkArray[index] || "#"}
             >
               {link}
@@ -118,7 +116,7 @@ export function MenuBreadCrumbs({
           </li>
         ))}
 
-        <li className="text-gray-500 font-semibold text-xs">{endTitle}</li>
+        <li className="text-gray-500 font-medium text-xs">{endTitle}</li>
       </ul>
     </div>
   );

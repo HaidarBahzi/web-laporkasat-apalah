@@ -70,7 +70,7 @@ export default function Page() {
   };
 
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <ModalAlertAdd
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -147,7 +147,7 @@ export default function Page() {
             />
 
             <>
-              <label className="text-xs font-thin text-gray-900">
+              <label className="text-xs font-medium text-gray-900">
                 Bukti Foto
               </label>
               <div className="indicator">

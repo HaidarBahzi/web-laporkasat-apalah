@@ -4,14 +4,11 @@ import { MouseEventHandler, useEffect, useRef, useState } from "react";
 
 import { FaSave } from "react-icons/fa";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { IoImageOutline } from "react-icons/io5";
-import { MdDelete } from "react-icons/md";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { IoIosClose } from "react-icons/io";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { CiExport } from "react-icons/ci";
 import { PiWarningCircle } from "react-icons/pi";
-import { RiPencilFill } from "react-icons/ri";
 import Image from "next/image";
 
 export function TextInput({
@@ -31,7 +28,7 @@ export function TextInput({
 }) {
   return (
     <>
-      <label className="text-xs w-fit font-thin text-gray-900">
+      <label className="text-xs w-fit font-normal text-gray-900">
         {labelText}
       </label>
       <input
@@ -39,6 +36,95 @@ export function TextInput({
         name={inputName}
         defaultValue={defValue}
         readOnly={readOnly}
+        className="bg-gray-100 w-full col-span-2 text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
+        placeholder={inputPlaceholder}
+        required
+      />
+    </>
+  );
+}
+
+export function TextInputUpdate({
+  labelText,
+  inputName,
+  inputType = "text",
+  value,
+}: {
+  labelText: string;
+  inputName: string;
+  inputType?: string;
+  value?: string;
+}) {
+  return (
+    <>
+      <label className="text-xs w-fit font-normal text-gray-900">
+        {labelText}
+      </label>
+      <input
+        type={inputType}
+        name={inputName}
+        value={value}
+        readOnly={true}
+        className="bg-gray-100 w-full col-span-2 text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
+        required
+      />
+    </>
+  );
+}
+
+export function WizardTextInput({
+  labelText,
+  inputName,
+  inputType = "text",
+  inputPlaceholder,
+  defValue,
+  onChange,
+}: {
+  labelText: string;
+  inputName: string;
+  inputType?: string;
+  inputPlaceholder: string;
+  defValue?: string;
+  onChange: (name: string, value: any) => void;
+}) {
+  return (
+    <>
+      <label className="text-xs w-fit font-normal text-gray-900">
+        {labelText}
+      </label>
+      <input
+        type={inputType}
+        value={defValue}
+        onChange={(e) => onChange(inputName, e.target.value)}
+        className="bg-gray-100 w-full col-span-2 text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
+        placeholder={inputPlaceholder}
+        required
+      />
+    </>
+  );
+}
+
+export function WizardTextAreaInput({
+  labelText,
+  inputName,
+  inputPlaceholder,
+  defValue,
+  onChange,
+}: {
+  labelText: string;
+  inputName: string;
+  inputPlaceholder: string;
+  defValue?: string;
+  onChange: (name: string, value: any) => void;
+}) {
+  return (
+    <>
+      <label className="text-xs w-fit font-normal text-gray-900">
+        {labelText}
+      </label>
+      <textarea
+        value={defValue}
+        onChange={(e) => onChange(inputName, e.target.value)}
         className="bg-gray-100 w-full col-span-2 text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
         placeholder={inputPlaceholder}
         required
@@ -66,7 +152,7 @@ export function LimitedTextInput({
 }) {
   return (
     <>
-      <label className="text-xs w-fit font-thin text-gray-900">
+      <label className="text-xs w-fit font-normal text-gray-900">
         {labelText}
       </label>
       <input
@@ -77,6 +163,45 @@ export function LimitedTextInput({
         defaultValue={defValue}
         className="bg-gray-100 w-full col-span-2 text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
         placeholder={inputPlaceholder}
+        required
+      />
+    </>
+  );
+}
+
+export function WizardLimitedTextInput({
+  labelText,
+  inputName,
+  inputType = "text",
+  inputPlaceholder,
+  maxLength,
+  minLength,
+  defValue,
+  onChange,
+}: {
+  labelText: string;
+  inputName: string;
+  inputType?: string;
+  inputPlaceholder: string;
+  maxLength: number;
+  minLength: number;
+  defValue?: string;
+  onChange: (name: string, value: any) => void;
+}) {
+  return (
+    <>
+      <label className="text-xs w-fit font-normal text-gray-900">
+        {labelText}
+      </label>
+      <input
+        type={inputType}
+        name={inputName}
+        minLength={minLength}
+        maxLength={maxLength}
+        defaultValue={defValue}
+        className="bg-gray-100 w-full col-span-2 text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
+        placeholder={inputPlaceholder}
+        onChange={(e) => onChange(inputName, e.target.value)}
         required
       />
     </>
@@ -94,21 +219,65 @@ export function DateInput({
   defValue?: string;
   handleChange?: (value: any) => void;
 }) {
+  const [inputType, setInputType] = useState("text");
+
   return (
     <>
-      <label className="text-xs w-fit font-thin text-gray-900">
+      <label className="text-xs w-fit font-normal text-gray-900">
         {labelText}
       </label>
 
       <input
-        type="date"
+        type={inputType}
         required
+        placeholder="DD/MM/YYYY"
+        onFocus={() => setInputType("date")}
+        onBlur={() => setInputType("text")}
         name={inputName}
         value={defValue}
         onChange={(e) => {
           const selectedValue = e.target.value;
           if (handleChange) {
             handleChange(selectedValue);
+          }
+        }}
+        className="bg-gray-100 w-full col-span-2 text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
+      />
+    </>
+  );
+}
+
+export function WizardDateInput({
+  labelText,
+  inputName,
+  defValue,
+  onChange,
+}: {
+  labelText: string;
+  inputName: string;
+  defValue?: string;
+  onChange: (name: string, value: any) => void;
+}) {
+  const [inputType, setInputType] = useState("text");
+
+  return (
+    <>
+      <label className="text-xs w-fit font-normal text-gray-900">
+        {labelText}
+      </label>
+
+      <input
+        type={inputType}
+        required
+        placeholder="DD/MM/YYYY"
+        onFocus={() => setInputType("date")}
+        onBlur={() => setInputType("text")}
+        name={inputName}
+        value={defValue}
+        onChange={(e) => {
+          const selectedValue = e.target.value;
+          if (onChange) {
+            onChange(inputName, selectedValue);
           }
         }}
         className="bg-gray-100 w-full col-span-2 text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
@@ -137,7 +306,7 @@ export function DropdownEditInput({
 }) {
   return (
     <>
-      <label className="text-xs w-fit font-thin text-gray-900">
+      <label className="text-xs w-fit font-normal text-gray-900">
         {labelText}
       </label>
 
@@ -186,7 +355,7 @@ export function DropdownAddInput({
 }) {
   return (
     <>
-      <label className="text-xs w-fit font-thin text-gray-900">
+      <label className="text-xs w-fit font-normal text-gray-900">
         {labelText}
       </label>
 
@@ -211,11 +380,59 @@ export function DropdownAddInput({
   );
 }
 
+export function WizardDropdownInput({
+  labelText,
+  inputName,
+  optionTitle,
+  optionValue,
+  defaultValue,
+  onChange,
+}: {
+  labelText: string;
+  inputName: string;
+  optionTitle: string;
+  optionValue: {
+    title: string;
+    value: any;
+  }[];
+  defaultValue: any;
+  onChange: (name: string, value: any) => void;
+}) {
+  return (
+    <>
+      <label className="text-xs w-fit font-normal text-gray-900">
+        {labelText}
+      </label>
+
+      <select
+        required
+        value={defaultValue}
+        onChange={(e) => {
+          const selectedValue = e.target.value;
+          if (onChange) {
+            onChange(inputName, selectedValue);
+          }
+        }}
+        className="bg-gray-100 w-full col-span-2 text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
+        name={inputName}
+      >
+        <option value={""}>- {optionTitle} -</option>
+        {optionValue.map((option, index) => {
+          return (
+            <option key={index} value={option.value}>
+              {option.title}
+            </option>
+          );
+        })}
+      </select>
+    </>
+  );
+}
+
 export function RadioInput({
   labelText,
   inputName,
   radioValue,
-  defValue,
 }: {
   labelText: string;
   inputName: string;
@@ -223,11 +440,10 @@ export function RadioInput({
     title: string;
     value: any;
   }[];
-  defValue?: string;
 }) {
   return (
     <>
-      <label className="text-xs font-thin text-gray-900">{labelText}</label>
+      <label className="text-xs font-normal text-gray-900">{labelText}</label>
 
       <div className="flex gap-4 col-span-2">
         {radioValue.map((value, index) => {
@@ -264,7 +480,7 @@ export function TextareaInput({
 }) {
   return (
     <>
-      <label className="text-xs w-fit font-thin text-gray-900">
+      <label className="text-xs w-fit font-normal text-gray-900">
         {labelText}
       </label>
 
@@ -288,7 +504,7 @@ export function ImageShow({
 }) {
   return (
     <>
-      <label className="text-xs font-thin text-gray-900">{labelText}</label>
+      <label className="text-xs font-normal text-gray-900">{labelText}</label>
       <Image
         width={0}
         height={0}
@@ -326,7 +542,7 @@ export function DateLaporanInput({
 
   return (
     <>
-      <label className="text-xs w-fit font-thin text-gray-900">Periode</label>
+      <label className="text-xs w-fit font-normal text-gray-900">Periode</label>
       <div className="join">
         <input
           type="date"
@@ -373,7 +589,7 @@ export function PasswordInput({
 
   return (
     <>
-      <label className="text-xs font-thin text-gray-900">{labelText}</label>
+      <label className="text-xs font-normal text-gray-900">{labelText}</label>
 
       <div className={`relative col-span-2 ${containerRelative}`}>
         <input
@@ -422,7 +638,7 @@ export function PasswordInputLogin({
   };
   return (
     <div className="form-control gap-2 w-full">
-      <label className="text-xs font-thin text-gray-900">{labelText}</label>
+      <label className="text-xs font-normal text-gray-900">{labelText}</label>
 
       <div className={`relative col-span-2 ${containerRelative}`}>
         <input
@@ -465,7 +681,7 @@ export function InputDateLaporan({
 
   return (
     <>
-      <label className="text-xs font-thin text-gray-900">{labelText}</label>
+      <label className="text-xs font-normal text-gray-900">{labelText}</label>
 
       <div className="join">
         <input
@@ -496,13 +712,14 @@ export function HoneypotInput() {
 
 export function TextErrorLogin({ errorMessage }: { errorMessage: string }) {
   return (
-    <label
-      className={`text-red-500 text-xs font-bold ${
-        errorMessage ? "flex" : "hidden"
+    <div
+      role="alert"
+      className={` ${
+        errorMessage ? "alert !py-2 alert-error rounded" : "hidden"
       }`}
     >
-      {errorMessage}
-    </label>
+      <span className="text-white text-xs font-medium">{errorMessage}</span>
+    </div>
   );
 }
 
@@ -653,7 +870,7 @@ export function ModalAlertDelete({
           </i>
 
           <div className="form-control justify-center items-center gap-4">
-            <h3 className="font-bold text-xl">Anda Yakin?</h3>
+            <h3 className="font-medium text-xl">Anda Yakin?</h3>
             <p className="text-center text-sm tracking-wide">
               Apakah anda yakin ingin menghapus data ini? Tindakan ini tidak
               bisa dibatalkan.
@@ -742,7 +959,7 @@ export function ModalAlertEdit({
           </i>
 
           <div className="form-control justify-center items-center gap-4">
-            <h3 className="font-bold text-xl">Anda Yakin?</h3>
+            <h3 className="font-medium text-xl">Anda Yakin?</h3>
             <p className="text-center text-sm tracking-wide">
               Apakah anda yakin ingin mengubah data ini? Tindakan ini tidak bisa
               dibatalkan.
@@ -831,7 +1048,7 @@ export function ModalAlertAdd({
           </i>
 
           <div className="form-control justify-center items-center gap-4">
-            <h3 className="font-bold text-xl">Anda Yakin?</h3>
+            <h3 className="font-medium text-xl">Anda Yakin?</h3>
             <p className="text-center text-sm tracking-wide">
               Apakah anda yakin ingin menambah data ini? Tindakan ini tidak bisa
               dibatalkan.
@@ -920,7 +1137,7 @@ export function ModalAlertApprove({
           </i>
 
           <div className="form-control justify-center items-center gap-4">
-            <h3 className="font-bold text-xl">Anda Yakin?</h3>
+            <h3 className="font-medium text-xl">Anda Yakin?</h3>
             <p className="text-center text-sm tracking-wide">
               Apakah anda yakin ingin mengapprove laporan ini? Tindakan ini
               tidak bisa dibatalkan.
@@ -950,8 +1167,6 @@ export function ModalAlertApprove({
     </dialog>
   );
 }
-
-//TODO: alert approve bidang isinya semua role
 
 export function ModalAlertApproveBidang({
   inputName,
@@ -1032,7 +1247,7 @@ export function ModalAlertApproveBidang({
             className="form-control justify-center items-center gap-4"
             onSubmit={handleSubmit}
           >
-            <h3 className="font-bold text-center text-xl">
+            <h3 className="font-medium text-center text-xl">
               Silahkan Pilih Bidang yang menangani laporan ini
             </h3>
             <select
@@ -1143,10 +1358,10 @@ export function ModalAlertProgress({
           </i>
 
           <div className="form-control justify-center items-center gap-4">
-            <h3 className="font-bold text-xl">Anda Yakin?</h3>
+            <h3 className="font-medium text-xl">Anda Yakin?</h3>
             <p className="text-center text-sm tracking-wide">
-              Apakah anda yakin ingin menambah data ini? Tindakan ini tidak bisa
-              dibatalkan.
+              Apakah anda yakin ingin menindaklanjuti laporan ini? Tindakan ini
+              tidak bisa dibatalkan.
             </p>
           </div>
 
@@ -1155,7 +1370,7 @@ export function ModalAlertProgress({
               className="btn min-h-10 h-10 w-32 bg-blue-600 hover:bg-blue-700 rounded text-white"
               onClick={onSubmit}
             >
-              Tambah
+              Tindak
             </button>
             <button
               className="btn min-h-10 h-10 w-24 bg-red-600 hover:bg-red-700 rounded text-white"
@@ -1231,7 +1446,7 @@ export function ModalAlertDone({
           </i>
 
           <div className="form-control justify-center items-center gap-4">
-            <h3 className="font-bold text-xl">Anda Yakin?</h3>
+            <h3 className="font-medium text-xl">Anda Yakin?</h3>
             <p className="text-center text-sm tracking-wide">
               Apakah anda yakin ingin menambah data ini? Tindakan ini tidak bisa
               dibatalkan.
@@ -1318,7 +1533,7 @@ export function ModalAlertCantDelete({
           </i>
 
           <div className="form-control justify-center items-center gap-4">
-            <h3 className="font-bold text-xl">Peringatan</h3>
+            <h3 className="font-medium text-xl">Peringatan</h3>
             <p className="text-center text-sm tracking-wide">
               Tidak dapat menghapus data ini
             </p>
@@ -1400,7 +1615,7 @@ export function ModalAlertLogout({
           </i>
 
           <div className="form-control justify-center items-center gap-4">
-            <h3 className="font-bold text-xl">Anda Yakin?</h3>
+            <h3 className="font-medium text-xl">Anda Yakin?</h3>
             <p className="text-center text-sm tracking-wide">
               Apakah anda yakin untuk logout?
             </p>

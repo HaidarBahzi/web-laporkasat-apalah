@@ -48,7 +48,7 @@ export default function Page() {
   };
 
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <ModalAlertAdd
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

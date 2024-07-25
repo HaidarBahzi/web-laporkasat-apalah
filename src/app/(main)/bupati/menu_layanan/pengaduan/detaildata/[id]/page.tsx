@@ -64,7 +64,7 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [params.id, fetchFormValue]);
 
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <ModalAlertApprove
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -94,7 +94,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <hr />
 
         <div className="form-control gap-5">
-          <span className="text-lg font-bold">Data Pelapor</span>
+          <span className="text-lg font-semibold">Data Pelapor</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
               labelText={"KTP Pelapor"}
@@ -131,7 +131,7 @@ export default function Page({ params }: { params: { id: string } }) {
         </div>
 
         <div className="form-control gap-5">
-          <span className="text-lg font-bold">Data Pengaduan</span>
+          <span className="text-lg font-semibold">Data Pengaduan</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
               labelText={"Judul"}

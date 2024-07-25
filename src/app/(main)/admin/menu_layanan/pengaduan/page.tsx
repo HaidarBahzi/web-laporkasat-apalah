@@ -17,27 +17,33 @@ import {
 
 import { status_laporan } from "@prisma/client";
 import { MdDelete, MdLocalPrintshop } from "react-icons/md";
+import { FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
 import { formatter, laporanStatus, roleType } from "@/components/options";
 import { ModalAlertDelete } from "@/components/form";
 import { PrintLaporanPengaduanDetail } from "@/utils/server/print_laporan/print_detail";
 
-export default function Page() {
-  const [pengaduan, setPengaduan] = useState<
-    {
-      user_fullname: string | null;
-      user_alamat: string | null;
-      user_phone: string | null;
-      laporan_id: string;
-      laporan_tgl_send: Date;
-      laporan_title: string;
-      laporan_description: string;
-      laporan_location: string;
-      laporan_action: string | null;
-      laporan_document: string;
-      laporan_status: status_laporan;
-    }[]
-  >([]);
+type Pengaduan = {
+  user_fullname: string | null;
+  user_alamat: string | null;
+  user_phone: string | null;
+  laporan_id: string;
+  laporan_tgl_send: Date;
+  laporan_title: string;
+  laporan_description: string;
+  laporan_location: string;
+  laporan_action: string | null;
+  laporan_document: string;
+  laporan_status: status_laporan;
+};
 
+type SortKey = keyof Pengaduan;
+
+export default function Page() {
+  const [pengaduan, setPengaduan] = useState<Pengaduan[]>([]);
+  const [sortConfig, setSortConfig] = useState<{
+    key: SortKey;
+    direction: "ascending" | "descending";
+  } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   async function FetchAllData() {
@@ -93,8 +99,46 @@ export default function Page() {
     FetchAllData();
   }, []);
 
+  const sortData = (key: SortKey) => {
+    let direction: "ascending" | "descending" = "ascending";
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === "ascending"
+    ) {
+      direction = "descending";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedPengaduan = () => {
+    let sortableItems = [...pengaduan];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        if (a[sortConfig.key]! < b[sortConfig.key]!) {
+          return sortConfig.direction === "ascending" ? -1 : 1;
+        }
+        if (a[sortConfig.key]! > b[sortConfig.key]!) {
+          return sortConfig.direction === "ascending" ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  };
+
+  const getSortIcon = (key: SortKey) => {
+    if (!sortConfig || sortConfig.key !== key) {
+      return <FaSort />;
+    }
+    if (sortConfig.direction === "ascending") {
+      return <FaSortUp />;
+    }
+    return <FaSortDown />;
+  };
+
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <MenuBreadCrumbs
         title={"Pengaduan Masyarakat"}
         linkArray={["Dashboard", "Menu Layanan"]}
@@ -111,24 +155,66 @@ export default function Page() {
 
         <hr />
 
-        <div className="overflow-x-auto">
-          {pengaduan.length > 0 ? (
+        <div className="overflow-x-hidden">
+          {sortedPengaduan().length > 0 ? (
             <table className="table table-sm">
               <thead>
                 <tr>
                   <th></th>
-                  <th>NO</th>
-                  <th>TANGGAL</th>
-                  <th>NAMA PELAPOR</th>
-                  <th>JUDUL</th>
-                  <th>LOKASI</th>
-                  <th>ACTION</th>
-                  <th>STATUS</th>
+                  <th className="font-semibold">NO</th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("laporan_tgl_send")}
+                    >
+                      TANGGAL {getSortIcon("laporan_tgl_send")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("user_fullname")}
+                    >
+                      NAMA PELAPOR {getSortIcon("user_fullname")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("laporan_title")}
+                    >
+                      JUDUL {getSortIcon("laporan_title")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("laporan_location")}
+                    >
+                      LOKASI {getSortIcon("laporan_location")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("laporan_action")}
+                    >
+                      ACTION {getSortIcon("laporan_action")}
+                    </button>
+                  </th>
+                  <th className="font-semibold">
+                    <button
+                      className="flex items-center gap-2"
+                      onClick={() => sortData("laporan_status")}
+                    >
+                      STATUS {getSortIcon("laporan_status")}
+                    </button>
+                  </th>
                 </tr>
               </thead>
 
               <tbody>
-                {pengaduan.map((value, index) => (
+                {sortedPengaduan().map((value, index) => (
                   <tr key={index}>
                     <td>
                       <div className={"flex gap-2 justify-center"}>

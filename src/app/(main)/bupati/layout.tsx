@@ -3,7 +3,7 @@ import { NavbarOperator } from "@/components/navbar";
 import { Suspense } from "react";
 import Loading from "./loading";
 
-export default function OperatorLayout({
+export default function BupatiLayout({
   children,
 }: {
   children: React.ReactNode;

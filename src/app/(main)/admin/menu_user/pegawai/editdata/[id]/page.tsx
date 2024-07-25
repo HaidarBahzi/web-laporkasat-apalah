@@ -28,6 +28,8 @@ import { RiPencilFill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import { inputRoleType, inputJkType } from "@/components/options";
 import Image from "next/image";
+import { updateSession } from "@/utils/lib/session";
+import { useRouter } from "next/navigation";
 
 export default function Page({ params }: { params: { id: string } }) {
   const ref = createRef<HTMLFormElement>();
@@ -127,6 +129,8 @@ export default function Page({ params }: { params: { id: string } }) {
     }
   };
 
+  const router = useRouter();
+
   const handleSubmitClient = async (formData: FormData) => {
     const response = await SubmitEditPegawai(
       formData,
@@ -138,8 +142,7 @@ export default function Page({ params }: { params: { id: string } }) {
     setNotification({ type: response.type, message: response.message });
 
     if (response.type == "success") {
-      ref.current?.reset();
-      await fetchAdditionalData();
+      router.refresh();
       handleImageDelete();
     }
   };
@@ -160,6 +163,8 @@ export default function Page({ params }: { params: { id: string } }) {
   };
 
   const fetchAdditionalData = useCallback(async () => {
+    await updateSession();
+
     try {
       const dataInput = await FetchInputPegawai();
 
@@ -210,7 +215,7 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [params.id, fetchAdditionalData]);
 
   return (
-    <section className="container mx-auto px-24">
+    <section className="container mx-auto px-16">
       <ModalAlertEdit
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -510,7 +515,7 @@ export default function Page({ params }: { params: { id: string } }) {
             />
 
             <>
-              <label className="text-xs font-thin text-gray-900">
+              <label className="text-xs font-normal text-gray-900">
                 Pegawai Foto
               </label>
               <div className="indicator">
