@@ -12,7 +12,6 @@ import {
   FailNotification,
   HoneypotInput,
   LimitedTextInput,
-  ModalAlertEdit,
   PasswordInput,
   SuccessNotification,
   TextInput,
@@ -30,6 +29,7 @@ import { inputRoleType, inputJkType } from "@/components/options";
 import Image from "next/image";
 import { updateSession } from "@/utils/lib/session";
 import { useRouter } from "next/navigation";
+import { ModalAlertEdit } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const ref = createRef<HTMLFormElement>();

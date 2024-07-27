@@ -10,11 +10,12 @@ import {
   ApprovePermohonan,
   GetDetailPermohonanBantuan,
 } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
-import { ModalAlertApprove, TextareaInput, TextInput } from "@/components/form";
+import { TextareaInput, TextInput } from "@/components/form";
 import { FaPaperclip } from "react-icons/fa";
 import Link from "next/link";
 import { status_laporan } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { ModalAlertApprove } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pemohonValues, setPemohonValues] = useState({

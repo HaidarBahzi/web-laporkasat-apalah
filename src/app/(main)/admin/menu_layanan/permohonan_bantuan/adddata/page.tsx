@@ -10,11 +10,11 @@ import {
   FailNotification,
   HoneypotInput,
   LimitedTextInput,
-  ModalAlertAdd,
   SuccessNotification,
   TextareaInput,
   TextInput,
 } from "@/components/form";
+import { ModalAlertAdd } from "@/components/modal";
 import { createRef, useState } from "react";
 import { SubmitPermohonanBantuan } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
 

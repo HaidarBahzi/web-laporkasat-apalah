@@ -10,8 +10,6 @@ import {
   DropdownAddInput,
   FailNotification,
   HoneypotInput,
-  ModalAlertAdd,
-  RadioInput,
   SuccessNotification,
   TextInput,
 } from "@/components/form";
@@ -22,6 +20,7 @@ import { MdDelete } from "react-icons/md";
 import { IoImageOutline } from "react-icons/io5";
 import { SubmitAsset } from "@/utils/server/master/assets";
 import Image from "next/image";
+import { ModalAlertAdd } from "@/components/modal";
 
 export default function Page() {
   const ref = createRef<HTMLFormElement>();

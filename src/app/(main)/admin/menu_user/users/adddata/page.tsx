@@ -5,7 +5,6 @@ import {
   FailNotification,
   HoneypotInput,
   LimitedTextInput,
-  ModalAlertAdd,
   PasswordInput,
   SuccessNotification,
   TextInput,
@@ -19,6 +18,7 @@ import MenuContainer, {
 import { FaUserPlus } from "react-icons/fa";
 import { createRef, useState } from "react";
 import { SubmitUserData } from "@/utils/server/users/user";
+import { ModalAlertAdd } from "@/components/modal";
 
 export default function Page() {
   const ref = createRef<HTMLFormElement>();

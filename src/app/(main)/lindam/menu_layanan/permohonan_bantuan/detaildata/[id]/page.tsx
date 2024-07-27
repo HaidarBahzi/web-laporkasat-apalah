@@ -9,7 +9,6 @@ import { useCallback, useEffect, useState } from "react";
 import { GetDetailPermohonanBantuan } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
 import {
   DetailButtonSubmit,
-  ModalAlertApproveBidang,
   TextareaInput,
   TextInput,
 } from "@/components/form";
@@ -18,6 +17,7 @@ import Link from "next/link";
 import { setup_role, status_laporan } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { ApproveLaporanKasat } from "@/utils/server/pengaduan/pengaduan";
+import { ModalAlertApproveBidang } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pemohonValues, setPemohonValues] = useState({

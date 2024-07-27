@@ -2,11 +2,12 @@
 
 import { logout } from "@/utils/lib/session";
 import MenuContainer, { MenuBreadCrumbs } from "@/components/menu";
-import { ModalAlertLogout, TextInput } from "@/components/form";
+import { TextInput } from "@/components/form";
 import { useEffect, useState } from "react";
 import { GetProfile } from "@/utils/server/profile/profile";
 import { roleType } from "@/components/options";
 import Image from "next/image";
+import { ModalAlertLogout } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [formValues, setFormValues] = useState({

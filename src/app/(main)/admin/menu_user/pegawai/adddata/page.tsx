@@ -7,7 +7,6 @@ import {
   FailNotification,
   HoneypotInput,
   LimitedTextInput,
-  ModalAlertAdd,
   PasswordInput,
   RadioInput,
   SuccessNotification,
@@ -31,6 +30,7 @@ import { RiPencilFill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import { IoImageOutline } from "react-icons/io5";
 import Image from "next/image";
+import { ModalAlertAdd } from "@/components/modal";
 
 export default function Page() {
   const ref = createRef<HTMLFormElement>();

@@ -5,17 +5,17 @@ import MenuContainer, {
   MenuEditTitle,
 } from "@/components/menu";
 import { MdDelete, MdOutlinePostAdd } from "react-icons/md";
-import { createRef, useRef, useState } from "react";
+import { createRef, MouseEvent, useRef, useState } from "react";
 import {
   ButtonSubmit,
   FailNotification,
   HoneypotInput,
-  LimitedTextInput,
-  ModalAlertAdd,
+  SearchTextInput,
   SuccessNotification,
   TextareaInput,
   TextInput,
 } from "@/components/form";
+import { ModalAlertAdd, ModalSearchUser } from "@/components/modal";
 import { RiPencilFill } from "react-icons/ri";
 import { IoImageOutline } from "react-icons/io5";
 import { SubmitPengaduan } from "@/utils/server/pengaduan/pengaduan";
@@ -25,8 +25,10 @@ export default function Page() {
   const ref = createRef<HTMLFormElement>();
 
   const [notification, setNotification] = useState({ type: "", message: "" });
+  const [ktpSearch, setKtpSearch] = useState({ ktp: "", nama: "" });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   function closeNotification() {
     setNotification({ type: "", message: "" });
@@ -57,6 +59,7 @@ export default function Page() {
 
     if (response.type == "success") {
       ref.current?.reset();
+      setKtpSearch({ ktp: "", nama: "" });
       handleImageDelete();
     }
   }
@@ -75,6 +78,15 @@ export default function Page() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={() => handleFormSubmit()}
+      />
+
+      <ModalSearchUser
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSubmit={(userKtp: string, userName: string) => {
+          setIsSearchOpen(false);
+          setKtpSearch({ ktp: userKtp, nama: userName });
+        }}
       />
 
       <MenuBreadCrumbs
@@ -120,12 +132,13 @@ export default function Page() {
           className="form-control gap-8 px-8"
         >
           <div className="grid grid-cols-6 gap-x-12 gap-y-4 items-center">
-            <LimitedTextInput
-              labelText={"KTP"}
+            <SearchTextInput
+              labelText={"Nama User"}
               inputName={"pengaduanKtp"}
               inputPlaceholder={"Input KTP"}
-              maxLength={16}
-              minLength={16}
+              defValue={ktpSearch.ktp}
+              showValue={ktpSearch.nama}
+              buttonPress={() => setIsSearchOpen(true)}
             />
 
             <TextInput

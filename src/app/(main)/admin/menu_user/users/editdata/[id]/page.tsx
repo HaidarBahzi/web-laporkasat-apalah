@@ -11,7 +11,6 @@ import {
   FailNotification,
   HoneypotInput,
   LimitedTextInput,
-  ModalAlertEdit,
   PasswordInput,
   SuccessNotification,
   TextInput,
@@ -19,6 +18,7 @@ import {
 
 import { createRef, useCallback, useEffect, useState } from "react";
 import { GetDetailUser, SubmitUserEdit } from "@/utils/server/users/user";
+import { ModalAlertEdit } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const ref = createRef<HTMLFormElement>();

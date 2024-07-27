@@ -11,7 +11,6 @@ import {
   DropdownEditInput,
   FailNotification,
   HoneypotInput,
-  ModalAlertEdit,
   SuccessNotification,
   TextInput,
 } from "@/components/form";
@@ -20,6 +19,7 @@ import { asset_status } from "@prisma/client";
 import { MdDelete } from "react-icons/md";
 import { EditAsset, GetDetailAssets } from "@/utils/server/master/assets";
 import Image from "next/image";
+import { ModalAlertEdit } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const ref = createRef<HTMLFormElement>();

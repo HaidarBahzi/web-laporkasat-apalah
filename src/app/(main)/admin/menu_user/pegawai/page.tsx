@@ -21,30 +21,22 @@ import { CiViewList } from "react-icons/ci";
 import { FaPencilAlt, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
-import { jkType, pegawaiStatusType, roleType } from "@/components/options";
-import { ModalAlertCantDelete, ModalAlertDelete } from "@/components/form";
+import {
+  jkType,
+  pegawaiStatusType,
+  PegawaiType,
+  roleType,
+} from "@/components/options";
+import { ModalAlertCantDelete, ModalAlertDelete } from "@/components/modal";
 import { getDataSession } from "@/utils/lib/session";
 
-type Pegawai = {
-  pegawai_nip: string;
-  pegawai_nama: string;
-  pegawai_jk: setup_kelamin;
-  pegawai_jabatan: string;
-  pendidikan_id: number;
-  status_pegawai_id: number;
-  pegawai_status: setup_status_aktif;
-  pegawai_role: setup_role;
-  bidang_id: number;
-  pegawai_foto: string;
-};
-
-type SortKey = keyof Pegawai;
+type SortKey = keyof PegawaiType;
 
 export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-  const [pegawai, setPegawai] = useState<Pegawai[]>([]);
+  const [pegawai, setPegawai] = useState<PegawaiType[]>([]);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";

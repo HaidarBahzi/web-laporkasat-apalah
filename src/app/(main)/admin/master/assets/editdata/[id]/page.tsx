@@ -11,10 +11,10 @@ import {
   DropdownEditInput,
   FailNotification,
   HoneypotInput,
-  ModalAlertEdit,
   SuccessNotification,
   TextInput,
 } from "@/components/form";
+import { ModalAlertEdit } from "@/components/modal";
 import { RiPencilFill } from "react-icons/ri";
 import { asset_status } from "@prisma/client";
 import { MdDelete } from "react-icons/md";

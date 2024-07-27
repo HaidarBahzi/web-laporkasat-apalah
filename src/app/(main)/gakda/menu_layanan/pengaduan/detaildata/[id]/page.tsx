@@ -5,11 +5,10 @@ import MenuContainer, {
   MenuEditTitle,
 } from "@/components/menu";
 import { CiViewList } from "react-icons/ci";
-import { createRef, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { GetDetailPengaduan } from "@/utils/server/pengaduan/pengaduan";
 import {
   ImageShow,
-  ModalAlertProgress,
   TextareaInput,
   TextInput,
   WizardDateInput,
@@ -27,6 +26,7 @@ import { FaFileUpload } from "react-icons/fa";
 import { SubmitPelanggaran } from "@/utils/server/pelanggaran/pelanggaran";
 import { useRouter } from "next/navigation";
 import { FormDataCustom } from "@/components/options";
+import { ModalAlertProgress } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({

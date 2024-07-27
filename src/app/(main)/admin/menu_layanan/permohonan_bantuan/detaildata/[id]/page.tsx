@@ -12,10 +12,10 @@ import {
 } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
 import {
   DetailButtonSubmit,
-  ModalAlertApprove,
   TextareaInput,
   TextInput,
 } from "@/components/form";
+import { ModalAlertApprove } from "@/components/modal";
 import { FaCheck, FaPaperclip } from "react-icons/fa";
 import Link from "next/link";
 import { status_laporan } from "@prisma/client";

@@ -14,25 +14,16 @@ import {
 } from "@/utils/server/master/assets";
 
 import { useEffect, useState } from "react";
-import { asset_status } from "@prisma/client";
 import { FaPencilAlt, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import { assetType } from "@/components/options";
-import { ModalAlertDelete } from "@/components/form";
+import { AssetType, assetType } from "@/components/options";
+import { ModalAlertDelete } from "@/components/modal";
 import Image from "next/image";
 
-type Asset = {
-  asset_id: number;
-  asset_photo: string;
-  asset_title: string;
-  asset_url: string | null;
-  asset_type: asset_status;
-};
-
-type SortKey = keyof Asset;
+type SortKey = keyof AssetType;
 
 export default function Page() {
-  const [assets, setAssets] = useState<Asset[]>([]);
+  const [assets, setAssets] = useState<AssetType[]>([]);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";

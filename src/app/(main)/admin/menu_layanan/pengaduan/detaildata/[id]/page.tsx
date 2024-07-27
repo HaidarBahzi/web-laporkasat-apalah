@@ -13,10 +13,10 @@ import {
 import {
   DetailButtonSubmit,
   ImageShow,
-  ModalAlertApprove,
   TextareaInput,
   TextInput,
 } from "@/components/form";
+import { ModalAlertApprove } from "@/components/modal";
 import { status_laporan } from "@prisma/client";
 import { FaCheck } from "react-icons/fa";
 import { useRouter } from "next/navigation";

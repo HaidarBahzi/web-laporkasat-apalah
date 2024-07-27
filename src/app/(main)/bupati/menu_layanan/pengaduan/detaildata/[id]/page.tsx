@@ -10,14 +10,10 @@ import {
   ApproveLaporan,
   GetDetailPengaduan,
 } from "@/utils/server/pengaduan/pengaduan";
-import {
-  ImageShow,
-  ModalAlertApprove,
-  TextareaInput,
-  TextInput,
-} from "@/components/form";
+import { ImageShow, TextareaInput, TextInput } from "@/components/form";
 import { status_laporan } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { ModalAlertApprove } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({

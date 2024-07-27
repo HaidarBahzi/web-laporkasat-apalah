@@ -10,16 +10,13 @@ import {
   FailNotification,
   HoneypotInput,
   LimitedTextInput,
-  ModalAlertAdd,
   SuccessNotification,
-  TextInput,
-  TextInputUpdate,
 } from "@/components/form";
 
 import { createRef, useState } from "react";
-import { SubmitAsset } from "@/utils/server/master/assets";
 import { FaUserPlus } from "react-icons/fa";
 import { AddPenyidik } from "@/utils/server/penyidik/penyidik";
+import { ModalAlertAdd } from "@/components/modal";
 
 export default function Page() {
   const ref = createRef<HTMLFormElement>();

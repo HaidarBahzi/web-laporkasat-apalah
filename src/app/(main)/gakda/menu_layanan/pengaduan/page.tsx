@@ -10,32 +10,21 @@ import { CiViewList } from "react-icons/ci";
 import { IoMdInformationCircle } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { GetAllPengaduanBidang } from "@/utils/server/pengaduan/pengaduan";
-
-import { status_laporan } from "@prisma/client";
 import { MdLocalPrintshop } from "react-icons/md";
-import { formatter, laporanStatus, roleType } from "@/components/options";
+import {
+  formatter,
+  laporanStatus,
+  PengaduanType,
+  roleType,
+} from "@/components/options";
 import { PrintLaporanPengaduanDetail } from "@/utils/server/print_laporan/print_detail";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { getDataSession } from "@/utils/lib/session";
 
-type Pengaduan = {
-  user_fullname: string | null;
-  user_alamat: string | null;
-  user_phone: string | null;
-  laporan_id: string;
-  laporan_tgl_send: Date;
-  laporan_title: string;
-  laporan_description: string;
-  laporan_location: string;
-  laporan_action: string | null;
-  laporan_document: string;
-  laporan_status: status_laporan;
-};
-
-type SortKey = keyof Pengaduan;
+type SortKey = keyof PengaduanType;
 
 export default function Page() {
-  const [pengaduan, setPengaduan] = useState<Pengaduan[]>([]);
+  const [pengaduan, setPengaduan] = useState<PengaduanType[]>([]);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";

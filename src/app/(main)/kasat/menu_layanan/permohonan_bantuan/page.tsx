@@ -12,28 +12,21 @@ import { status_laporan } from "@prisma/client";
 import { GetAllPermohonanBantuan } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
 import { IoMdInformationCircle } from "react-icons/io";
 import { MdLocalPrintshop } from "react-icons/md";
-import { formatter, laporanStatus, roleType } from "@/components/options";
+import {
+  formatter,
+  laporanStatus,
+  PermohonanType,
+  roleType,
+} from "@/components/options";
 import { PrintLaporanPermohonanDetail } from "@/utils/server/print_laporan/print_detail";
 import { FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 
-type Permohonan = {
-  user_fullname: string | null;
-  user_alamat: string | null;
-  user_phone: string | null;
-  laporan_id: string;
-  laporan_tgl_send: Date;
-  laporan_title: string;
-  laporan_description: string;
-  laporan_location: string;
-  laporan_action: string | null;
-  laporan_document: string;
-  laporan_status: status_laporan;
-};
+type SortKey = keyof PermohonanType;
 
 export default function Page() {
-  const [permohonan, setPermohonan] = useState<Permohonan[]>([]);
+  const [permohonan, setPermohonan] = useState<PermohonanType[]>([]);
   const [sortConfig, setSortConfig] = useState<{
-    key: keyof Permohonan;
+    key: SortKey;
     direction: "ascending" | "descending";
   } | null>(null);
 
@@ -80,7 +73,7 @@ export default function Page() {
     FetchAllData();
   }, []);
 
-  const sortData = (key: keyof Permohonan) => {
+  const sortData = (key: SortKey) => {
     let direction: "ascending" | "descending" = "ascending";
     if (
       sortConfig &&
@@ -108,7 +101,7 @@ export default function Page() {
     return sortableItems;
   };
 
-  const getSortIcon = (key: keyof Permohonan) => {
+  const getSortIcon = (key: SortKey) => {
     if (!sortConfig || sortConfig.key !== key) {
       return <FaSort />;
     }

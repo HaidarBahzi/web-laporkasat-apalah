@@ -17,29 +17,26 @@ import {
 
 import { status_laporan } from "@prisma/client";
 import { MdDelete, MdLocalPrintshop } from "react-icons/md";
-import { FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
-import { formatter, laporanStatus, roleType } from "@/components/options";
-import { ModalAlertDelete } from "@/components/form";
+import {
+  FaSortUp,
+  FaSortDown,
+  FaSort,
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight,
+} from "react-icons/fa";
+import {
+  formatter,
+  laporanStatus,
+  PengaduanType,
+  roleType,
+} from "@/components/options";
+import { ModalAlertDelete } from "@/components/modal";
 import { PrintLaporanPengaduanDetail } from "@/utils/server/print_laporan/print_detail";
 
-type Pengaduan = {
-  user_fullname: string | null;
-  user_alamat: string | null;
-  user_phone: string | null;
-  laporan_id: string;
-  laporan_tgl_send: Date;
-  laporan_title: string;
-  laporan_description: string;
-  laporan_location: string;
-  laporan_action: string | null;
-  laporan_document: string;
-  laporan_status: status_laporan;
-};
-
-type SortKey = keyof Pengaduan;
+type SortKey = keyof PengaduanType;
 
 export default function Page() {
-  const [pengaduan, setPengaduan] = useState<Pengaduan[]>([]);
+  const [pengaduan, setPengaduan] = useState<PengaduanType[]>([]);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";

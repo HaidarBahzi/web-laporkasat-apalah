@@ -12,7 +12,6 @@ import {
 } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
 import {
   DetailButtonSubmit,
-  ModalAlertApprove,
   TextareaInput,
   TextInput,
 } from "@/components/form";
@@ -21,6 +20,7 @@ import Link from "next/link";
 import { status_laporan } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { ModalAlertApprove } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pemohonValues, setPemohonValues] = useState({

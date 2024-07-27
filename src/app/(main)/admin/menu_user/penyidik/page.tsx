@@ -11,26 +11,17 @@ import { CiViewList } from "react-icons/ci";
 import { useEffect, useState } from "react";
 import { FaPencilAlt, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
-import { formatter } from "@/components/options";
-import { ModalAlertDelete } from "@/components/form";
+import { formatter, PenyidikType } from "@/components/options";
+import { ModalAlertDelete } from "@/components/modal";
 import {
   GetAllPenyidik,
   DeletePenyidik,
 } from "@/utils/server/penyidik/penyidik";
 
-type Penyidik = {
-  penyidik_id: string;
-  pegawai_nip: string;
-  pegawai_nama: string | null;
-  pegawai_jabatan: string | null;
-  penyidik_sk: string;
-  penyidik_tgl_sk: Date;
-};
-
-type SortKey = keyof Penyidik;
+type SortKey = keyof PenyidikType;
 
 export default function Page() {
-  const [penyidik, setPenyidik] = useState<Penyidik[]>([]);
+  const [penyidik, setPenyidik] = useState<PenyidikType[]>([]);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";

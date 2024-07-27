@@ -13,7 +13,6 @@ import {
 import {
   DetailButtonSubmit,
   ImageShow,
-  ModalAlertApprove,
   TextareaInput,
   TextInput,
 } from "@/components/form";
@@ -21,6 +20,7 @@ import { status_laporan } from "@prisma/client";
 import { FaCheck } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { ModalAlertApprove } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({

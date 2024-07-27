@@ -1,13 +1,13 @@
 "use client";
 
-import { ModalAlertDelete } from "@/components/form";
+import { ModalAlertDelete } from "@/components/modal";
 import MenuContainer, {
   MenuBreadCrumbs,
   MenuAddTitle,
   ButtonActionLinkMenu,
   ButtonActionFunctionMenu,
 } from "@/components/menu";
-import { userStatus } from "@/components/options";
+import { userStatus, UsersType } from "@/components/options";
 
 import { DeleteUser, GetAllUsers } from "@/utils/server/users/user";
 import { user_status } from "@prisma/client";
@@ -18,19 +18,10 @@ import { CiViewList } from "react-icons/ci";
 import { FaPencilAlt, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
-type Users = {
-  user_ktp: string;
-  user_fullname: string;
-  user_phone: string;
-  user_alamat: string;
-  user_warning: number;
-  user_status: user_status;
-};
-
-type SortKey = keyof Users;
+type SortKey = keyof UsersType;
 
 export default function Page() {
-  const [users, setUsers] = useState<Users[]>([]);
+  const [users, setUsers] = useState<UsersType[]>([]);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";
@@ -45,13 +36,13 @@ export default function Page() {
     }
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState({ ktp: "", bolean: false });
 
   const deleteUser = async (userKtp: string) => {
     try {
       await DeleteUser(userKtp);
       await fetchUser();
-      setIsModalOpen(false);
+      setIsModalOpen({ ktp: "", bolean: false });
     } catch (error) {
       console.log("Gagal menghapus user");
     }
@@ -187,15 +178,24 @@ export default function Page() {
                         />
 
                         <ButtonActionFunctionMenu
-                          btnFunction={() => setIsModalOpen(true)}
+                          btnFunction={() =>
+                            setIsModalOpen({
+                              ktp: user.user_ktp,
+                              bolean: true,
+                            })
+                          }
                           btnType={"btn-error"}
                           icon={<MdDelete />}
                         />
 
                         <ModalAlertDelete
-                          isOpen={isModalOpen}
-                          onClose={() => setIsModalOpen(false)}
-                          onSubmit={async () => await deleteUser(user.user_ktp)}
+                          isOpen={isModalOpen.bolean}
+                          onClose={() =>
+                            setIsModalOpen({ ktp: "", bolean: false })
+                          }
+                          onSubmit={async () =>
+                            await deleteUser(isModalOpen.ktp)
+                          }
                         />
                       </div>
                     </td>

@@ -3,6 +3,8 @@ import {
   setup_role,
   asset_status,
   status_laporan,
+  setup_status_aktif,
+  user_status,
 } from "@prisma/client";
 
 const assetType = {
@@ -144,6 +146,73 @@ interface FormDataCustom {
   };
 }
 
+type PengaduanType = {
+  user_fullname: string | null;
+  user_alamat: string | null;
+  user_phone: string | null;
+  laporan_id: string;
+  laporan_tgl_send: Date;
+  laporan_title: string;
+  laporan_description: string;
+  laporan_location: string;
+  laporan_action: string | null;
+  laporan_document: string;
+  laporan_status: status_laporan;
+};
+
+type AssetType = {
+  asset_id: number;
+  asset_photo: string;
+  asset_title: string;
+  asset_url: string | null;
+  asset_type: asset_status;
+};
+
+type PermohonanType = {
+  user_fullname: string | null;
+  user_alamat: string | null;
+  user_phone: string | null;
+  laporan_id: string;
+  laporan_tgl_send: Date;
+  laporan_title: string;
+  laporan_description: string;
+  laporan_location: string;
+  laporan_action: string | null;
+  laporan_document: string;
+  laporan_status: status_laporan;
+};
+
+type PegawaiType = {
+  pegawai_nip: string;
+  pegawai_nama: string;
+  pegawai_jk: setup_kelamin;
+  pegawai_jabatan: string;
+  pendidikan_id: number;
+  status_pegawai_id: number;
+  pegawai_status: setup_status_aktif;
+  pegawai_role: setup_role;
+  bidang_id: number;
+  pegawai_foto: string;
+};
+
+type PenyidikType = {
+  penyidik_id: string;
+  pegawai_nip: string;
+  pegawai_nama: string | null;
+  pegawai_jabatan: string | null;
+  penyidik_sk: string;
+  penyidik_tgl_sk: Date;
+};
+
+type UsersType = {
+  user_ktp: string;
+  user_fullname: string;
+  user_phone: string;
+  user_alamat: string;
+  user_warning: number;
+  user_status: user_status;
+};
+
 export {
   assetType,
   inputAssetType,
@@ -157,4 +226,12 @@ export {
   formatter,
   inputDataType,
 };
-export type { FormDataCustom };
+export type {
+  FormDataCustom,
+  PengaduanType,
+  AssetType,
+  PermohonanType,
+  PegawaiType,
+  PenyidikType,
+  UsersType,
+};
