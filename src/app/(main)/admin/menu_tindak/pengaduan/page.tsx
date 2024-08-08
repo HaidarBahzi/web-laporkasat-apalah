@@ -3,72 +3,62 @@
 import MenuContainer, {
   ButtonActionFunctionMenu,
   ButtonActionLinkMenu,
+  MenuAddTitle,
   MenuBreadCrumbs,
-  MenuNothing,
 } from "@/components/menu";
 import { CiViewList } from "react-icons/ci";
 import { IoMdInformationCircle } from "react-icons/io";
 import { useEffect, useState } from "react";
-import { GetAllPengaduan } from "@/utils/server/pengaduan/pengaduan";
-import { MdLocalPrintshop } from "react-icons/md";
+
+import { MdDelete } from "react-icons/md";
 import {
-  formatter,
-  laporanStatus,
-  PengaduanType,
-  roleType,
-} from "@/components/options";
-import { PrintLaporanPengaduanDetail } from "@/utils/server/print_laporan/print_detail";
-import {
+  FaSortUp,
+  FaSortDown,
+  FaSort,
   FaAngleDoubleLeft,
   FaAngleDoubleRight,
-  FaSort,
-  FaSortDown,
-  FaSortUp,
 } from "react-icons/fa";
+import {
+  formatter,
+  TindakLaporanType,
+  tindakStatus,
+} from "@/components/options";
+import { ModalAlertDelete } from "@/components/modal";
+import { GetAllPengaduanTindak } from "@/utils/server/tindak_lanjut/Pengaduan";
+import { DeleteTindakPelanggaran } from "@/utils/server/pelanggaran/pelanggaran";
 
-type SortKey = keyof PengaduanType;
+type SortKey = keyof TindakLaporanType;
 
 export default function Page() {
-  const [pengaduan, setPengaduan] = useState<PengaduanType[]>([]);
+  const [pengaduan, setPengaduan] = useState<TindakLaporanType[]>([]);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";
   } | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState({
+    tindakId: "",
+    pelanggaranId: "",
+    laporanId: "",
+    bolean: false,
+  });
 
   async function FetchAllData() {
     try {
-      const callAllPengaduan = await GetAllPengaduan();
+      const callAllPengaduan = await GetAllPengaduanTindak();
       setPengaduan(callAllPengaduan!);
     } catch (e) {
       console.error(e);
     }
   }
 
-  async function PrintData(
-    idPengaduan: string,
-    tanggalPengaduan: string,
-    namaPelapor: string,
-    alamatPelapor: string,
-    noHandphone: string,
-    judul: string,
-    alamatLokasi: string,
-    keterangan: string,
-    foto: string
+  async function DeleteData(
+    tindakId: string,
+    pelanggaranId: string,
+    laporanId: string
   ) {
     try {
-      let Data = {
-        idPengaduan: idPengaduan,
-        tanggalPengaduan: tanggalPengaduan,
-        namaPelapor: namaPelapor,
-        alamatPelapor: alamatPelapor,
-        noHandphone: noHandphone,
-        judul: judul,
-        alamatLokasi: alamatLokasi,
-        keterangan: keterangan,
-        foto: foto,
-      };
-
-      await PrintLaporanPengaduanDetail(Data);
+      await DeleteTindakPelanggaran(tindakId, pelanggaranId, laporanId);
+      await FetchAllData();
     } catch (e) {
       console.error(e);
     }
@@ -143,17 +133,15 @@ export default function Page() {
       <MenuBreadCrumbs
         title={"Pengaduan Masyarakat"}
         linkArray={["Dashboard", "Menu Layanan"]}
-        titleLinkArray={[
-          "/operator/dashboard",
-          "/operator/menu_layanan/pengaduan",
-        ]}
+        titleLinkArray={["/admin/dashboard", "/admin/menu_tindak/pengaduan"]}
         endTitle={"Pengaduan Masyarakat"}
       />
 
       <MenuContainer>
-        <MenuNothing
+        <MenuAddTitle
           title="Daftar Pengaduan Masyarakat"
           titleIcon={<CiViewList />}
+          linkButton="/admin/menu_tindak/pengaduan/adddata"
         />
 
         <hr />
@@ -165,8 +153,8 @@ export default function Page() {
                 <thead>
                   <tr>
                     <th></th>
-                    <th>NO</th>
-                    <th>
+                    <th className="font-semibold">NO</th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
                         onClick={() => sortData("laporan_tgl_send")}
@@ -174,15 +162,15 @@ export default function Page() {
                         TANGGAL {getSortIcon("laporan_tgl_send")}
                       </button>
                     </th>
-                    <th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
-                        onClick={() => sortData("user_fullname")}
+                        onClick={() => sortData("laporan_action")}
                       >
-                        NAMA PELAPOR {getSortIcon("user_fullname")}
+                        NAMA PENINDAK {getSortIcon("laporan_action")}
                       </button>
                     </th>
-                    <th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
                         onClick={() => sortData("laporan_title")}
@@ -190,7 +178,7 @@ export default function Page() {
                         JUDUL {getSortIcon("laporan_title")}
                       </button>
                     </th>
-                    <th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
                         onClick={() => sortData("laporan_location")}
@@ -198,15 +186,7 @@ export default function Page() {
                         LOKASI {getSortIcon("laporan_location")}
                       </button>
                     </th>
-                    <th>
-                      <button
-                        className="flex items-center gap-2"
-                        onClick={() => sortData("laporan_action")}
-                      >
-                        ACTION {getSortIcon("laporan_action")}
-                      </button>
-                    </th>
-                    <th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
                         onClick={() => sortData("laporan_status")}
@@ -223,27 +203,41 @@ export default function Page() {
                       <td>
                         <div className={"flex gap-2 justify-center"}>
                           <ButtonActionLinkMenu
-                            link={`/operator/menu_layanan/pengaduan/detaildata/${value.laporan_id}`}
+                            link={`/admin/menu_tindak/pengaduan/detaildata/${value.tindak_lanjut_id}`}
                             btnType={"btn-warning"}
                             icon={<IoMdInformationCircle />}
                           />
 
                           <ButtonActionFunctionMenu
                             btnFunction={() =>
-                              PrintData(
-                                value.laporan_id,
-                                String(value.laporan_tgl_send),
-                                value.user_fullname!,
-                                value.user_alamat!,
-                                value.user_phone!,
-                                value.laporan_title,
-                                value.laporan_location,
-                                value.laporan_description,
-                                `${window.location.origin}/foto-pengaduan/${value.laporan_document}`
+                              setIsModalOpen({
+                                tindakId: value.tindak_lanjut_id,
+                                pelanggaranId: value.pelanggaran_id!,
+                                laporanId: value.laporan_id,
+                                bolean: true,
+                              })
+                            }
+                            btnType={"btn-error"}
+                            icon={<MdDelete />}
+                          />
+
+                          <ModalAlertDelete
+                            isOpen={isModalOpen.bolean}
+                            onClose={() =>
+                              setIsModalOpen({
+                                tindakId: "",
+                                pelanggaranId: "",
+                                laporanId: "",
+                                bolean: false,
+                              })
+                            }
+                            onSubmit={() =>
+                              DeleteData(
+                                isModalOpen.tindakId,
+                                isModalOpen.pelanggaranId,
+                                isModalOpen.laporanId
                               )
                             }
-                            btnType={"btn-info"}
-                            icon={<MdLocalPrintshop />}
                           />
                         </div>
                       </td>
@@ -251,15 +245,10 @@ export default function Page() {
                         {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
                       </td>
                       <td>{formatter.format(value.laporan_tgl_send)}</td>
-                      <td>{value.user_fullname}</td>
+                      <td>{value.laporan_action}</td>
                       <td>{value.laporan_title}</td>
                       <td>{value.laporan_location}</td>
-                      <td>
-                        {value.laporan_action == null
-                          ? "Belum ditindak"
-                          : roleType[value.laporan_action]}
-                      </td>
-                      <td>{laporanStatus[value.laporan_status]}</td>
+                      <td>{tindakStatus[value.tindak_lanjut_type]}</td>
                     </tr>
                   ))}
                 </tbody>

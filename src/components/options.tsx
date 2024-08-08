@@ -5,6 +5,8 @@ import {
   status_laporan,
   setup_status_aktif,
   user_status,
+  type_laporan,
+  tindak_lanjut_status,
 } from "@prisma/client";
 
 const assetType = {
@@ -73,11 +75,21 @@ const pegawaiStatusType = {
 };
 
 const laporanStatus: any = {
-  S: "Terkirim",
-  C: "Terkonfirmasi",
+  S: "Belum Dikonfirmasi",
+  C: "Sudah Dikonfirmasi",
   R: "Ditolak",
   P: "Sedang Ditindak",
   D: "Selesai",
+};
+
+const tindakStatus: any = {
+  NJ: "Non Justitia",
+  PJ: "Pro Justitia",
+};
+
+const inputTindakStatus: any = {
+  NJ: tindak_lanjut_status.NJ,
+  PJ: tindak_lanjut_status.PJ,
 };
 
 const formatter = new Intl.DateTimeFormat("id-ID", {
@@ -87,7 +99,7 @@ const formatter = new Intl.DateTimeFormat("id-ID", {
   year: "numeric",
 });
 
-interface FormDataCustom {
+interface PelanggaranTindakForm {
   pelanggar: {
     nama: string;
     ayah: string;
@@ -131,6 +143,9 @@ interface FormDataCustom {
     pelaksanaan: string;
   };
   bukti: {
+    bukti_kejadian: string;
+    bukti_barang: string;
+    bukti_penyegelan: string;
     dokumen_ktp: string;
     dokumen_sp: string;
     dokumen_sp1: string;
@@ -146,6 +161,16 @@ interface FormDataCustom {
   };
 }
 
+type PelanggaranType = {
+  pelanggaran_id: string;
+  laporan_tgl_send: Date | undefined;
+  laporan_title: string | undefined;
+  laporan_location: string | undefined;
+  laporan_status: status_laporan | undefined;
+  user_fullname: string | undefined;
+  laporan_id: string;
+};
+
 type PengaduanType = {
   user_fullname: string | null;
   user_alamat: string | null;
@@ -157,6 +182,21 @@ type PengaduanType = {
   laporan_location: string;
   laporan_action: string | null;
   laporan_document: string;
+  laporan_status: status_laporan;
+};
+
+type TindakLaporanType = {
+  tindak_lanjut_id: string;
+  pelanggaran_id: string | null;
+  laporan_id: string;
+  pegawai_nip: string;
+  tindak_lanjut_type: tindak_lanjut_status;
+  laporan_tgl_confirm: Date;
+  laporan_tgl_progress: Date;
+  laporan_tgl_send: Date;
+  laporan_title: string;
+  laporan_location: string;
+  laporan_action: string;
   laporan_status: status_laporan;
 };
 
@@ -225,13 +265,17 @@ export {
   pegawaiStatusType,
   formatter,
   inputDataType,
+  tindakStatus,
+  inputTindakStatus,
 };
 export type {
-  FormDataCustom,
+  PelanggaranTindakForm,
   PengaduanType,
   AssetType,
   PermohonanType,
   PegawaiType,
   PenyidikType,
   UsersType,
+  PelanggaranType,
+  TindakLaporanType,
 };

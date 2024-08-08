@@ -122,7 +122,21 @@ model penyidik {
   updated_at DateTime? @db.Timestamp()
 }
 
-// Todo: tambahkan saksi, tindakan, barang bukti
+enum setup_peringatan {
+  PA // Peringatan Akibat
+  PI // Peringatan Informatif
+}
+
+model peringatan {
+  peringatan_id String @id @unique @db.VarChar(36)
+  user_ktp      String @db.VarChar(16)
+
+  peringatan_message String           @db.Text
+  peringatan_type    setup_peringatan
+
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
 
 model pelanggaran {
   pelanggaran_id String @id @unique @db.VarChar(36)
@@ -167,6 +181,10 @@ model pelanggaran {
   tindakan_detail      String @db.Text
   tindakan_pelaksanaan String @db.Text
 
+  bukti_kejadian   String @db.Text
+  bukti_barang     String @db.Text
+  bukti_penyegelan String @db.Text
+
   dokumen_ktp  String @db.Text
   dokumen_sp   String @db.Text
   dokumen_sp1  String @db.Text
@@ -184,14 +202,21 @@ model pelanggaran {
   updated_at DateTime? @db.Timestamp()
 }
 
-// Todo: lanjutin table tindak lanjut
+enum tindak_lanjut_status {
+  NJ // Non Justitia
+  PJ // Pro Justitia
+}
 
-// model tindak_lanjut {
-//   tindak_lanjut_id String @id
+model tindak_lanjut {
+  tindak_lanjut_id   String               @id
+  pelanggaran_id     String?              @unique @db.VarChar(36)
+  laporan_id         String?              @unique @db.VarChar(36)
+  pegawai_nip        String               @db.VarChar(20)
+  tindak_lanjut_type tindak_lanjut_status
 
-//   created_at DateTime  @db.Timestamp()
-//   updated_at DateTime? @db.Timestamp()
-// }
+  created_at DateTime  @db.Timestamp()
+  updated_at DateTime? @db.Timestamp()
+}
 
 // * Khusus Mobile
 

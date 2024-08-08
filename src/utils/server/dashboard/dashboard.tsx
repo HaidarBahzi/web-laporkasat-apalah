@@ -9,6 +9,15 @@ import {
   user_status,
 } from "@prisma/client";
 
+function getMonthDateRange(year: number, month: number) {
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 0);
+  return {
+    startDate: new Date(startDate.getTime() - 24 * 60 * 60 * 1000),
+    endDate,
+  };
+}
+
 export async function GetDashboardAdmin() {
   const queryPengaduan = await prisma.laporan.count({
     where: {
@@ -39,10 +48,7 @@ export async function GetDashboardAdmin() {
   const queryCountsUnconfirm = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {
@@ -60,10 +66,7 @@ export async function GetDashboardAdmin() {
   const queryCountsConfirmed = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {
@@ -81,10 +84,7 @@ export async function GetDashboardAdmin() {
   const queryCountsProgress = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {
@@ -102,10 +102,7 @@ export async function GetDashboardAdmin() {
   const queryCountsRejected = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {
@@ -123,10 +120,7 @@ export async function GetDashboardAdmin() {
   const queryCountsDone = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {
@@ -174,10 +168,7 @@ export async function GetDashboardBidang(userRole: string) {
   const queryCountsUnconfirm = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {
@@ -196,10 +187,7 @@ export async function GetDashboardBidang(userRole: string) {
   const queryCountsConfirmed = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {
@@ -218,10 +206,7 @@ export async function GetDashboardBidang(userRole: string) {
   const queryCountsProgress = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {
@@ -240,10 +225,7 @@ export async function GetDashboardBidang(userRole: string) {
   const queryCountsRejected = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {
@@ -262,10 +244,7 @@ export async function GetDashboardBidang(userRole: string) {
   const queryCountsDone = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
-      const startDate = new Date(
-        `${currentYear}-${String(month).padStart(2, "0")}-01`
-      );
-      const endDate = new Date(currentYear, month, 0);
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
 
       const count = await prisma.laporan.count({
         where: {

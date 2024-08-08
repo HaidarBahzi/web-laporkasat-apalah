@@ -196,7 +196,6 @@ export function SearchTextInput({
         readOnly
         value={defValue || ""}
         className="bg-gray-100 col-span-2 hidden text-gray-900 text-xs rounded focus:bg-gray-200 p-2.5 outline-none"
-        placeholder={inputPlaceholder}
         required
       />
 
@@ -207,7 +206,7 @@ export function SearchTextInput({
           defValue == "" ? "text-gray-400" : "text-gray-900"
         } p-2.5 w-full text-xs rounded`}
       >
-        {defValue == "" ? "Cari Nama User" : showValue}
+        {defValue == "" ? inputPlaceholder : showValue}
       </button>
     </>
   );
@@ -260,7 +259,7 @@ export function DateInput({
 }: {
   labelText: string;
   inputName: string;
-  defValue?: string;
+  defValue?: any;
   handleChange?: (value: any) => void;
 }) {
   const [inputType, setInputType] = useState("text");
@@ -551,6 +550,25 @@ export function ImageShow({
       <label className="text-xs font-normal text-gray-900">{labelText}</label>
       <img
         src={`${window.location.origin}/foto-pengaduan/${imageSrc}`}
+        alt="Selected Image"
+        className="w-60 h-40 shadow-lg"
+      />
+    </>
+  );
+}
+
+export function ImagePelanggaranShow({
+  labelText,
+  imageSrc,
+}: {
+  labelText: string;
+  imageSrc: string;
+}) {
+  return (
+    <>
+      <label className="text-xs font-normal text-gray-900">{labelText}</label>
+      <img
+        src={`${window.location.origin}/${imageSrc}`}
         alt="Selected Image"
         className="w-60 h-40 shadow-lg"
       />

@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { StatsMenu, VerticalBarChart } from "@/components/dashboard";
 import { FaHeadSideCough, FaHandsHelping } from "react-icons/fa";
 import { GetDashboardAdmin } from "@/utils/server/dashboard/dashboard";
-import { IoCheckmarkDoneSharp } from "react-icons/io5";
 import { getDataSession } from "@/utils/lib/session";
 
 export default function Page() {

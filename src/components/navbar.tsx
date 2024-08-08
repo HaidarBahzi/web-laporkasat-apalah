@@ -14,6 +14,8 @@ import {
   FaHandsHelping,
   FaWindowRestore,
   FaNetworkWired,
+  FaBookOpen,
+  FaBalanceScale,
 } from "react-icons/fa";
 
 import { IoDocumentTextSharp } from "react-icons/io5";
@@ -21,7 +23,6 @@ import { IoMdPhonePortrait } from "react-icons/io";
 import { GoDatabase } from "react-icons/go";
 import { useEffect, useState } from "react";
 import { getDataSession, updateSession } from "@/utils/lib/session";
-import Image from "next/image";
 import { LuDot } from "react-icons/lu";
 import { PiDetective } from "react-icons/pi";
 
@@ -131,19 +132,19 @@ export function NavbarAdmin({ link }: { link: string }) {
           <li>
             <NavbarComponentDropdownSingle
               link={`/${link}/menu_tindak`}
-              title={"Menu Tindak Lanjut"}
-              icon={<FaNetworkWired />}
+              title={"Menu Tindak Lajut"}
+              icon={<FaBalanceScale />}
             >
               <NavbarComponentDropdownLink
-                link={`/${link}/menu_tindak/non_justitia`}
-                title={"Tindak Lanjut Non Justitia"}
-                icon={<LuDot />}
+                link={`/${link}/menu_tindak/pengaduan`}
+                title={"Pengaduan Masyarakat"}
+                icon={<FaHeadSideCough />}
               />
 
               <NavbarComponentDropdownLink
-                link={`/${link}/menu_tindak/pro_justitia`}
-                title={"Tindak Lanjut Pro Justitia"}
-                icon={<LuDot />}
+                link={`/${link}/menu_tindak/permohonan_bantuan`}
+                title={"Permohonan Bantuan"}
+                icon={<FaHandsHelping />}
               />
             </NavbarComponentDropdownSingle>
           </li>
@@ -325,19 +326,19 @@ export function NavbarBidang({ link }: { link: string }) {
           <li>
             <NavbarComponentDropdownSingle
               link={`/${link}/menu_tindak`}
-              title={"Menu Tindak Lanjut"}
-              icon={<FaNetworkWired />}
+              title={"Menu Tindak Lajut"}
+              icon={<FaBalanceScale />}
             >
               <NavbarComponentDropdownLink
-                link={`/${link}/menu_tindak/non_justitia`}
-                title={"Tindak Lanjut Non Justitia"}
-                icon={<LuDot />}
+                link={`/${link}/menu_tindak/pengaduan`}
+                title={"Pengaduan Masyarakat"}
+                icon={<FaHeadSideCough />}
               />
 
               <NavbarComponentDropdownLink
-                link={`/${link}/menu_tindak/pro_justitia`}
-                title={"Tindak Lanjut Pro Justitia"}
-                icon={<LuDot />}
+                link={`/${link}/menu_tindak/permohonan_bantuan`}
+                title={"Permohonan Bantuan"}
+                icon={<FaHandsHelping />}
               />
             </NavbarComponentDropdownSingle>
           </li>
@@ -456,15 +457,7 @@ function NavbarComponentLogo({ imageLogo }: { imageLogo: string }) {
   return (
     <div>
       <Link href="">
-        <Image
-          width={0}
-          height={0}
-          sizes="100vw"
-          style={{ width: "100%", height: "auto" }}
-          src={imageLogo}
-          alt="Logo Navbar"
-          className="max-h-8"
-        />
+        <img src={imageLogo} alt="Logo Navbar" className="max-h-8 w-full" />
       </Link>
     </div>
   );
@@ -498,10 +491,7 @@ function NavbarComponentProfile({
         <span className="font-bold">{username}</span>
       </h2>
 
-      <Image
-        width={0}
-        height={0}
-        sizes="100vw"
+      <img
         className="h-10 w-10 rounded"
         alt="User Profile Image"
         src={`${origin}/foto-pegawai/${userImage}`}

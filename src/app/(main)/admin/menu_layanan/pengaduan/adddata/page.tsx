@@ -133,9 +133,9 @@ export default function Page() {
         >
           <div className="grid grid-cols-6 gap-x-12 gap-y-4 items-center">
             <SearchTextInput
-              labelText={"Nama User"}
+              labelText={"Nama"}
               inputName={"pengaduanKtp"}
-              inputPlaceholder={"Input KTP"}
+              inputPlaceholder={"Cari Nama User"}
               defValue={ktpSearch.ktp}
               showValue={ktpSearch.nama}
               buttonPress={() => setIsSearchOpen(true)}

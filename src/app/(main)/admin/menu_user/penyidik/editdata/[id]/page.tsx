@@ -5,35 +5,53 @@ import MenuContainer, {
   MenuEditTitle,
 } from "@/components/menu";
 import { FaRegImage } from "react-icons/fa";
-import { createRef, useCallback, useEffect, useRef, useState } from "react";
+import { createRef, useCallback, useEffect, useState } from "react";
 import {
   ButtonSubmit,
+  DateInput,
   DropdownEditInput,
   FailNotification,
   HoneypotInput,
+  LimitedTextInput,
+  SearchTextInput,
   SuccessNotification,
   TextInput,
+  TextInputUpdate,
 } from "@/components/form";
 import { RiPencilFill } from "react-icons/ri";
 import { asset_status } from "@prisma/client";
 import { MdDelete } from "react-icons/md";
 import { EditAsset, GetDetailAssets } from "@/utils/server/master/assets";
 import Image from "next/image";
-import { ModalAlertEdit } from "@/components/modal";
+import { ModalAlertEdit, ModalSearchPegawai } from "@/components/modal";
+import {
+  EditPenyidik,
+  GetDetailPenyidik,
+} from "@/utils/server/penyidik/penyidik";
+import { GetDetailPegawai } from "@/utils/server/pegawai/pegawai";
+
+interface PegawaiSearch {
+  pegawaiNip?: string;
+  pegawaiNama?: string;
+  pegawaiJabatan?: string;
+  pegawaiSk?: string;
+  penyidikTglSk?: string;
+}
 
 export default function Page({ params }: { params: { id: string } }) {
   const ref = createRef<HTMLFormElement>();
 
   const [notification, setNotification] = useState({ type: "", message: "" });
+  const [pegawaiSearch, setPegawaiSearch] = useState<PegawaiSearch>({
+    pegawaiNip: "",
+    pegawaiNama: "",
+    pegawaiJabatan: "",
+    pegawaiSk: "",
+    penyidikTglSk: "",
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [formValue, setFormValue] = useState({
-    asset_photo: "",
-    asset_title: "",
-    asset_type: "",
-    asset_url: "",
-  });
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   function closeNotification() {
     setNotification({ type: "", message: "" });
@@ -41,52 +59,27 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const fetchAdditionalData = useCallback(async () => {
     try {
-      const fetch = await GetDetailAssets(Number(params.id));
+      const fetch = await GetDetailPenyidik(params.id);
+      const detail = await GetDetailPegawai(fetch?.pegawai_nip!);
 
-      setFormValue({
-        asset_photo: fetch!.asset_photo,
-        asset_title: fetch!.asset_title,
-        asset_type: fetch!.asset_type,
-        asset_url: fetch!.asset_url!,
+      setPegawaiSearch({
+        pegawaiNip: fetch?.pegawai_nip!,
+        pegawaiNama: detail?.pegawai_nama!,
+        pegawaiJabatan: detail?.pegawai_jabatan!,
+        pegawaiSk: fetch?.penyidik_sk!,
+        penyidikTglSk: fetch?.penyidik_tgl_sk
+          ? formatDate(fetch.penyidik_tgl_sk)
+          : "", // Format date
       });
     } catch (e) {
       console.error(e);
     }
   }, [params.id]);
 
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const handleImageUpload = (e: any) => {
-    const file = e.target.files[0];
-    setSelectedImage(file);
-  };
-
-  const handleImageDelete = () => {
-    setSelectedImage(null);
-  };
-
-  const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   async function handleSubmitClient(formData: FormData) {
-    const response = await EditAsset(
-      formData,
-      formValue.asset_photo,
-      Number(params.id)
-    );
+    const response = await EditPenyidik(formData, params.id);
 
     setNotification({ type: response.type, message: response.message });
-
-    if (response.type == "success") {
-      ref.current?.reset();
-      handleImageDelete();
-
-      await fetchAdditionalData();
-    }
   }
 
   const handleFormEdit = async () => {
@@ -97,21 +90,23 @@ export default function Page({ params }: { params: { id: string } }) {
     }
   };
 
-  const handleDropdownChange = (selectedValue: any, inputName: string) => {
-    setFormValue((prevFormValues) => ({
-      ...prevFormValues,
-      [inputName]: selectedValue,
-    }));
-  };
-
-  const optionType: any = {
-    C: asset_status.C,
-    I: asset_status.I,
-  };
-
   useEffect(() => {
     fetchAdditionalData();
   }, [params.id, fetchAdditionalData]);
+
+  function formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${day}/${month}/${year}`;
+  }
+
+  const handleDropdownChange = (selectedValue: any, inputName: string) => {
+    setPegawaiSearch((prevPegawaiSearch) => ({
+      ...prevPegawaiSearch,
+      [inputName]: selectedValue,
+    }));
+  };
 
   return (
     <section className="container mx-auto px-16">
@@ -121,28 +116,45 @@ export default function Page({ params }: { params: { id: string } }) {
         onSubmit={() => handleFormEdit()}
       />
 
+      <ModalSearchPegawai
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSubmit={(
+          pegawaiNip: string,
+          pegawaiNama: string,
+          pegawaiJabatan: string
+        ) => {
+          setIsSearchOpen(false);
+          setPegawaiSearch({
+            pegawaiNip: pegawaiNip,
+            pegawaiNama: pegawaiNama,
+            pegawaiJabatan: pegawaiJabatan,
+          });
+        }}
+      />
+
       <MenuBreadCrumbs
         title={"Users"}
-        linkArray={["Dashboard", "Master", "Aset Mobile"]}
+        linkArray={["Dashboard", "Menu User", "Penyidik"]}
         titleLinkArray={[
           "/admin/dashboard",
-          "/admin/master/assets",
-          "/admin/master/assets",
+          "/admin/menu_user/penyidik",
+          "/admin/menu_user/penyidik",
         ]}
-        endTitle={"Edit Aset"}
+        endTitle={"Edit Penyidik"}
       />
 
       <MenuContainer>
         <MenuEditTitle
-          title={"Edit Aset"}
+          title={"Edit Penyidik"}
           titleIcon={<FaRegImage />}
-          linkButton={"/admin/master/assets"}
+          linkButton={"/admin/menu_user/penyidik"}
         />
 
         <hr />
 
         {notification.type &&
-          (notification.type == "success" ? (
+          (notification.type === "success" ? (
             <SuccessNotification
               title={notification.message}
               buttonFunction={() => closeNotification()}
@@ -164,100 +176,38 @@ export default function Page({ params }: { params: { id: string } }) {
           className="form-control gap-8 px-8"
         >
           <div className="grid grid-cols-6 gap-x-12 gap-y-4 items-center">
-            <TextInput
-              labelText={"Nama Aset"}
-              inputName={"asetName"}
-              inputPlaceholder={"Input Nama Aset"}
-              defValue={formValue.asset_title}
+            <SearchTextInput
+              labelText={"Nama Pegawai"}
+              inputName={"penyidikNip"}
+              inputPlaceholder={"Cari Nama Pegawai"}
+              defValue={pegawaiSearch.pegawaiNip || ""}
+              showValue={pegawaiSearch.pegawaiNama || ""}
+              buttonPress={() => setIsSearchOpen(true)}
             />
 
-            <DropdownEditInput
-              labelText={"Jenis Aset"}
-              inputName={"asetType"}
-              optionTitle={"Pilih Aset"}
-              defaultValue={optionType[formValue.asset_type]}
+            <TextInputUpdate
+              labelText={"Jabatan Pegawai"}
+              inputName={""}
+              value={pegawaiSearch.pegawaiJabatan || ""}
+            />
+
+            <LimitedTextInput
+              labelText={"Nomor SK"}
+              inputName={"penyidikSk"}
+              defValue={pegawaiSearch.pegawaiSk || ""}
+              inputPlaceholder={"Input Nomor SK"}
+              maxLength={25}
+              minLength={25}
+            />
+
+            <DateInput
+              labelText={"Tanggal SK"}
+              inputName={"penyidikTglSk"}
+              defValue={pegawaiSearch.penyidikTglSk || ""}
               handleChange={(selectedValue) =>
-                handleDropdownChange(selectedValue, "asset_type")
+                handleDropdownChange(selectedValue, "penyidikTglSk")
               }
-              optionValue={[
-                {
-                  title: "Carausel",
-                  value: asset_status.C,
-                },
-                {
-                  title: "Stats Icon",
-                  value: asset_status.S,
-                },
-                {
-                  title: "Icon",
-                  value: asset_status.I,
-                },
-              ]}
             />
-
-            <TextInput
-              labelText={"Url Aset"}
-              inputName={"asetUrl"}
-              inputPlaceholder={"Input Url Aset"}
-              defValue={formValue.asset_url}
-            />
-
-            <>
-              <label className="text-xs font-normal text-gray-900">
-                Foto Aset
-              </label>
-              <div className="indicator">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  name={"asetPhoto"}
-                  ref={fileInputRef}
-                />
-                <button
-                  type="button"
-                  onClick={handleImageDelete}
-                  className={`indicator-bottom indicator-item badge bg-red-500 border-none h-7 w-7 text-white ${
-                    selectedImage ? "flex" : "hidden"
-                  }`}
-                >
-                  <i>
-                    <MdDelete />
-                  </i>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleButtonClick}
-                  className="indicator-item badge bg-blue-500 h-7 w-7 border-none text-white"
-                >
-                  <i>
-                    <RiPencilFill />
-                  </i>
-                </button>
-
-                {selectedImage ? (
-                  <Image
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    src={URL.createObjectURL(selectedImage)}
-                    alt="Selected Image"
-                    className="grid w-52 h-32 bg-gray-100 place-items-center rounded shadow-lg"
-                  />
-                ) : (
-                  <Image
-                    width={0}
-                    height={0}
-                    sizes="100vw"
-                    src={`${window.location.origin}/foto-aset/${formValue.asset_photo}`}
-                    className="w-52 h-32 shadow-lg"
-                    alt={"Current Image"}
-                  />
-                )}
-              </div>
-            </>
 
             <HoneypotInput />
           </div>

@@ -206,7 +206,7 @@ export default function Page({ params }: { params: { id: string } }) {
             />
 
             <>
-              <label className="text-xs w-fit font-thin text-gray-900">
+              <label className="text-xs w-fit font-normal text-gray-900">
                 Surat Pemohon
               </label>
 

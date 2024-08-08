@@ -59,14 +59,12 @@ export async function AddPenyidik(formData: FormData) {
   const penyidikSk = formData.get("penyidikSk")?.toString()!;
   const penyidikTglSk = formData.get("penyidikTglSk")?.toString()!;
 
-  const parsedTglSk = parseISO(penyidikTglSk);
-
   const query = await prisma.penyidik.create({
     data: {
       penyidik_id: uuidv4(),
       pegawai_nip: penyidikNip,
       penyidik_sk: penyidikSk,
-      penyidik_tgl_sk: format(parsedTglSk, "yyyy-MM-dd'T'HH:mm:ssXXX"),
+      penyidik_tgl_sk: new Date(penyidikTglSk),
 
       created_at: new Date().toISOString(),
     },
@@ -84,8 +82,6 @@ export async function EditPenyidik(formData: FormData, id: string) {
   const penyidikSk = formData.get("penyidikSk")?.toString()!;
   const penyidikTglSk = formData.get("penyidikTglSk")?.toString()!;
 
-  const parsedTglSk = parseISO(penyidikTglSk);
-
   const query = await prisma.penyidik.update({
     where: {
       penyidik_id: id,
@@ -93,17 +89,17 @@ export async function EditPenyidik(formData: FormData, id: string) {
     data: {
       pegawai_nip: penyidikNip,
       penyidik_sk: penyidikSk,
-      penyidik_tgl_sk: format(parsedTglSk, "yyyy-MM-dd'T'HH:mm:ssXXX"),
+      penyidik_tgl_sk: new Date(penyidikTglSk),
 
       updated_at: new Date().toISOString(),
     },
   });
 
   if (!query) {
-    return { message: "Gagal menambah data penyidik", type: "error" };
+    return { message: "Gagal mengubah data penyidik", type: "error" };
   }
 
-  return { message: "Berhasil menambah data penyidik", type: "success" };
+  return { message: "Berhasil mengubah data penyidik", type: "success" };
 }
 
 export async function DeletePenyidik(penyidikId: string) {

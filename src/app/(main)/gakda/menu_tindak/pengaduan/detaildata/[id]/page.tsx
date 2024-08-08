@@ -5,8 +5,12 @@ import MenuContainer, {
   MenuEditTitle,
 } from "@/components/menu";
 import { CiViewList } from "react-icons/ci";
-import { useCallback, useEffect, useState } from "react";
-import { GetDetailPengaduan } from "@/utils/server/pengaduan/pengaduan";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
+import {
+  DoneLaporan,
+  GetDetailPengaduan,
+  RejectLaporan,
+} from "@/utils/server/pengaduan/pengaduan";
 import {
   ImageShow,
   TextareaInput,
@@ -19,14 +23,24 @@ import {
 } from "@/components/form";
 import { Wizard } from "react-use-wizard";
 import { StepLayout } from "@/components/wizard";
-import { setup_kelamin } from "@prisma/client";
+import {
+  setup_kelamin,
+  status_laporan,
+  tindak_lanjut_status,
+} from "@prisma/client";
 import { FetchInputPegawai } from "@/utils/server/pegawai/pegawai";
 import { GetAllPenyidik } from "@/utils/server/penyidik/penyidik";
-import { FaFileUpload } from "react-icons/fa";
-import { SubmitPelanggaran } from "@/utils/server/pelanggaran/pelanggaran";
+import { FaFileUpload, FaPaperclip } from "react-icons/fa";
+import { GetDetailPelanggaran } from "@/utils/server/pelanggaran/pelanggaran";
 import { useRouter } from "next/navigation";
-import { PelanggaranTindakForm } from "@/components/options";
-import { ModalAlertProgress } from "@/components/modal";
+import {
+  inputDataType,
+  inputJkType,
+  PelanggaranTindakForm,
+} from "@/components/options";
+import { ModalAlertTindak } from "@/components/modal";
+import axios from "axios";
+import Link from "next/link";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({
@@ -37,6 +51,7 @@ export default function Page({ params }: { params: { id: string } }) {
   });
 
   const [pengaduanValues, setPengaduanValues] = useState({
+    laporan_id: "",
     laporan_title: "",
     laporan_location: "",
     laporan_description: "",
@@ -180,12 +195,82 @@ export default function Page({ params }: { params: { id: string } }) {
     }[]
   >();
 
+  function formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${day}/${month}/${year}`;
+  }
+
   const fetchFormValue = useCallback(async () => {
     try {
-      const fetch = await GetDetailPengaduan(params.id);
+      const fetch = await GetDetailPelanggaran(params.id);
 
-      setPelaporValues(fetch.pelapor!);
+      setPelaporValues(fetch.user!);
       setPengaduanValues(fetch.pengaduan!);
+      setFormDataWizard({
+        pelanggar: {
+          nama: fetch.pelanggaran?.pelanggar_fullname!,
+          ayah: fetch.pelanggaran?.pelanggar_ayah!,
+          tempat_lahir: fetch.pelanggaran?.pelanggar_tempat_lahir!,
+          tanggal_lahir: formatDate(
+            fetch.pelanggaran?.pelanggar_tanggal_lahir!
+          ),
+          pelanggarJk: inputJkType[fetch.pelanggaran?.pelanggar_jk!],
+          agama: fetch.pelanggaran?.pelanggar_agama!,
+          pendidikan: fetch.pelanggaran?.pelanggar_pendidikan!,
+          kewarganegaraan: fetch.pelanggaran?.pelanggar_kewarnegaraan!,
+          status_kawin: fetch.pelanggaran?.pelanggar_kawin!,
+          phone: fetch.pelanggaran?.pelanggar_phone!,
+          alamat: fetch.pelanggaran?.pelanggar_alamat!,
+        },
+        saksi1: {
+          nama: fetch.pelanggaran?.saksi_1_fullname!,
+          tempat_lahir: fetch.pelanggaran?.saksi_1_tempat_lahir!,
+          tanggal_lahir: formatDate(fetch.pelanggaran?.saksi_1_tanggal_lahir!),
+          jenis_kelamin: inputJkType[fetch.pelanggaran?.saksi_1_jk!],
+          agama: fetch.pelanggaran?.saksi_1_agama!,
+          pendidikan: fetch.pelanggaran?.saksi_1_pendidikan!,
+          kewarganegaraan: fetch.pelanggaran?.saksi_1_kewarnegaraan!,
+          status_kawin: fetch.pelanggaran?.saksi_1_kawin!,
+          phone: fetch.pelanggaran?.saksi_1_phone!,
+          alamat: fetch.pelanggaran?.saksi_1_alamat!,
+        },
+        saksi2: {
+          nama: fetch.pelanggaran?.saksi_2_fullname!,
+          tempat_lahir: fetch.pelanggaran?.saksi_2_tempat_lahir!,
+          tanggal_lahir: formatDate(fetch.pelanggaran?.saksi_2_tanggal_lahir!),
+          jenis_kelamin: inputJkType[fetch.pelanggaran?.saksi_2_jk!],
+          agama: fetch.pelanggaran?.saksi_2_agama!,
+          pendidikan: fetch.pelanggaran?.saksi_2_pendidikan!,
+          kewarganegaraan: fetch.pelanggaran?.saksi_2_kewarnegaraan!,
+          status_kawin: fetch.pelanggaran?.saksi_2_kawin!,
+          phone: fetch.pelanggaran?.saksi_2_phone!,
+          alamat: fetch.pelanggaran?.saksi_2_alamat!,
+        },
+        tindakan: {
+          penyidik: fetch.pelanggaran?.penyidik_id!,
+          tindak: fetch.pelanggaran?.tindakan_detail!,
+          pelaksanaan: fetch.pelanggaran?.tindakan_pelaksanaan!,
+        },
+        bukti: {
+          bukti_kejadian: fetch.pelanggaran?.bukti_kejadian!,
+          bukti_barang: fetch.pelanggaran?.bukti_barang!,
+          bukti_penyegelan: fetch.pelanggaran?.bukti_penyegelan!,
+          dokumen_ktp: fetch.pelanggaran?.dokumen_ktp!,
+          dokumen_sp: fetch.pelanggaran?.dokumen_sp!,
+          dokumen_sp1: fetch.pelanggaran?.dokumen_sp1!,
+          dokumen_sp2: fetch.pelanggaran?.dokumen_sp2!,
+          dokumen_sp3: fetch.pelanggaran?.dokumen_sp3!,
+          dokumen_lk: fetch.pelanggaran?.dokumen_lk!,
+          dokumen_spp: fetch.pelanggaran?.dokumen_spp!,
+          dokumen_bap: fetch.pelanggaran?.dokumen_bap!,
+          dokumen_p3bb: fetch.pelanggaran?.dokumen_p3bb!,
+          dokumen_psk: fetch.pelanggaran?.dokumen_psk!,
+          dokumen_bapc: fetch.pelanggaran?.dokumen_bapc!,
+          dokumen_pst: fetch.pelanggaran?.dokumen_pst!,
+        },
+      });
 
       const dataInput = await FetchInputPegawai();
 
@@ -207,23 +292,76 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const router = useRouter();
 
+  const [formValues, setFormValues] = useState({
+    input_action: "",
+  });
+
+  const handleDropdownChange = (selectedValue: any, inputName: string) => {
+    setFormValues((prevFormValues) => ({
+      ...prevFormValues,
+      [inputName]: selectedValue,
+    }));
+  };
+
   async function handleSubmitClient() {
     setIsModalOpen(false);
 
-    const response = await SubmitPelanggaran(
-      formDataWizard,
-      pelaporValues.user_ktp,
-      params.id
-    );
+    if (inputDataType[formValues.input_action] == status_laporan.D) {
+      try {
+        await DoneLaporan(pengaduanValues.laporan_id);
 
-    if (response.type == "success") {
-      router.push("/lindam/menu_layanan/pengaduan");
+        axios
+          .post("http://localhost:4000/notification/add", {
+            user_id: pelaporValues.user_ktp,
+            title: "Laporan Selesai",
+            message:
+              "Laporan Anda sudah selesai ditindak lanjut, terima kasih atas laporannya!",
+          })
+          .then(() => {
+            router.push("/gakda/menu_tindak/pengaduan");
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    } else if (inputDataType[formValues.input_action] == status_laporan.R) {
+      try {
+        await RejectLaporan(pengaduanValues.laporan_id);
+
+        axios
+          .post("http://localhost:4000/notification/add", {
+            user_id: pelaporValues.user_ktp,
+            title: "Laporan Ditolak",
+            message:
+              "Laporan Anda ditolak, mohon periksa kembali laporan anda!",
+          })
+          .then(() => {
+            router.push("/gakda/menu_tindak/pengaduan");
+          });
+      } catch (err) {
+        console.error(err);
+      }
     }
   }
 
   return (
     <section className="container mx-auto px-16">
-      <ModalAlertProgress
+      <ModalAlertTindak
+        inputName={"inputAction"}
+        optionTitle={"Silahkan Pilih Tindakan Akhir"}
+        optionValue={[
+          {
+            title: "Tolak",
+            value: status_laporan.R,
+          },
+          {
+            title: "Selesai",
+            value: status_laporan.D,
+          },
+        ]}
+        handleChange={(selectedValue) =>
+          handleDropdownChange(selectedValue, "input_action")
+        }
+        defaultValue={""}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={() => handleSubmitClient()}
@@ -233,9 +371,9 @@ export default function Page({ params }: { params: { id: string } }) {
         title={"Pengaduan Masyarakat"}
         linkArray={["Dashboard", "Menu Layanan", "Pengaduan Masyarakat"]}
         titleLinkArray={[
-          "/lindam/dashboard",
-          "/lindam/menu_layanan/pengaduan",
-          "/lindam/menu_layanan/pengaduan",
+          "/gakda/dashboard",
+          "/gakda/menu_tindak/pengaduan",
+          "/gakda/menu_tindak/pengaduan",
         ]}
         endTitle={"Detail Pengaduan Masyarakat"}
       />
@@ -244,7 +382,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <MenuEditTitle
           title="Detail Pengaduan Masyarakat"
           titleIcon={<CiViewList />}
-          linkButton="/lindam/menu_layanan/pengaduan"
+          linkButton="/gakda/menu_tindak/pengaduan"
         />
 
         <hr />
@@ -802,12 +940,11 @@ export default function Page({ params }: { params: { id: string } }) {
             submitFunction={() => setIsModalOpen(true)}
           >
             <div className="form-control gap-5">
-              <span className="text-lg font-semibold">Dokumen</span>
+              <span className="text-lg font-semibold">BUKTI</span>
 
               <table className="table table-sm">
                 <thead>
                   <tr>
-                    <th></th>
                     <th className="font-semibold">NO</th>
                     <th className="font-semibold">NAMA DOKUMEN</th>
                     <th className="font-semibold">STATUS</th>
@@ -816,423 +953,262 @@ export default function Page({ params }: { params: { id: string } }) {
 
                 <tbody>
                   <tr>
+                    <td>1</td>
+                    <td>Bukti Kejadian</td>
                     <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Bukti-Kejadian/${formDataWizard.bukti.bukti_kejadian}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
+                      >
+                        <i>
+                          <FaPaperclip />
                         </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_ktp"
-                        />
-                      </label>
+                        Cek Dokumen
+                      </Link>
                     </td>
+                  </tr>
+
+                  <tr>
+                    <td>2</td>
+                    <td>Bukti Barang</td>
+                    <td>
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Bukti-Barang/${formDataWizard.bukti.bukti_barang}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
+                      >
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>3</td>
+                    <td>Bukti Penyegelan</td>
+                    <td>
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Bukti-Penyegelan/${formDataWizard.bukti.bukti_penyegelan}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
+                      >
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="form-control gap-5">
+              <span className="text-lg font-semibold">Dokumen</span>
+
+              <table className="table table-sm">
+                <thead>
+                  <tr>
+                    <th className="font-semibold">NO</th>
+                    <th className="font-semibold">NAMA DOKUMEN</th>
+                    <th className="font-semibold">STATUS</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
                     <td>1</td>
                     <td>KTP</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_ktp == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Ktp/${formDataWizard.bukti.dokumen_ktp}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_ktp == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_sp"
-                        />
-                      </label>
-                    </td>
                     <td>2</td>
                     <td>SURAT PERNYATAAN</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_sp == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Pernyataan/${formDataWizard.bukti.dokumen_sp}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_sp == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_sp1"
-                        />
-                      </label>
-                    </td>
                     <td>3</td>
                     <td>SURAT PERINGATAN 1</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_sp1 == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Peringatan-1/${formDataWizard.bukti.dokumen_sp1}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_sp1 == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_sp2"
-                        />
-                      </label>
-                    </td>
                     <td>4</td>
                     <td>SURAT PERINGATAN 2</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_sp2 == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Peringatan-2/${formDataWizard.bukti.dokumen_sp2}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_sp2 == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_sp3"
-                        />
-                      </label>
-                    </td>
                     <td>5</td>
                     <td>SURAT PERINGATAN 3</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_sp3 == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Peringatan-3/${formDataWizard.bukti.dokumen_sp3}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_sp3 == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_lk"
-                        />
-                      </label>
-                    </td>
                     <td>6</td>
                     <td>LAPORAN KEJADIAN</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_lk == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Laporan-Kejadian/${formDataWizard.bukti.dokumen_lk}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_lk == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_spp"
-                        />
-                      </label>
-                    </td>
                     <td>7</td>
                     <td>SURAT PERINTAH PENYITAAN</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_spp == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Perintah-Penyitaan/${formDataWizard.bukti.dokumen_spp}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_spp == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_bap"
-                        />
-                      </label>
-                    </td>
                     <td>8</td>
                     <td>BERITA ACARA PENYITAAN</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_bap == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Berita-Acara-Penyitaan/${formDataWizard.bukti.dokumen_bap}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_bap == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_p3bb"
-                        />
-                      </label>
-                    </td>
                     <td>9</td>
                     <td>PERMOHONAN PERSETUJUAN PENYITAAN BARANG BUKTI</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_p3bb == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Permohonan-Persetujuan/${formDataWizard.bukti.dokumen_p3bb}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_p3bb == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_psk"
-                        />
-                      </label>
-                    </td>
                     <td>10</td>
                     <td>PERMINTAAN SURAT KUASA</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_psk == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Kuasa/${formDataWizard.bukti.dokumen_psk}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_psk == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_bapc"
-                        />
-                      </label>
-                    </td>
                     <td>11</td>
                     <td>BERITA ACARA PEMERIKSAAN CEPAT</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_bapc == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Berita-Acara-Pemeriksaan/${formDataWizard.bukti.dokumen_bapc}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_bapc == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
-                        <i className="text-white text-base">
-                          <FaFileUpload />
-                        </i>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            handleInputFileChange("bukti", event)
-                          }
-                          required
-                          className="hidden"
-                          name="dokumen_pst"
-                        />
-                      </label>
-                    </td>
                     <td>12</td>
                     <td>PERMOHONAN SIDANG TIPIRING</td>
                     <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_pst == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
+                      <Link
+                        target="_blank"
+                        href={`${window.location.origin}/foto-pelanggaran/${pengaduanValues.laporan_id}/Permohonan-Sidang/${formDataWizard.bukti.dokumen_pst}`}
+                        className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
-                        {formDataWizard.bukti.dokumen_pst == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
+                        <i>
+                          <FaPaperclip />
+                        </i>
+                        Cek Dokumen
+                      </Link>
                     </td>
                   </tr>
                 </tbody>

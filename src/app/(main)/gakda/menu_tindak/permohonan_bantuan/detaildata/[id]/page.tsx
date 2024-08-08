@@ -12,12 +12,19 @@ import {
   TextareaInput,
   TextInput,
 } from "@/components/form";
-import { FaCheck, FaPaperclip } from "react-icons/fa";
+import { FaBalanceScale, FaCheck, FaPaperclip } from "react-icons/fa";
 import Link from "next/link";
 import { setup_role, status_laporan } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { ApproveLaporanKasat } from "@/utils/server/pengaduan/pengaduan";
-import { ModalAlertApproveBidang } from "@/components/modal";
+import {
+  ApproveLaporanKasat,
+  DoneLaporan,
+  RejectLaporan,
+} from "@/utils/server/pengaduan/pengaduan";
+import { ModalAlertApproveBidang, ModalAlertTindak } from "@/components/modal";
+import { FaX } from "react-icons/fa6";
+import { inputDataType } from "@/components/options";
+import axios from "axios";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pemohonValues, setPemohonValues] = useState({
@@ -28,6 +35,7 @@ export default function Page({ params }: { params: { id: string } }) {
   });
 
   const [permohonanValues, setPermohonanValues] = useState({
+    laporan_id: "",
     laporan_title: "",
     laporan_description: "",
     laporan_location: "",
@@ -36,7 +44,7 @@ export default function Page({ params }: { params: { id: string } }) {
   });
 
   const [formValues, setFormValues] = useState({
-    input_role: "",
+    input_action: "",
   });
 
   const handleDropdownChange = (selectedValue: any, inputName: string) => {
@@ -50,12 +58,43 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const router = useRouter();
 
-  async function approvePermohonan(role: string) {
-    try {
-      await ApproveLaporanKasat(params.id, role);
-      router.push("/lindam/menu_layanan/permohonan_bantuan");
-    } catch (err) {
-      console.error(err);
+  async function handleSubmitClient() {
+    setIsModalOpen(false);
+
+    if (inputDataType[formValues.input_action] == status_laporan.D) {
+      try {
+        await DoneLaporan(permohonanValues.laporan_id);
+
+        axios
+          .post("http://localhost:4000/notification/add", {
+            user_id: pemohonValues.user_ktp,
+            title: "Permohonan Diterima",
+            message:
+              "Permohonan Bantuan Anda sudah diterima dan akan datang secepatnya, terima kasih atas laporannya!",
+          })
+          .then(() => {
+            router.push("/gakda/menu_tindak/permohonan_bantuan");
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    } else if (inputDataType[formValues.input_action] == status_laporan.R) {
+      try {
+        await RejectLaporan(permohonanValues.laporan_id);
+
+        axios
+          .post("http://localhost:4000/notification/add", {
+            user_id: pemohonValues.user_ktp,
+            title: "Permohonan Ditolak",
+            message:
+              "Permohonan Bantuan Anda ditolak, mohon cek kembali permohonan anda!",
+          })
+          .then(() => {
+            router.push("/gakda/menu_tindak/permohonan_bantuan");
+          });
+      } catch (err) {
+        console.error(err);
+      }
     }
   }
 
@@ -75,45 +114,35 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <section className="container mx-auto px-16">
-      <ModalAlertApproveBidang
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={async () => {
-          await approvePermohonan(formValues.input_role);
-        }}
-        handleChange={(selectedValue) =>
-          handleDropdownChange(selectedValue, "input_role")
-        }
-        inputName={"inputRole"}
-        optionTitle={"Silahkan Pilih Bidang"}
+      <ModalAlertTindak
+        inputName={"inputAction"}
+        optionTitle={"Silahkan Pilih Tindakan Akhir"}
         optionValue={[
           {
-            title: "Gakda",
-            value: setup_role.G,
+            title: "Tolak",
+            value: status_laporan.R,
           },
           {
-            title: "Lindam",
-            value: setup_role.L,
-          },
-          {
-            title: "Tibum",
-            value: setup_role.T,
-          },
-          {
-            title: "Sekretariat",
-            value: setup_role.S,
+            title: "Selesai",
+            value: status_laporan.D,
           },
         ]}
+        handleChange={(selectedValue) =>
+          handleDropdownChange(selectedValue, "input_action")
+        }
         defaultValue={""}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={() => handleSubmitClient()}
       />
 
       <MenuBreadCrumbs
         title={"Permohonan Bantuan"}
         linkArray={["Dashboard", "Menu Layanan", "Permohonan Bantuan"]}
         titleLinkArray={[
-          "/lindam/dashboard",
-          "/lindam/menu_layanan/permohonan_bantuan",
-          "/lindam/menu_layanan/permohonan_bantuan",
+          "/kasat/dashboard",
+          "/kasat/menu_layanan/permohonan_bantuan",
+          "/kasat/menu_layanan/permohonan_bantuan",
         ]}
         endTitle={"Detail Permohonan"}
       />
@@ -122,7 +151,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <MenuEditTitle
           title="Detail Permohonan Bantuan"
           titleIcon={<CiViewList />}
-          linkButton="/lindam/menu_layanan/permohonan_bantuan"
+          linkButton="/kasat/menu_layanan/permohonan_bantuan"
         />
 
         <hr />
@@ -209,15 +238,15 @@ export default function Page({ params }: { params: { id: string } }) {
             </>
           </div>
 
-          {permohonanValues.laporan_status == status_laporan.C ? (
+          {permohonanValues.laporan_status == status_laporan.P ? (
             <>
               <hr />
 
               <div className="flex justify-center">
                 <DetailButtonSubmit
                   onPress={() => setIsModalOpen(true)}
-                  icon={<FaCheck />}
-                  title={"Approve"}
+                  icon={<FaBalanceScale />}
+                  title={"Tindak"}
                 />
               </div>
             </>

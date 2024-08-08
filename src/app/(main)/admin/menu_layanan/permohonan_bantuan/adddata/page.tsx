@@ -10,18 +10,22 @@ import {
   FailNotification,
   HoneypotInput,
   LimitedTextInput,
+  SearchTextInput,
   SuccessNotification,
   TextareaInput,
   TextInput,
 } from "@/components/form";
-import { ModalAlertAdd } from "@/components/modal";
+import { ModalAlertAdd, ModalSearchUser } from "@/components/modal";
 import { createRef, useState } from "react";
 import { SubmitPermohonanBantuan } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
 
 export default function Page() {
   const ref = createRef<HTMLFormElement>();
 
+  const [ktpSearch, setKtpSearch] = useState({ ktp: "", nama: "" });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const [notification, setNotification] = useState({ type: "", message: "" });
 
@@ -36,6 +40,7 @@ export default function Page() {
 
     if (response.type == "success") {
       ref.current?.reset();
+      setKtpSearch({ ktp: "", nama: "" });
     }
   }
 
@@ -53,6 +58,15 @@ export default function Page() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={() => handleFormSubmit()}
+      />
+
+      <ModalSearchUser
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSubmit={(userKtp: string, userName: string) => {
+          setIsSearchOpen(false);
+          setKtpSearch({ ktp: userKtp, nama: userName });
+        }}
       />
 
       <MenuBreadCrumbs
@@ -98,12 +112,13 @@ export default function Page() {
           className="form-control gap-8 px-8"
         >
           <div className="grid grid-cols-6 gap-x-12 gap-y-4 items-center">
-            <LimitedTextInput
-              labelText={"KTP"}
+            <SearchTextInput
+              labelText={"Nama"}
               inputName={"permohonanKtp"}
               inputPlaceholder={"Input KTP"}
-              maxLength={16}
-              minLength={16}
+              defValue={ktpSearch.ktp}
+              showValue={ktpSearch.nama}
+              buttonPress={() => setIsSearchOpen(true)}
             />
 
             <TextInput
@@ -125,7 +140,7 @@ export default function Page() {
             />
 
             <>
-              <label className="text-xs w-fit font-thin text-gray-900">
+              <label className="text-xs w-fit font-normal text-gray-900">
                 Surat Permohonan
               </label>
 

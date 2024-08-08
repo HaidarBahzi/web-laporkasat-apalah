@@ -50,12 +50,57 @@ export async function GetAllPermohonanBantuan() {
   return permohonanWithUser;
 }
 
+export async function GetAllPermohonanBantuanTindak() {
+  const queryPermohonan = await prisma.laporan.findMany({
+    where: {
+      laporan_type: type_laporan.B,
+      laporan_status: status_laporan.P,
+    },
+    select: {
+      laporan_id: true,
+      laporan_tgl_send: true,
+      user_ktp: true,
+      laporan_title: true,
+      laporan_description: true,
+      laporan_location: true,
+      laporan_action: true,
+      laporan_status: true,
+      laporan_document: true,
+    },
+  });
+
+  const permohonanWithUser = await Promise.all(
+    queryPermohonan.map(async (permohonan) => {
+      const queryUser = await prisma.users.findUnique({
+        where: {
+          user_ktp: permohonan.user_ktp,
+        },
+        select: {
+          user_fullname: true,
+          user_alamat: true,
+          user_phone: true,
+        },
+      });
+
+      return {
+        ...permohonan,
+        user_fullname: queryUser ? queryUser.user_fullname : null,
+        user_alamat: queryUser ? queryUser.user_alamat : null,
+        user_phone: queryUser ? queryUser.user_phone : null,
+      };
+    })
+  );
+
+  return permohonanWithUser;
+}
+
 export async function GetDetailPermohonanBantuan(permohonanId: string) {
   const queryPermohonan = await prisma.laporan.findUnique({
     where: {
       laporan_id: permohonanId,
     },
     select: {
+      laporan_id: true,
       user_ktp: true,
       laporan_title: true,
       laporan_description: true,

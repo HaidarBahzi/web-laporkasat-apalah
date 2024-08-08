@@ -13,12 +13,16 @@ import {
   GetAllPegawai,
 } from "@/utils/server/pegawai/pegawai";
 
-import { setup_kelamin, setup_role, setup_status_aktif } from "@prisma/client";
-
 import { useEffect, useState } from "react";
-
 import { CiViewList } from "react-icons/ci";
-import { FaPencilAlt, FaSort, FaSortDown, FaSortUp } from "react-icons/fa";
+import {
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight,
+  FaPencilAlt,
+  FaSort,
+  FaSortDown,
+  FaSortUp,
+} from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 
 import {
@@ -33,7 +37,12 @@ import { getDataSession } from "@/utils/lib/session";
 type SortKey = keyof PegawaiType;
 
 export default function Page() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState({
+    pegawaiId: "",
+    image: "",
+    bolean: false,
+  });
+
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const [pegawai, setPegawai] = useState<PegawaiType[]>([]);
@@ -68,6 +77,28 @@ export default function Page() {
       });
     }
     return sortableItems;
+  };
+
+  const RESULTS_PER_PAGE = 10;
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(sortedPegawai().length / RESULTS_PER_PAGE);
+  const displayedPegawai = sortedPegawai().slice(
+    (currentPage - 1) * RESULTS_PER_PAGE,
+    currentPage * RESULTS_PER_PAGE
+  );
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const getSortIcon = (key: SortKey) => {
@@ -134,148 +165,190 @@ export default function Page() {
 
         <hr />
 
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-hidden form-control justify-between min-h-96">
           {sortedPegawai().length > 0 ? (
-            <table className="table table-auto">
-              <thead>
-                <tr>
-                  <th></th>
-                  <th className="font-semibold">NO</th>
-                  <th className="font-semibold">
-                    <button
-                      className="flex items-center gap-2"
-                      onClick={() => sortData("pegawai_nip")}
-                    >
-                      NIP {getSortIcon("pegawai_nip")}
-                    </button>
-                  </th>
-                  <th className="font-semibold">
-                    <button
-                      className="flex items-center gap-2"
-                      onClick={() => sortData("pegawai_nama")}
-                    >
-                      NAMA {getSortIcon("pegawai_nama")}
-                    </button>
-                  </th>
-                  <th className="font-semibold">
-                    <button
-                      className="flex items-center gap-2"
-                      onClick={() => sortData("bidang_id")}
-                    >
-                      BIDANG {getSortIcon("bidang_id")}
-                    </button>
-                  </th>
-                  <th className="font-semibold">
-                    <button
-                      className="flex items-center gap-2"
-                      onClick={() => sortData("pegawai_jabatan")}
-                    >
-                      JABATAN {getSortIcon("pegawai_jabatan")}
-                    </button>
-                  </th>
-                  <th className="font-semibold">
-                    <button
-                      className="flex items-center gap-2"
-                      onClick={() => sortData("pegawai_jk")}
-                    >
-                      JENIS KELAMIN {getSortIcon("pegawai_jk")}
-                    </button>
-                  </th>
-                  <th className="font-semibold">
-                    <button
-                      className="flex items-center gap-2"
-                      onClick={() => sortData("pendidikan_id")}
-                    >
-                      PENDIDIKAN {getSortIcon("pendidikan_id")}
-                    </button>
-                  </th>
-                  <th className="font-semibold">
-                    <button
-                      className="flex items-center gap-2"
-                      onClick={() => sortData("pegawai_role")}
-                    >
-                      ROLE {getSortIcon("pegawai_role")}
-                    </button>
-                  </th>
-                  <th className="font-semibold">
-                    <button
-                      className="flex items-center gap-2"
-                      onClick={() => sortData("status_pegawai_id")}
-                    >
-                      STATUS {getSortIcon("status_pegawai_id")}
-                    </button>
-                  </th>
-                  <th></th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {sortedPegawai().map((user, index) => (
-                  <tr key={index}>
-                    <td>
-                      <div className={"flex gap-2 justify-center"}>
-                        <ButtonActionLinkMenu
-                          link={`/admin/menu_user/pegawai/editdata/${user.pegawai_nip}`}
-                          btnType={"btn-warning"}
-                          icon={<FaPencilAlt />}
-                        />
-
-                        <ButtonActionFunctionMenu
-                          btnFunction={async () => {
-                            const session = await getDataSession();
-
-                            if (session.idUser == user.pegawai_nip) {
-                              setIsAlertOpen(true);
-                            } else {
-                              setIsModalOpen(true);
-                            }
-                          }}
-                          btnType={"btn-error"}
-                          icon={<MdDelete />}
-                        />
-
-                        <ModalAlertDelete
-                          isOpen={isModalOpen}
-                          onClose={() => setIsModalOpen(false)}
-                          onSubmit={async () =>
-                            await deletePegawai(
-                              user.pegawai_nip,
-                              user.pegawai_foto
-                            )
-                          }
-                        />
-
-                        <ModalAlertCantDelete
-                          isOpen={isAlertOpen}
-                          onClose={() => setIsAlertOpen(false)}
-                        />
-                      </div>
-                    </td>
-                    <td>{index + 1}</td>
-                    <td>{user.pegawai_nip}</td>
-                    <td>{user.pegawai_nama}</td>
-                    <td>{pegawaiBidang[user.bidang_id]?.bidang_nama}</td>
-                    <td>{user.pegawai_jabatan}</td>
-                    <td>{jkType[user.pegawai_jk]}</td>
-                    <td>
-                      {pegawaiPendidikan[user.pendidikan_id]?.pendidikan_nama}
-                    </td>
-                    <td>{roleType[user.pegawai_role]}</td>
-                    <td>
-                      <div className="flex gap-1 justify-center">
-                        <div>
-                          {
-                            pegawaiStatus[user.status_pegawai_id]
-                              ?.status_pegawai_nama
-                          }
-                        </div>
-                        - <div>{pegawaiStatusType[user.pegawai_status]}</div>
-                      </div>
-                    </td>
+            <>
+              <table className="table table-auto">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th className="font-semibold">NO</th>
+                    <th className="font-semibold">
+                      <button
+                        className="flex items-center gap-2"
+                        onClick={() => sortData("pegawai_nip")}
+                      >
+                        NIP {getSortIcon("pegawai_nip")}
+                      </button>
+                    </th>
+                    <th className="font-semibold">
+                      <button
+                        className="flex items-center gap-2"
+                        onClick={() => sortData("pegawai_nama")}
+                      >
+                        NAMA {getSortIcon("pegawai_nama")}
+                      </button>
+                    </th>
+                    <th className="font-semibold">
+                      <button
+                        className="flex items-center gap-2"
+                        onClick={() => sortData("bidang_id")}
+                      >
+                        BIDANG {getSortIcon("bidang_id")}
+                      </button>
+                    </th>
+                    <th className="font-semibold">
+                      <button
+                        className="flex items-center gap-2"
+                        onClick={() => sortData("pegawai_jabatan")}
+                      >
+                        JABATAN {getSortIcon("pegawai_jabatan")}
+                      </button>
+                    </th>
+                    <th className="font-semibold">
+                      <button
+                        className="flex items-center gap-2"
+                        onClick={() => sortData("pegawai_jk")}
+                      >
+                        JENIS KELAMIN {getSortIcon("pegawai_jk")}
+                      </button>
+                    </th>
+                    <th className="font-semibold">
+                      <button
+                        className="flex items-center gap-2"
+                        onClick={() => sortData("pendidikan_id")}
+                      >
+                        PENDIDIKAN {getSortIcon("pendidikan_id")}
+                      </button>
+                    </th>
+                    <th className="font-semibold">
+                      <button
+                        className="flex items-center gap-2"
+                        onClick={() => sortData("pegawai_role")}
+                      >
+                        ROLE {getSortIcon("pegawai_role")}
+                      </button>
+                    </th>
+                    <th className="font-semibold">
+                      <button
+                        className="flex items-center gap-2"
+                        onClick={() => sortData("status_pegawai_id")}
+                      >
+                        STATUS {getSortIcon("status_pegawai_id")}
+                      </button>
+                    </th>
+                    <th></th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody>
+                  {displayedPegawai.map((user, index) => (
+                    <tr key={index}>
+                      <td>
+                        <div className={"flex gap-2 justify-center"}>
+                          <ButtonActionLinkMenu
+                            link={`/admin/menu_user/pegawai/editdata/${user.pegawai_nip}`}
+                            btnType={"btn-warning"}
+                            icon={<FaPencilAlt />}
+                          />
+
+                          <ButtonActionFunctionMenu
+                            btnFunction={async () => {
+                              const session = await getDataSession();
+
+                              if (session.idUser == user.pegawai_nip) {
+                                setIsAlertOpen(true);
+                              } else {
+                                setIsModalOpen({
+                                  bolean: true,
+                                  pegawaiId: user.pegawai_nip,
+                                  image: user.pegawai_foto,
+                                });
+                              }
+                            }}
+                            btnType={"btn-error"}
+                            icon={<MdDelete />}
+                          />
+
+                          <ModalAlertDelete
+                            isOpen={isModalOpen.bolean}
+                            onClose={() =>
+                              setIsModalOpen({
+                                pegawaiId: "",
+                                image: "",
+                                bolean: false,
+                              })
+                            }
+                            onSubmit={async () =>
+                              await deletePegawai(
+                                isModalOpen.pegawaiId,
+                                isModalOpen.image
+                              )
+                            }
+                          />
+
+                          <ModalAlertCantDelete
+                            isOpen={isAlertOpen}
+                            onClose={() => setIsAlertOpen(false)}
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
+                      </td>
+                      <td>{user.pegawai_nip}</td>
+                      <td>{user.pegawai_nama}</td>
+                      <td>{pegawaiBidang[user.bidang_id]?.bidang_nama}</td>
+                      <td>{user.pegawai_jabatan}</td>
+                      <td>{jkType[user.pegawai_jk]}</td>
+                      <td>
+                        {pegawaiPendidikan[user.pendidikan_id]?.pendidikan_nama}
+                      </td>
+                      <td>{roleType[user.pegawai_role]}</td>
+                      <td>
+                        <div className="flex gap-1 justify-center">
+                          <div>
+                            {
+                              pegawaiStatus[user.status_pegawai_id]
+                                ?.status_pegawai_nama
+                            }
+                          </div>
+                          - <div>{pegawaiStatusType[user.pegawai_status]}</div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div className="join flex items-center justify-center gap-8">
+                <button
+                  className={`join-item ${
+                    currentPage === 1 ? "hidden" : "flex"
+                  }`}
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                >
+                  <i>
+                    <FaAngleDoubleLeft />
+                  </i>
+                </button>
+                <div className="join-item text-sm font-normal">
+                  Page {currentPage} of {totalPages}
+                </div>
+                <button
+                  className={`join-item ${
+                    currentPage === totalPages ? "hidden" : "flex"
+                  }`}
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                >
+                  <i>
+                    <FaAngleDoubleRight />
+                  </i>
+                </button>
+              </div>
+            </>
           ) : (
             <div className="flex justify-center">Tidak ada Data</div>
           )}

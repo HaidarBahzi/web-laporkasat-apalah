@@ -5,7 +5,7 @@ import MenuContainer, {
   MenuEditTitle,
 } from "@/components/menu";
 import { CiViewList } from "react-icons/ci";
-import { useCallback, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { GetDetailPengaduan } from "@/utils/server/pengaduan/pengaduan";
 import {
   ImageShow,
@@ -19,14 +19,15 @@ import {
 } from "@/components/form";
 import { Wizard } from "react-use-wizard";
 import { StepLayout } from "@/components/wizard";
-import { setup_kelamin } from "@prisma/client";
+import { setup_kelamin, tindak_lanjut_status } from "@prisma/client";
 import { FetchInputPegawai } from "@/utils/server/pegawai/pegawai";
 import { GetAllPenyidik } from "@/utils/server/penyidik/penyidik";
 import { FaFileUpload } from "react-icons/fa";
 import { SubmitPelanggaran } from "@/utils/server/pelanggaran/pelanggaran";
 import { useRouter } from "next/navigation";
-import { FormDataCustom } from "@/components/options";
-import { ModalAlertProgress } from "@/components/modal";
+import { PelanggaranTindakForm } from "@/components/options";
+import { ModalAlertTindak } from "@/components/modal";
+import { getDataSession } from "@/utils/lib/session";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({
@@ -46,7 +47,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [formDataWizard, setFormDataWizard] = useState<FormDataCustom>({
+  const [formDataWizard, setFormDataWizard] = useState<PelanggaranTindakForm>({
     pelanggar: {
       nama: "",
       ayah: "",
@@ -90,6 +91,9 @@ export default function Page({ params }: { params: { id: string } }) {
       pelaksanaan: "",
     },
     bukti: {
+      bukti_kejadian: "",
+      bukti_barang: "",
+      bukti_penyegelan: "",
       dokumen_ktp: "",
       dokumen_sp: "",
       dokumen_sp1: "",
@@ -111,7 +115,7 @@ export default function Page({ params }: { params: { id: string } }) {
   };
 
   const handleInputChange = (
-    section: keyof FormDataCustom,
+    section: keyof PelanggaranTindakForm,
     name: string,
     value: any
   ) => {
@@ -125,7 +129,7 @@ export default function Page({ params }: { params: { id: string } }) {
   };
 
   const handleInputFileChange = async (
-    section: keyof FormDataCustom,
+    section: keyof PelanggaranTindakForm,
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const name = event.target.name;
@@ -143,6 +147,17 @@ export default function Page({ params }: { params: { id: string } }) {
         },
       }));
     }
+  };
+
+  const [formValues, setFormValues] = useState({
+    input_action: "",
+  });
+
+  const handleDropdownChange = (selectedValue: any, inputName: string) => {
+    setFormValues((prevFormValues) => ({
+      ...prevFormValues,
+      [inputName]: selectedValue,
+    }));
   };
 
   const [agama, setAgama] = useState<
@@ -210,6 +225,10 @@ export default function Page({ params }: { params: { id: string } }) {
     const response = await SubmitPelanggaran(
       formDataWizard,
       pelaporValues.user_ktp,
+      (
+        await getDataSession()
+      ).idUser!,
+      formValues.input_action,
       params.id
     );
 
@@ -220,7 +239,17 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <section className="container mx-auto px-16">
-      <ModalAlertProgress
+      <ModalAlertTindak
+        inputName={"inputAction"}
+        optionTitle={"Silahkan Pilih Jenis Tindakan"}
+        optionValue={[
+          { title: "Non Justitia", value: tindak_lanjut_status.NJ },
+          { title: "Pro Justitia", value: tindak_lanjut_status.PJ },
+        ]}
+        handleChange={(selectedValue) =>
+          handleDropdownChange(selectedValue, "input_action")
+        }
+        defaultValue={""}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={() => handleSubmitClient()}
@@ -798,6 +827,131 @@ export default function Page({ params }: { params: { id: string } }) {
             currentStep={5}
             submitFunction={() => setIsModalOpen(true)}
           >
+            <div className="form-control gap-5">
+              <span className="text-lg font-semibold">BUKTI</span>
+
+              <table className="table table-sm">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th className="font-semibold">NO</th>
+                    <th className="font-semibold">NAMA DOKUMEN</th>
+                    <th className="font-semibold">STATUS</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>
+                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
+                        <i className="text-white text-base">
+                          <FaFileUpload />
+                        </i>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(event) =>
+                            handleInputFileChange("bukti", event)
+                          }
+                          required
+                          className="hidden"
+                          name="bukti_kejadian"
+                        />
+                      </label>
+                    </td>
+                    <td>1</td>
+                    <td>Bukti Kejadian</td>
+                    <td>
+                      <div
+                        role="alert"
+                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
+                          formDataWizard.bukti.bukti_kejadian == ""
+                            ? "alert-warning"
+                            : "alert-info"
+                        }`}
+                      >
+                        {formDataWizard.bukti.bukti_kejadian == ""
+                          ? "BELUM UPLOAD"
+                          : "SUDAH UPLOAD"}
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
+                        <i className="text-white text-base">
+                          <FaFileUpload />
+                        </i>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(event) =>
+                            handleInputFileChange("bukti", event)
+                          }
+                          required
+                          className="hidden"
+                          name="bukti_barang"
+                        />
+                      </label>
+                    </td>
+                    <td>2</td>
+                    <td>Bukti Barang</td>
+                    <td>
+                      <div
+                        role="alert"
+                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
+                          formDataWizard.bukti.bukti_barang == ""
+                            ? "alert-warning"
+                            : "alert-info"
+                        }`}
+                      >
+                        {formDataWizard.bukti.bukti_barang == ""
+                          ? "BELUM UPLOAD"
+                          : "SUDAH UPLOAD"}
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>
+                      <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
+                        <i className="text-white text-base">
+                          <FaFileUpload />
+                        </i>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(event) =>
+                            handleInputFileChange("bukti", event)
+                          }
+                          required
+                          className="hidden"
+                          name="bukti_penyegelan"
+                        />
+                      </label>
+                    </td>
+                    <td>3</td>
+                    <td>Bukti Penyegelan</td>
+                    <td>
+                      <div
+                        role="alert"
+                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
+                          formDataWizard.bukti.bukti_penyegelan == ""
+                            ? "alert-warning"
+                            : "alert-info"
+                        }`}
+                      >
+                        {formDataWizard.bukti.bukti_penyegelan == ""
+                          ? "BELUM UPLOAD"
+                          : "SUDAH UPLOAD"}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
             <div className="form-control gap-5">
               <span className="text-lg font-semibold">Dokumen</span>
 
