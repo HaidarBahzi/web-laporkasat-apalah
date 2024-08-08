@@ -311,7 +311,7 @@ export default function Page({ params }: { params: { id: string } }) {
         await DoneLaporan(pengaduanValues.laporan_id);
 
         axios
-          .post("http://localhost:4000/notification/add", {
+          .post("http://103.30.180.221:4000/notification/add", {
             user_id: pelaporValues.user_ktp,
             title: "Laporan Selesai",
             message:
@@ -328,7 +328,7 @@ export default function Page({ params }: { params: { id: string } }) {
         await RejectLaporan(pengaduanValues.laporan_id);
 
         axios
-          .post("http://localhost:4000/notification/add", {
+          .post("http://103.30.180.221:4000/notification/add", {
             user_id: pelaporValues.user_ktp,
             title: "Laporan Ditolak",
             message:

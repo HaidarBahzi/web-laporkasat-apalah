@@ -59,7 +59,7 @@ export default function Page({ params }: { params: { id: string } }) {
       await ApproveLaporanKasat(params.id, role);
 
       axios
-        .post("http://localhost:4000/notification/add", {
+        .post("http://103.30.180.221:4000/notification/add", {
           user_id: userKtp,
           title: "Tindak Laporan",
           message: `Laporan Anda sedang ditindak oleh ${roleType[role]}, terima kasih atas laporannya!`,

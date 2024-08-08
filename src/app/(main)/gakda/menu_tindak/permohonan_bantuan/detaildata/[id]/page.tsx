@@ -66,7 +66,7 @@ export default function Page({ params }: { params: { id: string } }) {
         await DoneLaporan(permohonanValues.laporan_id);
 
         axios
-          .post("http://localhost:4000/notification/add", {
+          .post("http://103.30.180.221:4000/notification/add", {
             user_id: pemohonValues.user_ktp,
             title: "Permohonan Diterima",
             message:
@@ -83,7 +83,7 @@ export default function Page({ params }: { params: { id: string } }) {
         await RejectLaporan(permohonanValues.laporan_id);
 
         axios
-          .post("http://localhost:4000/notification/add", {
+          .post("http://103.30.180.221:4000/notification/add", {
             user_id: pemohonValues.user_ktp,
             title: "Permohonan Ditolak",
             message:

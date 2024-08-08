@@ -47,7 +47,7 @@ export default function Page({ params }: { params: { id: string } }) {
       await ApprovePermohonan(params.id, status_laporan.C);
 
       axios
-        .post("http://localhost:4000/notification/add", {
+        .post("http://103.30.180.221:4000/notification/add", {
           user_id: userKtp,
           title: "Konfirmasi Permohonan Bantuan",
           message:
