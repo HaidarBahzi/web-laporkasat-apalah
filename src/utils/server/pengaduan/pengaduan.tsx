@@ -5,7 +5,6 @@ import { join } from "path";
 import { mkdir, stat, unlink, writeFile } from "fs/promises";
 import prisma from "@/utils/lib/prisma";
 import { getSession, updateSession } from "@/utils/lib/session";
-import { inputRoleType } from "@/components/options";
 
 export async function GetAllPengaduan() {
   const queryPengaduan = await prisma.laporan.findMany({
@@ -15,11 +14,11 @@ export async function GetAllPengaduan() {
     select: {
       laporan_id: true,
       laporan_tgl_send: true,
-      user_ktp: true,
+      user_mail: true,
       laporan_title: true,
       laporan_description: true,
       laporan_location: true,
-      laporan_action: true,
+      pegawai_nip: true,
       laporan_status: true,
       laporan_document: true,
     },
@@ -29,7 +28,7 @@ export async function GetAllPengaduan() {
     queryPengaduan.map(async (pengaduan) => {
       const queryUser = await prisma.users.findUnique({
         where: {
-          user_ktp: pengaduan.user_ktp,
+          user_mail: pengaduan.user_mail,
         },
         select: {
           user_fullname: true,
@@ -38,11 +37,21 @@ export async function GetAllPengaduan() {
         },
       });
 
+      const queryPegawai = await prisma.pegawai.findUnique({
+        where: {
+          pegawai_nip: pengaduan.pegawai_nip,
+        },
+        select: {
+          pegawai_nama: true,
+        },
+      });
+
       return {
         ...pengaduan,
         user_fullname: queryUser ? queryUser.user_fullname : null,
         user_alamat: queryUser ? queryUser.user_alamat : null,
         user_phone: queryUser ? queryUser.user_phone : null,
+        pegawai_nama: queryPegawai ? queryPegawai.pegawai_nama : null,
       };
     })
   );
@@ -50,20 +59,20 @@ export async function GetAllPengaduan() {
   return pengaduanWithUser;
 }
 
-export async function GetAllPengaduanBidang(userRole: string) {
+export async function GetAllPengaduanBidang(pegawaiNip: string) {
   const queryPengaduan = await prisma.laporan.findMany({
     where: {
       laporan_type: type_laporan.P,
-      laporan_action: inputRoleType[userRole],
+      pegawai_nip: pegawaiNip,
     },
     select: {
       laporan_id: true,
       laporan_tgl_send: true,
-      user_ktp: true,
+      user_mail: true,
       laporan_title: true,
       laporan_description: true,
       laporan_location: true,
-      laporan_action: true,
+      pegawai_nip: true,
       laporan_status: true,
       laporan_document: true,
     },
@@ -73,7 +82,7 @@ export async function GetAllPengaduanBidang(userRole: string) {
     queryPengaduan.map(async (pengaduan) => {
       const queryUser = await prisma.users.findUnique({
         where: {
-          user_ktp: pengaduan.user_ktp,
+          user_mail: pengaduan.user_mail,
         },
         select: {
           user_fullname: true,
@@ -82,11 +91,21 @@ export async function GetAllPengaduanBidang(userRole: string) {
         },
       });
 
+      const queryPegawai = await prisma.pegawai.findUnique({
+        where: {
+          pegawai_nip: pengaduan.pegawai_nip,
+        },
+        select: {
+          pegawai_nama: true,
+        },
+      });
+
       return {
         ...pengaduan,
         user_fullname: queryUser ? queryUser.user_fullname : null,
         user_alamat: queryUser ? queryUser.user_alamat : null,
         user_phone: queryUser ? queryUser.user_phone : null,
+        pegawai_nama: queryPegawai ? queryPegawai.pegawai_nama : null,
       };
     })
   );
@@ -102,61 +121,13 @@ export async function DeletePengaduan(id: string) {
   });
 }
 
-export async function SubmitPengaduan(formData: FormData) {
-  const { v4: uuidv4 } = require("uuid");
-  const date = new Date();
-
-  const pengaduanKtp = formData.get("pengaduanKtp")?.toString();
-  const pengaduanJudul = formData.get("pengaduanJudul")?.toString();
-  const pengaduanAlamat = formData.get("pengaduanAlamat")?.toString();
-  const pengaduanKeterangan = formData.get("pengaduanKeterangan")?.toString();
-  const pengaduanFoto = await UploadImage(formData);
-
-  const honeypot = formData.get("userHoneypot")?.toString();
-
-  if (honeypot !== "") {
-    return { message: "Terjadi Kesalahan", type: "error" };
-  }
-
-  const checkUser = await prisma.users.count({
-    where: {
-      user_ktp: pengaduanKtp,
-    },
-  });
-
-  if (checkUser == 0) {
-    return { message: "User dengan Ktp ini tidak ada", type: "error" };
-  }
-
-  const query = await prisma.laporan.create({
-    data: {
-      laporan_id: uuidv4(),
-      user_ktp: pengaduanKtp!,
-      laporan_title: pengaduanJudul!,
-      laporan_location: pengaduanAlamat!,
-      laporan_tgl_send: date.toISOString(),
-      laporan_status: status_laporan.S,
-      laporan_document: pengaduanFoto?.file!,
-      laporan_description: pengaduanKeterangan!,
-      laporan_type: type_laporan.P,
-      created_at: date.toISOString(),
-    },
-  });
-
-  if (!query) {
-    return { message: "Pengaduan Gagal Di tambah", type: "error" };
-  }
-
-  return { message: "Pengaduan Berhasil Di tambah", type: "success" };
-}
-
 export async function GetDetailPengaduan(pengaduanId: string) {
   const queryPengaduan = await prisma.laporan.findUnique({
     where: {
       laporan_id: pengaduanId,
     },
     select: {
-      user_ktp: true,
+      user_mail: true,
       laporan_title: true,
       laporan_location: true,
       laporan_description: true,
@@ -167,10 +138,10 @@ export async function GetDetailPengaduan(pengaduanId: string) {
 
   const queryUser = await prisma.users.findUnique({
     where: {
-      user_ktp: queryPengaduan?.user_ktp,
+      user_mail: queryPengaduan?.user_mail,
     },
     select: {
-      user_ktp: true,
+      user_mail: true,
       user_fullname: true,
       user_alamat: true,
       user_phone: true,
@@ -196,7 +167,7 @@ export async function ApproveLaporan(
     },
     data: {
       laporan_status: status,
-      laporan_action: inputRoleType[session.role!],
+      pegawai_nip: session.userId,
       laporan_tgl_confirm: date.toISOString(),
       updated_at: date.toISOString(),
     },
@@ -205,7 +176,10 @@ export async function ApproveLaporan(
   return query;
 }
 
-export async function ApproveLaporanKasat(pengaduanId: string, role: string) {
+export async function ApproveLaporanKasat(
+  pengaduanId: string,
+  pegawaiNip: string
+) {
   await updateSession();
 
   const date = new Date();
@@ -215,7 +189,7 @@ export async function ApproveLaporanKasat(pengaduanId: string, role: string) {
       laporan_id: pengaduanId,
     },
     data: {
-      laporan_action: inputRoleType[role!],
+      pegawai_nip: pegawaiNip,
       laporan_status: status_laporan.P,
       updated_at: date.toISOString(),
     },
@@ -236,25 +210,6 @@ export async function DoneLaporan(pengaduanId: string) {
     data: {
       laporan_status: status_laporan.D,
       laporan_tgl_done: date.toISOString(),
-      updated_at: date.toISOString(),
-    },
-  });
-
-  return query;
-}
-
-export async function RejectLaporan(pengaduanId: string) {
-  await updateSession();
-
-  const date = new Date();
-
-  const query = await prisma.laporan.update({
-    where: {
-      laporan_id: pengaduanId,
-    },
-    data: {
-      laporan_status: status_laporan.R,
-      laporan_tgl_reject: date.toISOString(),
       updated_at: date.toISOString(),
     },
   });

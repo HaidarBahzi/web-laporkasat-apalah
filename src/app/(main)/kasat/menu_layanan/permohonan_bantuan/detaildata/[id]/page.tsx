@@ -23,7 +23,7 @@ import { ModalAlertApproveBidang } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pemohonValues, setPemohonValues] = useState({
-    user_ktp: "",
+    user_mail: "",
     user_fullname: "",
     user_alamat: "",
     user_phone: "",
@@ -92,7 +92,7 @@ export default function Page({ params }: { params: { id: string } }) {
         onSubmit={async () => {
           await approvePermohonan(
             formValues.input_role,
-            pemohonValues.user_ktp
+            pemohonValues.user_mail
           );
         }}
         handleChange={(selectedValue) =>
@@ -145,11 +145,11 @@ export default function Page({ params }: { params: { id: string } }) {
           <span className="text-lg font-semibold">Data Pemohon</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
-              labelText={"KTP Pemohon"}
+              labelText={"Email Pemohon"}
               inputName={""}
               readOnly={true}
               inputPlaceholder={""}
-              defValue={pemohonValues.user_ktp}
+              defValue={pemohonValues.user_mail}
             />
 
             <TextInput

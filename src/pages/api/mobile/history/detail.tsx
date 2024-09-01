@@ -8,12 +8,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { ktp, pengaduan, auth } = req.body;
+    const { email, pengaduan, auth } = req.body;
 
-    if (!ktp || !pengaduan || !auth) {
+    if (!email || !pengaduan || !auth) {
       return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
         status: "error",
-        message: "Tolong masukkan KTP dan token anda",
+        message: "Tolong masukkan email dan token anda",
       });
     }
 
@@ -27,15 +27,7 @@ export default async function handler(
       });
     }
 
-    const numberRegex = /^\d+$/;
-
-    if (ktp.length != 16 || !numberRegex.test(ktp)) {
-      return res
-        .status(StatusCodes.UNPROCESSABLE_ENTITY)
-        .json({ status: "error", message: "KTP anda tidak valid" });
-    }
-
-    const checkUser = await CheckUser(ktp);
+    const checkUser = await CheckUser(email);
 
     if (checkUser == 0) {
       return res
@@ -43,7 +35,7 @@ export default async function handler(
         .json({ status: "error", message: "Pengguna ini tidak ada" });
     }
 
-    const dbQuery = await GetDetailHistory(ktp, pengaduan);
+    const dbQuery = await GetDetailHistory(email, pengaduan);
 
     if (dbQuery == null) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

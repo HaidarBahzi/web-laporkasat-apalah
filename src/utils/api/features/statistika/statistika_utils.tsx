@@ -6,7 +6,7 @@ import prisma from "@/utils/lib/prisma";
 export async function GetStatistika(userKtp: string, option: status_laporan) {
   const query = await prisma.laporan.findMany({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
       laporan_status: option,
     },
     select: {

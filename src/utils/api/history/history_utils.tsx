@@ -5,12 +5,13 @@ import prisma from "@/utils/lib/prisma";
 export async function GetAllHistory(userKtp: string) {
   const query = await prisma.laporan.findMany({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
     },
     select: {
       laporan_id: true,
       laporan_title: true,
       laporan_description: true,
+      laporan_document: true,
       laporan_location: true,
       laporan_status: true,
       laporan_type: true,
@@ -26,7 +27,7 @@ export async function GetAllHistory(userKtp: string) {
 export async function GetDetailHistory(userKtp: string, id: string) {
   const query = await prisma.laporan.findUnique({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
       laporan_id: id,
     },
     select: {

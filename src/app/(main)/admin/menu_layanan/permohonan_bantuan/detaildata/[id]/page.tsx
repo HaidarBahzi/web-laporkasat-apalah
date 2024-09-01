@@ -24,7 +24,7 @@ import axios from "axios";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pemohonValues, setPemohonValues] = useState({
-    user_ktp: "",
+    user_mail: "",
     user_fullname: "",
     user_alamat: "",
     user_phone: "",
@@ -81,7 +81,7 @@ export default function Page({ params }: { params: { id: string } }) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={async () => {
-          await approvePermohonan(pemohonValues.user_ktp);
+          await approvePermohonan(pemohonValues.user_mail);
         }}
       />
 
@@ -109,11 +109,11 @@ export default function Page({ params }: { params: { id: string } }) {
           <span className="text-lg font-semibold">Data Pemohon</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
-              labelText={"KTP Pemohon"}
+              labelText={"Email Pemohon"}
               inputName={""}
               readOnly={true}
               inputPlaceholder={""}
-              defValue={pemohonValues.user_ktp}
+              defValue={pemohonValues.user_mail}
             />
 
             <TextInput
@@ -186,22 +186,6 @@ export default function Page({ params }: { params: { id: string } }) {
               </Link>
             </>
           </div>
-
-          {permohonanValues.laporan_status == status_laporan.S ? (
-            <>
-              <hr />
-
-              <div className="flex justify-center">
-                <DetailButtonSubmit
-                  onPress={() => setIsModalOpen(true)}
-                  icon={<FaCheck />}
-                  title={"Approve"}
-                />
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
         </div>
       </MenuContainer>
     </section>

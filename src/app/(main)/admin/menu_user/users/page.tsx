@@ -6,20 +6,20 @@ import MenuContainer, {
   MenuAddTitle,
   ButtonActionLinkMenu,
   ButtonActionFunctionMenu,
+  MenuNothing,
 } from "@/components/menu";
 import { userStatus, UsersType } from "@/components/options";
-import { DeleteUser, GetAllUsers } from "@/utils/server/users/user";
+import { GetAllUsers } from "@/utils/server/users/user";
 import { useEffect, useState } from "react";
 import { CiViewList } from "react-icons/ci";
 import {
   FaAngleDoubleLeft,
   FaAngleDoubleRight,
-  FaPencilAlt,
   FaSort,
   FaSortDown,
   FaSortUp,
 } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdDetails } from "react-icons/md";
 
 type SortKey = keyof UsersType;
 
@@ -40,16 +40,6 @@ export default function Page() {
   };
 
   const [isModalOpen, setIsModalOpen] = useState({ value: "", bolean: false });
-
-  const deleteUser = async (userKtp: string) => {
-    try {
-      await DeleteUser(userKtp);
-      await fetchUser();
-      setIsModalOpen({ value: "", bolean: false });
-    } catch (error) {
-      console.log("Gagal menghapus user");
-    }
-  };
 
   useEffect(() => {
     fetchUser();
@@ -125,11 +115,7 @@ export default function Page() {
       />
 
       <MenuContainer>
-        <MenuAddTitle
-          title="Daftar Users"
-          titleIcon={<CiViewList />}
-          linkButton="/admin/menu_user/users/adddata"
-        />
+        <MenuNothing title="Daftar Users" titleIcon={<CiViewList />} />
 
         <hr />
 
@@ -144,9 +130,9 @@ export default function Page() {
                     <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
-                        onClick={() => sortData("user_ktp")}
+                        onClick={() => sortData("user_mail")}
                       >
-                        NO KTP {getSortIcon("user_ktp")}
+                        NO KTP {getSortIcon("user_mail")}
                       </button>
                     </th>
                     <th className="font-semibold">
@@ -176,14 +162,6 @@ export default function Page() {
                     <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
-                        onClick={() => sortData("user_warning")}
-                      >
-                        PERINGATAN {getSortIcon("user_warning")}
-                      </button>
-                    </th>
-                    <th className="font-semibold">
-                      <button
-                        className="flex items-center gap-2"
                         onClick={() => sortData("user_status")}
                       >
                         STATUS {getSortIcon("user_status")}
@@ -198,41 +176,19 @@ export default function Page() {
                       <td>
                         <div className="flex gap-2 justify-center">
                           <ButtonActionLinkMenu
-                            link={`/admin/menu_user/users/editdata/${user.user_ktp}`}
+                            link={`/admin/menu_user/users/editdata/${user.user_mail}`}
                             btnType={"btn-warning"}
-                            icon={<FaPencilAlt />}
-                          />
-
-                          <ButtonActionFunctionMenu
-                            btnFunction={() =>
-                              setIsModalOpen({
-                                value: user.user_ktp,
-                                bolean: true,
-                              })
-                            }
-                            btnType={"btn-error"}
-                            icon={<MdDelete />}
-                          />
-
-                          <ModalAlertDelete
-                            isOpen={isModalOpen.bolean}
-                            onClose={() =>
-                              setIsModalOpen({ value: "", bolean: false })
-                            }
-                            onSubmit={async () =>
-                              await deleteUser(isModalOpen.value)
-                            }
+                            icon={<MdDetails />}
                           />
                         </div>
                       </td>
                       <td>
                         {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
                       </td>
-                      <td>{user.user_ktp}</td>
+                      <td>{user.user_mail}</td>
                       <td>{user.user_fullname}</td>
                       <td>{user.user_phone}</td>
                       <td>{user.user_alamat}</td>
-                      <td>{user.user_warning}</td>
                       <td>{userStatus[user.user_status]}</td>
                     </tr>
                   ))}

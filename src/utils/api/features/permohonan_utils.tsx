@@ -4,6 +4,7 @@ import { join } from "path";
 import { mkdir, stat, writeFile } from "fs/promises";
 import prisma from "@/utils/lib/prisma";
 import { type_laporan } from "@prisma/client";
+import Client from "node-scp";
 
 export async function SubmitPermohonan(
   userKtp: string,
@@ -18,12 +19,13 @@ export async function SubmitPermohonan(
   const query = await prisma.laporan.create({
     data: {
       laporan_id: uuidv4(),
-      user_ktp: userKtp,
+      user_mail: userKtp,
       laporan_title: permohonanTitle,
       laporan_description: permohonanDescription,
       laporan_location: permohonanLocation,
       laporan_document: permohonanDocument,
       laporan_type: type_laporan.B,
+      pegawai_nip: "",
       laporan_tgl_send: date.toISOString(),
 
       created_at: date.toISOString(),
@@ -56,14 +58,40 @@ export async function UploadPDF(
   }
 
   try {
-    await writeFile(`${uploadDir}/${filename}`, buffer);
-    return {
-      message: "PDF Berhasil Diupload!",
-      type: "success",
-      file: filename,
-    };
+    const localFilePath = `${uploadDir}/${filename}`;
+    await writeFile(localFilePath, buffer);
+
+    try {
+      const client = await Client({
+        host: "103.30.180.221",
+        port: 2233,
+        username: "vps2-bkpsdm",
+        password: "vps2BkpSdm-KUDu5!!",
+      });
+
+      const check = await client.exists("www/pdf-uploads");
+
+      if (check == false) {
+        await client.mkdir("www/pdf-uploads");
+      }
+
+      await client.uploadFile(localFilePath, `www/pdf-uploads/${filename}`);
+      client.close();
+
+      return {
+        message: "Gambar Berhasil Diupload dan Dikirim ke Server!",
+        type: "success",
+        file: filename,
+      };
+    } catch (scpError) {
+      console.error("SCP Upload Error\n", scpError);
+      return {
+        message: "Gambar Diupload Lokal, tetapi Gagal Dikirim ke Server!",
+        type: "failed",
+      };
+    }
   } catch (e) {
     console.error("Error while trying to upload a file\n", e);
-    return { message: "PDF Gagal Diupload!", type: "failed" };
+    return { message: "Gambar Gagal Diupload!", type: "failed" };
   }
 }

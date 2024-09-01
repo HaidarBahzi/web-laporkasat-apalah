@@ -16,11 +16,6 @@ export async function middleware(request: NextRequest) {
     A: "/admin/", // Admin
     U: "/user/", // User
     K: "/kasat/", // Kasat
-    B: "/bupati/", // Bupati
-    G: "/gakda/", // Gakda
-    L: "/lindam/", // Lindam
-    T: "/tibum/", // Tibum
-    S: "/sekretariat/", // Sekretariat
     O: "/operator/", // Operator
   };
 

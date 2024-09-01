@@ -3,6 +3,7 @@
 import MenuContainer, {
   ButtonActionFunctionMenu,
   ButtonActionLinkMenu,
+  MenuAddTitle,
   MenuBreadCrumbs,
   MenuNothing,
 } from "@/components/menu";
@@ -10,26 +11,23 @@ import { CiViewList } from "react-icons/ci";
 import { IoMdInformationCircle } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { GetAllPengaduan } from "@/utils/server/pengaduan/pengaduan";
+
 import { MdLocalPrintshop } from "react-icons/md";
 import {
-  formatter,
-  laporanStatus,
-  PengaduanType,
-  roleType,
-} from "@/components/options";
-import { PrintLaporanPengaduanDetail } from "@/utils/server/print_laporan/print_detail";
-import {
+  FaSortUp,
+  FaSortDown,
+  FaSort,
   FaAngleDoubleLeft,
   FaAngleDoubleRight,
-  FaSort,
-  FaSortDown,
-  FaSortUp,
 } from "react-icons/fa";
+import { formatter, laporanStatus, PengaduanType } from "@/components/options";
+import { PrintLaporanPengaduanDetail } from "@/utils/server/print_laporan/print_detail";
 
 type SortKey = keyof PengaduanType;
 
 export default function Page() {
   const [pengaduan, setPengaduan] = useState<PengaduanType[]>([]);
+
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";
@@ -143,10 +141,7 @@ export default function Page() {
       <MenuBreadCrumbs
         title={"Pengaduan Masyarakat"}
         linkArray={["Dashboard", "Menu Layanan"]}
-        titleLinkArray={[
-          "/operator/dashboard",
-          "/operator/menu_layanan/pengaduan",
-        ]}
+        titleLinkArray={["/operator/dashboard", "/operator/menu_layanan/pengaduan"]}
         endTitle={"Pengaduan Masyarakat"}
       />
 
@@ -165,8 +160,8 @@ export default function Page() {
                 <thead>
                   <tr>
                     <th></th>
-                    <th>NO</th>
-                    <th>
+                    <th className="font-semibold">NO</th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
                         onClick={() => sortData("laporan_tgl_send")}
@@ -174,7 +169,7 @@ export default function Page() {
                         TANGGAL {getSortIcon("laporan_tgl_send")}
                       </button>
                     </th>
-                    <th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
                         onClick={() => sortData("user_fullname")}
@@ -182,7 +177,7 @@ export default function Page() {
                         NAMA PELAPOR {getSortIcon("user_fullname")}
                       </button>
                     </th>
-                    <th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
                         onClick={() => sortData("laporan_title")}
@@ -190,7 +185,7 @@ export default function Page() {
                         JUDUL {getSortIcon("laporan_title")}
                       </button>
                     </th>
-                    <th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
                         onClick={() => sortData("laporan_location")}
@@ -198,15 +193,15 @@ export default function Page() {
                         LOKASI {getSortIcon("laporan_location")}
                       </button>
                     </th>
-                    <th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
-                        onClick={() => sortData("laporan_action")}
+                        onClick={() => sortData("pegawai_nama")}
                       >
-                        ACTION {getSortIcon("laporan_action")}
+                        PENINDAK {getSortIcon("pegawai_nama")}
                       </button>
                     </th>
-                    <th>
+                    <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
                         onClick={() => sortData("laporan_status")}
@@ -255,9 +250,9 @@ export default function Page() {
                       <td>{value.laporan_title}</td>
                       <td>{value.laporan_location}</td>
                       <td>
-                        {value.laporan_action == null
+                        {value.pegawai_nip == null
                           ? "Belum ditindak"
-                          : roleType[value.laporan_action]}
+                          : value.pegawai_nama}
                       </td>
                       <td>{laporanStatus[value.laporan_status]}</td>
                     </tr>

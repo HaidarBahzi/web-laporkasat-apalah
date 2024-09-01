@@ -281,6 +281,95 @@ export function ModalAlertAdd({
   );
 }
 
+export function ModalAlertReturn({
+  isOpen,
+  onClose,
+  onSubmit,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: MouseEventHandler<HTMLButtonElement>;
+}) {
+  const modalRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = modalRef.current;
+
+    if (isOpen && dialog) {
+      dialog.showModal();
+    } else if (!isOpen && dialog) {
+      dialog.close();
+    }
+
+    const handleClose = () => {
+      onClose();
+    };
+
+    if (dialog) {
+      dialog.addEventListener("close", handleClose);
+    }
+
+    return () => {
+      if (dialog) {
+        dialog.removeEventListener("close", handleClose);
+      }
+    };
+  }, [isOpen, onClose]);
+
+  return (
+    <dialog
+      id="modal_alert"
+      className="modal modal-bottom sm:modal-middle"
+      ref={modalRef}
+    >
+      <div className="modal-box !w-96 !rounded">
+        <form method="dialog">
+          <button
+            type="button"
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            onClick={onClose}
+          >
+            ✕
+          </button>
+        </form>
+
+        <div className="form-control justify-center items-center gap-6">
+          <i className="text-8xl text-yellow-500">
+            <PiWarningCircle />
+          </i>
+
+          <div className="form-control justify-center items-center gap-4">
+            <h3 className="font-medium text-xl">Anda Yakin?</h3>
+            <p className="text-center text-sm tracking-wide">
+              Apakah anda yakin ingin mengembalikan laporan ini? Tindakan ini
+              tidak bisa dibatalkan.
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              className="btn min-h-10 h-10 w-32 bg-blue-600 hover:bg-blue-700 rounded text-white"
+              onClick={onSubmit}
+            >
+              Kembalikan
+            </button>
+            <button
+              className="btn min-h-10 h-10 w-24 bg-red-600 hover:bg-red-700 rounded text-white"
+              onClick={onClose}
+            >
+              Tidak
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+  );
+}
+
 export function ModalAlertApprove({
   isOpen,
   onClose,
@@ -341,7 +430,7 @@ export function ModalAlertApprove({
           <div className="form-control justify-center items-center gap-4">
             <h3 className="font-medium text-xl">Anda Yakin?</h3>
             <p className="text-center text-sm tracking-wide">
-              Apakah anda yakin ingin mengapprove laporan ini? Tindakan ini
+              Apakah anda yakin ingin mengkonfirmasi laporan ini? Tindakan ini
               tidak bisa dibatalkan.
             </p>
           </div>
@@ -351,7 +440,7 @@ export function ModalAlertApprove({
               className="btn min-h-10 h-10 w-32 bg-blue-600 hover:bg-blue-700 rounded text-white"
               onClick={onSubmit}
             >
-              Approve
+              Konfirmasi
             </button>
             <button
               className="btn min-h-10 h-10 w-24 bg-red-600 hover:bg-red-700 rounded text-white"
@@ -1228,14 +1317,14 @@ export function ModalSearchUser({
                       <td>
                         <ButtonActionFunctionMenu
                           btnFunction={() =>
-                            onSubmit(user.user_ktp, user.user_fullname)
+                            onSubmit(user.user_mail, user.user_fullname)
                           }
                           btnType={"btn-info"}
                           icon={<FaCheckDouble />}
                         />
                       </td>
                       <td>{(currentPage - 1) * USERS_PER_PAGE + index + 1}</td>
-                      <td>{user.user_ktp}</td>
+                      <td>{user.user_mail}</td>
                       <td>{user.user_fullname}</td>
                     </tr>
                   ))}

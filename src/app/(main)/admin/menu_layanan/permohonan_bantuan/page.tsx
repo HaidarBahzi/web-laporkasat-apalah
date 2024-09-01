@@ -3,18 +3,14 @@
 import MenuContainer, {
   ButtonActionFunctionMenu,
   ButtonActionLinkMenu,
-  MenuAddTitle,
   MenuBreadCrumbs,
+  MenuNothing,
 } from "@/components/menu";
 import { CiViewList } from "react-icons/ci";
 import { useEffect, useState } from "react";
-import {
-  DeleteDokumenPermohonan,
-  DeletePermohonanBantuan,
-  GetAllPermohonanBantuan,
-} from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
+import { GetAllPermohonanBantuan } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
 import { IoMdInformationCircle } from "react-icons/io";
-import { MdDelete, MdLocalPrintshop } from "react-icons/md";
+import { MdLocalPrintshop } from "react-icons/md";
 import {
   FaSort,
   FaSortUp,
@@ -22,13 +18,7 @@ import {
   FaAngleDoubleLeft,
   FaAngleDoubleRight,
 } from "react-icons/fa";
-import {
-  formatter,
-  laporanStatus,
-  PermohonanType,
-  roleType,
-} from "@/components/options";
-import { ModalAlertDelete } from "@/components/modal";
+import { formatter, laporanStatus, PermohonanType } from "@/components/options";
 import { PrintLaporanPermohonanDetail } from "@/utils/server/print_laporan/print_detail";
 
 type SortKey = keyof PermohonanType;
@@ -40,26 +30,10 @@ export default function Page() {
     direction: "ascending" | "descending";
   } | null>(null);
 
-  const [isModalOpen, setIsModalOpen] = useState({
-    laporanId: "",
-    laporanImage: "",
-    bolean: false,
-  });
-
   async function FetchAllData() {
     try {
       const callAllPermohonan = await GetAllPermohonanBantuan();
       setPermohonan(callAllPermohonan!);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function DeleteData(permohonanId: string, permohonanDokumen: string) {
-    try {
-      await DeletePermohonanBantuan(permohonanId);
-      await DeleteDokumenPermohonan(permohonanDokumen);
-      await FetchAllData();
     } catch (e) {
       console.error(e);
     }
@@ -172,10 +146,9 @@ export default function Page() {
       />
 
       <MenuContainer>
-        <MenuAddTitle
+        <MenuNothing
           title="Daftar Permohonan Bantuan"
           titleIcon={<CiViewList />}
-          linkButton={"/admin/menu_layanan/permohonan_bantuan/adddata"}
         />
 
         <hr />
@@ -223,9 +196,9 @@ export default function Page() {
                     <th>
                       <button
                         className="flex items-center gap-2"
-                        onClick={() => sortData("laporan_action")}
+                        onClick={() => sortData("pegawai_nama")}
                       >
-                        ACTION {getSortIcon("laporan_action")}
+                        ACTION {getSortIcon("pegawai_nama")}
                       </button>
                     </th>
                     <th>
@@ -267,35 +240,6 @@ export default function Page() {
                             btnType={"btn-info"}
                             icon={<MdLocalPrintshop />}
                           />
-
-                          <ButtonActionFunctionMenu
-                            btnFunction={() =>
-                              setIsModalOpen({
-                                laporanId: value.laporan_id,
-                                laporanImage: value.laporan_document,
-                                bolean: true,
-                              })
-                            }
-                            btnType={"btn-error"}
-                            icon={<MdDelete />}
-                          />
-
-                          <ModalAlertDelete
-                            isOpen={isModalOpen.bolean}
-                            onClose={() =>
-                              setIsModalOpen({
-                                laporanId: "",
-                                laporanImage: "",
-                                bolean: false,
-                              })
-                            }
-                            onSubmit={() =>
-                              DeleteData(
-                                isModalOpen.laporanId,
-                                isModalOpen.laporanImage
-                              )
-                            }
-                          />
                         </div>
                       </td>
                       <td>
@@ -306,9 +250,9 @@ export default function Page() {
                       <td>{value.laporan_title}</td>
                       <td>{value.laporan_location}</td>
                       <td>
-                        {value.laporan_action == null
+                        {value.pegawai_nama == null
                           ? "Belum ditindak"
-                          : roleType[value.laporan_action]}
+                          : value.pegawai_nama}
                       </td>
                       <td>{laporanStatus[value.laporan_status]}</td>
                     </tr>

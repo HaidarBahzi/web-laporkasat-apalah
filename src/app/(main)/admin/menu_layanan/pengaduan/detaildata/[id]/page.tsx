@@ -24,7 +24,7 @@ import axios from "axios";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({
-    user_ktp: "",
+    user_mail: "",
     user_fullname: "",
     user_alamat: "",
     user_phone: "",
@@ -82,7 +82,7 @@ export default function Page({ params }: { params: { id: string } }) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={async () => {
-          await approvePengaduan(pelaporValues.user_ktp);
+          await approvePengaduan(pelaporValues.user_mail);
         }}
       />
 
@@ -110,11 +110,11 @@ export default function Page({ params }: { params: { id: string } }) {
           <span className="text-lg font-semibold">Data Pelapor</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
-              labelText={"KTP Pelapor"}
+              labelText={"Email Pelapor"}
               inputName={"userKtp"}
               readOnly={true}
               inputPlaceholder={""}
-              defValue={pelaporValues.user_ktp}
+              defValue={pelaporValues.user_mail}
             />
 
             <TextInput
@@ -177,21 +177,6 @@ export default function Page({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {pengaduanValues.laporan_status == status_laporan.S ? (
-          <>
-            <hr />
-
-            <div className="flex justify-center">
-              <DetailButtonSubmit
-                onPress={() => setIsModalOpen(true)}
-                icon={<FaCheck />}
-                title={"Approve"}
-              />
-            </div>
-          </>
-        ) : (
-          <></>
-        )}
       </MenuContainer>
     </section>
   );

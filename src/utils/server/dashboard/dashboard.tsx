@@ -99,24 +99,6 @@ export async function GetDashboardAdmin() {
     })
   );
 
-  const queryCountsRejected = await Promise.all(
-    Array.from({ length: 12 }, async (_, i) => {
-      const month = i + 1;
-      const { startDate, endDate } = getMonthDateRange(currentYear, month);
-
-      const count = await prisma.laporan.count({
-        where: {
-          laporan_status: status_laporan.R,
-          laporan_tgl_send: {
-            gte: startDate,
-            lte: endDate,
-          },
-        },
-      });
-      return { month, count };
-    })
-  );
-
   const queryCountsDone = await Promise.all(
     Array.from({ length: 12 }, async (_, i) => {
       const month = i + 1;
@@ -143,23 +125,22 @@ export async function GetDashboardAdmin() {
     statistkUnconfirm: queryCountsUnconfirm,
     statistikConfirmed: queryCountsConfirmed,
     statistikProgress: queryCountsProgress,
-    statistikRejected: queryCountsRejected,
     statistkDone: queryCountsDone,
   };
 }
 
-export async function GetDashboardBidang(userRole: string) {
+export async function GetDashboardPegawai(pegawaiNip: string) {
   const queryPengaduan = await prisma.laporan.count({
     where: {
       laporan_type: type_laporan.P,
-      laporan_action: inputRoleType[userRole],
+      pegawai_nip: pegawaiNip,
     },
   });
 
   const queryPermohonan = await prisma.laporan.count({
     where: {
       laporan_type: type_laporan.B,
-      laporan_action: inputRoleType[userRole],
+      pegawai_nip: pegawaiNip,
     },
   });
 
@@ -173,7 +154,7 @@ export async function GetDashboardBidang(userRole: string) {
       const count = await prisma.laporan.count({
         where: {
           laporan_status: status_laporan.S,
-          laporan_action: inputRoleType[userRole],
+          pegawai_nip: pegawaiNip,
           laporan_tgl_send: {
             gte: startDate,
             lte: endDate,
@@ -192,7 +173,7 @@ export async function GetDashboardBidang(userRole: string) {
       const count = await prisma.laporan.count({
         where: {
           laporan_status: status_laporan.C,
-          laporan_action: inputRoleType[userRole],
+          pegawai_nip: pegawaiNip,
           laporan_tgl_send: {
             gte: startDate,
             lte: endDate,
@@ -211,26 +192,7 @@ export async function GetDashboardBidang(userRole: string) {
       const count = await prisma.laporan.count({
         where: {
           laporan_status: status_laporan.P,
-          laporan_action: inputRoleType[userRole],
-          laporan_tgl_send: {
-            gte: startDate,
-            lte: endDate,
-          },
-        },
-      });
-      return { month, count };
-    })
-  );
-
-  const queryCountsRejected = await Promise.all(
-    Array.from({ length: 12 }, async (_, i) => {
-      const month = i + 1;
-      const { startDate, endDate } = getMonthDateRange(currentYear, month);
-
-      const count = await prisma.laporan.count({
-        where: {
-          laporan_status: status_laporan.R,
-          laporan_action: inputRoleType[userRole],
+          pegawai_nip: pegawaiNip,
           laporan_tgl_send: {
             gte: startDate,
             lte: endDate,
@@ -249,7 +211,7 @@ export async function GetDashboardBidang(userRole: string) {
       const count = await prisma.laporan.count({
         where: {
           laporan_status: status_laporan.D,
-          laporan_action: inputRoleType[userRole],
+          pegawai_nip: pegawaiNip,
           laporan_tgl_send: {
             gte: startDate,
             lte: endDate,
@@ -266,7 +228,6 @@ export async function GetDashboardBidang(userRole: string) {
     statistkUnconfirm: queryCountsUnconfirm,
     statistikConfirmed: queryCountsConfirmed,
     statistikProgress: queryCountsProgress,
-    statistikRejected: queryCountsRejected,
     statistkDone: queryCountsDone,
   };
 }

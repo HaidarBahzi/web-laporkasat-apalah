@@ -1,25 +1,26 @@
-import {SessionOptions} from "iron-session";
+import { SessionOptions } from "iron-session";
 
 export interface SessionData {
-    userId?: string;
-    username?: string;
-    img?: string;
-    role?: string;
-    expires?: Date;
-    isLoggedIn: boolean;
+  userId?: string;
+  username?: string;
+  img?: string;
+  role?: string;
+  expires?: Date;
+  isLoggedIn: boolean;
 }
 
 export const defaultSession: SessionData = {
-    isLoggedIn: false,
+  isLoggedIn: false,
 };
 
 export const sessionOptions: SessionOptions = {
-    // You need to create a secret key at least 32 characters long.
-    password: process.env.SESSION_SECRET!,
-    cookieName: "web-laporkasat-lib",
-    cookieOptions: {
-        httpOnly: true,
-        // Secure only works in `https` environments. So if the environment is `https`, it'll return true.
-        secure: process.env.NODE_ENV === "production",
-    },
+  // You need to create a secret key at least 32 characters long.
+  password: process.env.SESSION_SECRET!,
+  cookieName: "web-laporkasat-lib",
+  cookieOptions: {
+    httpOnly: true,
+    // Secure only works in `https` environments. So if the environment is `https`, it'll return true.
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  },
 };

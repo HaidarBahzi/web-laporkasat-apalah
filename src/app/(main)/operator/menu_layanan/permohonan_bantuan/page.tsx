@@ -12,19 +12,14 @@ import { GetAllPermohonanBantuan } from "@/utils/server/permohonan_bantuan/permo
 import { IoMdInformationCircle } from "react-icons/io";
 import { MdLocalPrintshop } from "react-icons/md";
 import {
-  formatter,
-  laporanStatus,
-  PermohonanType,
-  roleType,
-} from "@/components/options";
-import { PrintLaporanPermohonanDetail } from "@/utils/server/print_laporan/print_detail";
-import {
+  FaSort,
+  FaSortUp,
+  FaSortDown,
   FaAngleDoubleLeft,
   FaAngleDoubleRight,
-  FaSort,
-  FaSortDown,
-  FaSortUp,
 } from "react-icons/fa";
+import { formatter, laporanStatus, PermohonanType } from "@/components/options";
+import { PrintLaporanPermohonanDetail } from "@/utils/server/print_laporan/print_detail";
 
 type SortKey = keyof PermohonanType;
 
@@ -201,9 +196,9 @@ export default function Page() {
                     <th>
                       <button
                         className="flex items-center gap-2"
-                        onClick={() => sortData("laporan_action")}
+                        onClick={() => sortData("pegawai_nama")}
                       >
-                        ACTION {getSortIcon("laporan_action")}
+                        ACTION {getSortIcon("pegawai_nama")}
                       </button>
                     </th>
                     <th>
@@ -255,9 +250,9 @@ export default function Page() {
                       <td>{value.laporan_title}</td>
                       <td>{value.laporan_location}</td>
                       <td>
-                        {value.laporan_action == null
+                        {value.pegawai_nama == null
                           ? "Belum ditindak"
-                          : roleType[value.laporan_action]}
+                          : value.pegawai_nama}
                       </td>
                       <td>{laporanStatus[value.laporan_status]}</td>
                     </tr>

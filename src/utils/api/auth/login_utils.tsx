@@ -6,10 +6,10 @@ import prisma from "@/utils/lib/prisma";
 export async function LoginProcess(userKtp: string, userPassword: string) {
   const query = await prisma.users.findUnique({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
     },
     select: {
-      user_ktp: true,
+      user_mail: true,
       user_password: true,
       user_status: true,
       user_phone: true,
@@ -24,7 +24,7 @@ export async function LoginProcess(userKtp: string, userPassword: string) {
 export async function CheckUser(userKtp: string) {
   const query = await prisma.users.count({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
     },
   });
 

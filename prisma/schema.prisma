@@ -78,31 +78,30 @@ enum setup_status_aktif {
 enum setup_role {
   A // Admin
   K // Kasat
-  B // Bupati
-  G // Gakda
-  L // Lindam
-  T // Tibum
-  S // Sekretariat
   O // Operator
+  KB // Kepala Bidang
+  U // User
 }
 
 model pegawai {
-  pegawai_nip             String             @id @unique @db.VarChar(20)
-  pegawai_nik             String             @db.VarChar(16)
-  pegawai_password        String             @db.Text
-  pegawai_nama            String             @db.VarChar(100)
-  pegawai_jk              setup_kelamin
-  pegawai_tempat_lahir    String             @db.VarChar(255)
-  pegawai_tanggal_lahir   DateTime           @db.Date
-  pegawai_phone           String             @db.VarChar(16)
-  pegawai_email           String             @db.VarChar(100)
-  pegawai_alamat          String             @db.Text
-  pegawai_foto            String             @db.Text
-  pegawai_jabatan         String             @db.Text
-  agama_id                Int
-  pendidikan_id           Int
-  status_pegawai_id       Int
-  status_kawin_id         Int
+  pegawai_nip           String        @id @unique @db.VarChar(20)
+  pegawai_nik           String        @db.VarChar(16)
+  pegawai_password      String        @db.Text
+  pegawai_nama          String        @db.VarChar(100)
+  pegawai_jk            setup_kelamin
+  pegawai_tempat_lahir  String        @db.VarChar(255)
+  pegawai_tanggal_lahir DateTime      @db.Date
+  pegawai_phone         String        @db.VarChar(16)
+  pegawai_email         String        @db.VarChar(100)
+  pegawai_alamat        String        @db.Text
+  pegawai_foto          String        @db.Text
+  pegawai_jabatan       String        @db.Text
+
+  agama_id          Int
+  pendidikan_id     Int
+  status_pegawai_id Int
+  status_kawin_id   Int
+
   pegawai_kewarganegaraan String             @db.VarChar(20)
   pegawai_status          setup_status_aktif @default(A)
   pegawai_role            setup_role
@@ -129,7 +128,7 @@ enum setup_peringatan {
 
 model peringatan {
   peringatan_id String @id @unique @db.VarChar(36)
-  user_ktp      String @db.VarChar(16)
+  user_mail     String @db.VarChar(255)
 
   peringatan_message String           @db.Text
   peringatan_type    setup_peringatan
@@ -140,7 +139,7 @@ model peringatan {
 
 model pelanggaran {
   pelanggaran_id String @id @unique @db.VarChar(36)
-  user_ktp       String @db.VarChar(16)
+  user_mail      String @db.VarChar(255)
   laporan_id     String @unique @db.VarChar(36)
 
   pelanggar_fullname      String        @db.Text
@@ -243,7 +242,7 @@ enum verify_status {
 }
 
 model user_verification {
-  user_ktp           String        @id @db.VarChar(16)
+  user_mail          String        @id @db.VarChar(255)
   user_code          String        @db.VarChar(6)
   user_verify_status verify_status @default(NV)
   user_expired       DateTime      @db.Timestamp()
@@ -253,7 +252,7 @@ model user_verification {
 }
 
 model reset_pass_verification {
-  user_ktp           String        @id @db.VarChar(16)
+  user_mail          String        @id @db.VarChar(255)
   user_code          String        @db.VarChar(6)
   user_verify_status verify_status @default(NV)
   user_expired       DateTime      @db.Timestamp()
@@ -269,14 +268,12 @@ enum user_status {
 }
 
 model users {
-  user_ktp      String @id @db.VarChar(16)
-  user_password String @db.Text
-  user_fullname String @db.VarChar(255)
-  user_phone    String @db.VarChar(13)
-  user_alamat   String @db.Text
-
-  user_warning Int         @db.TinyInt
-  user_status  user_status @default(A)
+  user_mail     String      @id @unique @db.VarChar(255)
+  user_password String      @db.Text
+  user_fullname String      @db.VarChar(255)
+  user_phone    String      @db.VarChar(13)
+  user_alamat   String      @db.Text
+  user_status   user_status @default(A)
 
   created_at DateTime  @db.Timestamp()
   updated_at DateTime? @db.Timestamp()
@@ -286,7 +283,6 @@ enum status_laporan {
   S // Terkirim
   C // Terkonfirmasi
   P // Sedang Ditindak
-  R // Rejected
   D // Selesai
 }
 
@@ -297,14 +293,14 @@ enum type_laporan {
 
 model laporan {
   laporan_id          String         @id @unique @db.VarChar(36)
-  user_ktp            String         @db.VarChar(16)
+  user_mail           String         @db.VarChar(255)
   laporan_title       String         @db.VarChar(100)
   laporan_description String         @db.Text
   laporan_location    String         @db.Text
   laporan_document    String         @db.Text
   laporan_status      status_laporan @default(S)
   laporan_type        type_laporan
-  laporan_action      setup_role?
+  pegawai_nip         String         @db.VarChar(20)
 
   laporan_tgl_send     DateTime  @db.Timestamp()
   laporan_tgl_confirm  DateTime? @db.Timestamp(0)
@@ -323,7 +319,7 @@ enum status_inbox {
 
 model notification {
   notif_id          String       @id @unique @db.VarChar(36)
-  user_ktp          String       @db.VarChar(16)
+  user_mail         String       @db.VarChar(255)
   notif_title       String       @db.VarChar(100)
   notif_description String       @db.Text
   notif_tgl_send    DateTime     @db.Timestamp()

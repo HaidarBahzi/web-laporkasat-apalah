@@ -6,11 +6,10 @@ import prisma from "@/utils/lib/prisma";
 export async function GetAllUsers() {
   const query = await prisma.users.findMany({
     select: {
-      user_ktp: true,
+      user_mail: true,
       user_fullname: true,
       user_alamat: true,
       user_phone: true,
-      user_warning: true,
       user_status: true,
     },
   });
@@ -21,10 +20,10 @@ export async function GetAllUsers() {
 export async function GetDetailUser(userKtp: string) {
   const query = await prisma.users.findUnique({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
     },
     select: {
-      user_ktp: true,
+      user_mail: true,
       user_fullname: true,
       user_alamat: true,
       user_phone: true,
@@ -56,12 +55,11 @@ export async function SubmitUserData(formData: FormData) {
 
   const submitData = await prisma.users.create({
     data: {
-      user_ktp: userKtp!,
+      user_mail: userKtp!,
       user_password: passwordHash,
       user_fullname: userName!,
       user_phone: userPhone!,
       user_alamat: userAlamat!,
-      user_warning: 0,
       user_status: user_status.A,
 
       created_at: date.toISOString(),
@@ -105,15 +103,14 @@ export async function SubmitUserEdit(
 
   const submitData = await prisma.users.update({
     where: {
-      user_ktp: userKtpSource,
+      user_mail: userKtpSource,
     },
     data: {
-      user_ktp: userKtp!,
+      user_mail: userKtp!,
       user_password: finalPassword,
       user_fullname: userName!,
       user_phone: userPhone!,
       user_alamat: userAlamat!,
-      user_warning: 0,
       user_status: user_status.A,
 
       updated_at: date.toISOString(),
@@ -125,12 +122,4 @@ export async function SubmitUserEdit(
   }
 
   return { message: "User Berhasil Di edit!", type: "success" };
-}
-
-export async function DeleteUser(userKtp: string) {
-  await prisma.users.delete({
-    where: {
-      user_ktp: userKtp,
-    },
-  });
 }

@@ -21,7 +21,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -33,7 +33,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -66,7 +66,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -78,7 +78,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -111,7 +111,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -123,7 +123,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -156,7 +156,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -168,7 +168,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -201,7 +201,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -213,7 +213,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -244,7 +244,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
     },
     select: {
       laporan_tgl_send: true,
-      user_ktp: true,
+      user_mail: true,
       laporan_title: true,
       laporan_description: true,
       laporan_location: true,
@@ -256,7 +256,7 @@ export async function PrintLaporanPengaduanAll(formData: FormData) {
     queryPengaduan.map(async (pengaduan) => {
       const queryUser = await prisma.users.findUnique({
         where: {
-          user_ktp: pengaduan.user_ktp,
+          user_mail: pengaduan.user_mail,
         },
         select: {
           user_fullname: true,
@@ -294,7 +294,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -306,7 +306,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -339,7 +339,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -351,7 +351,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -384,7 +384,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -396,7 +396,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -429,7 +429,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -441,7 +441,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -474,7 +474,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       },
       select: {
         laporan_tgl_send: true,
-        user_ktp: true,
+        user_mail: true,
         laporan_title: true,
         laporan_description: true,
         laporan_location: true,
@@ -486,7 +486,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
       queryPengaduan.map(async (pengaduan) => {
         const queryUser = await prisma.users.findUnique({
           where: {
-            user_ktp: pengaduan.user_ktp,
+            user_mail: pengaduan.user_mail,
           },
           select: {
             user_fullname: true,
@@ -517,7 +517,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
     },
     select: {
       laporan_tgl_send: true,
-      user_ktp: true,
+      user_mail: true,
       laporan_title: true,
       laporan_description: true,
       laporan_location: true,
@@ -529,7 +529,7 @@ export async function PrintLaporanPermohonanAll(formData: FormData) {
     queryPengaduan.map(async (pengaduan) => {
       const queryUser = await prisma.users.findUnique({
         where: {
-          user_ktp: pengaduan.user_ktp,
+          user_mail: pengaduan.user_mail,
         },
         select: {
           user_fullname: true,

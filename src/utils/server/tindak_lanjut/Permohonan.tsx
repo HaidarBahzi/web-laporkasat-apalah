@@ -34,7 +34,7 @@ export async function GetAllPermohonanTindak() {
           laporan_tgl_send: true,
           laporan_tgl_confirm: true,
           laporan_tgl_progress: true,
-          user_ktp: true,
+          user_mail: true,
           laporan_title: true,
           laporan_location: true,
           laporan_status: true,

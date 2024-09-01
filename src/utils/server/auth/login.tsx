@@ -67,11 +67,6 @@ export async function WebLoginProcess(formData: FormData) {
     A: "/admin/", // Admin
     U: "/user/", // User
     K: "/kasat/", // Kasat
-    B: "/bupati/", // Bupati
-    G: "/gakda/", // Gakda
-    L: "/lindam/", // Lindam
-    T: "/tibum/", // Tibum
-    S: "/sekretariat/", // Sekretariat
     O: "/operator/", // Operator
   };
 

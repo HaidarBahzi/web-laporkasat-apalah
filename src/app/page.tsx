@@ -12,14 +12,15 @@ import { useState } from "react";
 export default function Page() {
   const [errorMessage, setErrorMessage] = useState({
     message: "",
+    loading: false,
   });
 
   async function handleClientSubmit(formData: FormData) {
-    setErrorMessage({ message: "" });
+    setErrorMessage({ message: "", loading: true });
 
     const response = await WebLoginProcess(formData);
 
-    setErrorMessage({ message: response?.message! });
+    setErrorMessage({ message: response?.message!, loading: false });
   }
 
   return (
@@ -76,9 +77,10 @@ export default function Page() {
 
           <button
             type="submit"
+            disabled={errorMessage.loading ? true : false}
             className="w-full rounded no-animation border-none text-xs font-medium p-2.5 bg-blue-600 text-white hover:bg-blue-500"
           >
-            Login
+            {errorMessage.loading ? "Loading" : "Login"}
           </button>
         </form>
       </div>

@@ -15,7 +15,6 @@ export default function Page() {
     chart_unconfirm: Array(12).fill(0),
     chart_confirm: Array(12).fill(0),
     chart_progress: Array(12).fill(0),
-    chart_reject: Array(12).fill(0),
     chart_done: Array(12).fill(0),
   });
 
@@ -32,7 +31,6 @@ export default function Page() {
         chart_unconfirm: statistic.statistkUnconfirm.map((item) => item.count),
         chart_confirm: statistic.statistikConfirmed.map((item) => item.count),
         chart_progress: statistic.statistikProgress.map((item) => item.count),
-        chart_reject: statistic.statistikRejected.map((item) => item.count),
         chart_done: statistic.statistkDone.map((item) => item.count),
       });
     }
@@ -73,7 +71,6 @@ export default function Page() {
             dataChartUnconfirm={detailDashboard.chart_unconfirm}
             dataChartConfirm={detailDashboard.chart_confirm}
             dataChartProgress={detailDashboard.chart_progress}
-            dataChartReject={detailDashboard.chart_reject}
             dataChartDone={detailDashboard.chart_done}
             icon={<FaHeadSideCough />}
             title={"Statistik Laporan Tahun ini"}

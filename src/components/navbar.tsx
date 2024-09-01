@@ -73,20 +73,6 @@ export function NavbarAdmin({ link }: { link: string }) {
 
           <li>
             <NavbarComponentDropdownSingle
-              link={`/${link}/master`}
-              title={"Master"}
-              icon={<GoDatabase />}
-            >
-              <NavbarComponentDropdownLink
-                link={`/${link}/master/assets`}
-                title={"Aset Mobile"}
-                icon={<IoMdPhonePortrait />}
-              />
-            </NavbarComponentDropdownSingle>
-          </li>
-
-          <li>
-            <NavbarComponentDropdownSingle
               link={`/${link}/menu_layanan`}
               title={"Menu Layanan"}
               icon={<FaRegNewspaper />}

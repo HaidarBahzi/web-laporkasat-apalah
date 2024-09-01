@@ -120,7 +120,7 @@ export async function GetDetailPelanggaran(tindakId: string) {
 
   const queryUser = await prisma.users.findUnique({
     where: {
-      user_ktp: queryPelanggaranInclude?.user_ktp,
+      user_mail: queryPelanggaranInclude?.user_mail,
     },
   });
 
@@ -258,7 +258,7 @@ export async function SubmitPelanggaran(
   const queryPelanggaran = await prisma.pelanggaran.create({
     data: {
       pelanggaran_id: pelanggarId,
-      user_ktp: userKtp,
+      user_mail: userKtp,
       laporan_id: laporanId,
 
       pelanggar_fullname: data.pelanggar.nama,

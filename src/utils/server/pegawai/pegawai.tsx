@@ -7,6 +7,7 @@ import { join } from "path";
 import { updateSession } from "@/utils/lib/session";
 import prisma from "@/utils/lib/prisma";
 import { inputJkType, inputRoleType } from "@/components/options";
+import Client from "node-scp";
 
 export async function GetAllPegawai() {
   const queryPegawai = await prisma.pegawai.findMany({
@@ -407,13 +408,38 @@ async function UploadImage(formData: FormData) {
   }
 
   try {
-    await writeFile(`${uploadDir}/${filename}`, Buffer.from(buffer));
+    const localFilePath = `${uploadDir}/${filename}`;
+    await writeFile(localFilePath, Buffer.from(buffer));
 
-    return {
-      message: "Gambar Berhasil Diupload!",
-      type: "success",
-      file: filename,
-    };
+    try {
+      const client = await Client({
+        host: "103.30.180.221",
+        port: 2233,
+        username: "vps2-bkpsdm",
+        password: "vps2BkpSdm-KUDu5!!",
+      });
+
+      const check = await client.exists("www/foto-pegawai");
+
+      if (check == false) {
+        await client.mkdir("www/foto-pegawai");
+      }
+
+      await client.uploadFile(localFilePath, `www/foto-pegawai/${filename}`);
+      client.close();
+
+      return {
+        message: "Gambar Berhasil Diupload dan Dikirim ke Server!",
+        type: "success",
+        file: filename,
+      };
+    } catch (scpError) {
+      console.error("SCP Upload Error\n", scpError);
+      return {
+        message: "Gambar Diupload Lokal, tetapi Gagal Dikirim ke Server!",
+        type: "failed",
+      };
+    }
   } catch (e) {
     console.error("Error while trying to upload a file\n", e);
     return { message: "Gambar Gagal Diupload!", type: "failed" };

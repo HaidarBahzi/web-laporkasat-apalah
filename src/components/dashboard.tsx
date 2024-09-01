@@ -28,7 +28,6 @@ export function VerticalBarChart({
   dataChartUnconfirm,
   dataChartConfirm,
   dataChartProgress,
-  dataChartReject,
   dataChartDone,
   icon,
   title,
@@ -37,7 +36,6 @@ export function VerticalBarChart({
   dataChartUnconfirm: number[];
   dataChartConfirm: number[];
   dataChartProgress: number[];
-  dataChartReject: number[];
   dataChartDone: number[];
   icon: React.ReactNode;
   title: string;
@@ -76,12 +74,6 @@ export function VerticalBarChart({
         label: "Laporan Sedang Ditindak",
         backgroundColor: "rgb(102, 178, 255)",
         data: dataChartProgress,
-        fill: false,
-      },
-      {
-        label: "Laporan Ditolak",
-        backgroundColor: "rgb(255, 102, 102)",
-        data: dataChartReject,
         fill: false,
       },
       {

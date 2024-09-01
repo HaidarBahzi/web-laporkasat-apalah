@@ -7,12 +7,12 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { ktp, auth } = req.body;
+    const { email, auth } = req.body;
 
-    if (!ktp || !auth) {
+    if (!email || !auth) {
       return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
         status: "error",
-        message: "Tolong masukkan KTP dan token anda",
+        message: "Tolong masukkan email dan token anda",
       });
     }
 
@@ -26,15 +26,7 @@ export default async function handler(
       });
     }
 
-    const numberRegex = /^\d+$/;
-
-    if (ktp.length != 16 || !numberRegex.test(ktp)) {
-      return res
-        .status(StatusCodes.UNPROCESSABLE_ENTITY)
-        .json({ status: "error", message: "KTP anda tidak valid" });
-    }
-
-    const checkUser = await CheckUser(ktp);
+    const checkUser = await CheckUser(email);
 
     if (checkUser == 0) {
       return res

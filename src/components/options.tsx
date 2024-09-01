@@ -26,30 +26,22 @@ const inputDataType: any = {
   S: status_laporan.S,
   C: status_laporan.C,
   P: status_laporan.P,
-  R: status_laporan.R,
   D: status_laporan.D,
 };
 
 const roleType: any = {
   A: "Admin",
   K: "Kasat",
-  B: "Bupati",
-  J: "Jadwal",
-  G: "Gakda",
-  L: "Lindam",
-  T: "Tibum",
-  S: "Sekretariat",
   O: "Operator",
+  U: "User",
+  KB: "Kepala Bidang",
 };
 
 const inputRoleType: any = {
   A: setup_role.A,
   K: setup_role.K,
-  B: setup_role.B,
-  G: setup_role.G,
-  L: setup_role.L,
-  T: setup_role.T,
-  S: setup_role.S,
+  U: setup_role.U,
+  KB: setup_role.KB,
   O: setup_role.O,
 };
 
@@ -180,7 +172,8 @@ type PengaduanType = {
   laporan_title: string;
   laporan_description: string;
   laporan_location: string;
-  laporan_action: string | null;
+  pegawai_nip: string | null;
+  pegawai_nama: string | null;
   laporan_document: string;
   laporan_status: status_laporan;
 };
@@ -217,7 +210,8 @@ type PermohonanType = {
   laporan_title: string;
   laporan_description: string;
   laporan_location: string;
-  laporan_action: string | null;
+  pegawai_nip: string | null;
+  pegawai_nama: string | null;
   laporan_document: string;
   laporan_status: status_laporan;
 };
@@ -245,11 +239,10 @@ type PenyidikType = {
 };
 
 type UsersType = {
-  user_ktp: string;
+  user_mail: string;
   user_fullname: string;
   user_phone: string;
   user_alamat: string;
-  user_warning: number;
   user_status: user_status;
 };
 

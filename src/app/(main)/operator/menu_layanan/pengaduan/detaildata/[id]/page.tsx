@@ -20,11 +20,11 @@ import { status_laporan } from "@prisma/client";
 import { FaCheck } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { ModalAlertApprove } from "@/components/modal";
+import { ModalAlertApprove, ModalAlertReturn } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({
-    user_ktp: "",
+    user_mail: "",
     user_fullname: "",
     user_alamat: "",
     user_phone: "",
@@ -41,6 +41,8 @@ export default function Page({ params }: { params: { id: string } }) {
   const router = useRouter();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   async function approvePengaduan(userKtp: string) {
     try {
@@ -82,7 +84,15 @@ export default function Page({ params }: { params: { id: string } }) {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={async () => {
-          await approvePengaduan(pelaporValues.user_ktp);
+          await approvePengaduan(pelaporValues.user_mail);
+        }}
+      />
+
+      <ModalAlertReturn
+        isOpen={isAlertOpen}
+        onClose={() => setIsAlertOpen(false)}
+        onSubmit={async () => {
+          // await approvePengaduan(pelaporValues.user_mail);
         }}
       />
 
@@ -110,11 +120,11 @@ export default function Page({ params }: { params: { id: string } }) {
           <span className="text-lg font-semibold">Data Pelapor</span>
           <div className="grid grid-cols-6 gap-5">
             <TextInput
-              labelText={"KTP Pelapor"}
+              labelText={"Email Pelapor"}
               inputName={"userKtp"}
               readOnly={true}
               inputPlaceholder={""}
-              defValue={pelaporValues.user_ktp}
+              defValue={pelaporValues.user_mail}
             />
 
             <TextInput
@@ -185,7 +195,13 @@ export default function Page({ params }: { params: { id: string } }) {
               <DetailButtonSubmit
                 onPress={() => setIsModalOpen(true)}
                 icon={<FaCheck />}
-                title={"Approve"}
+                title={"Konfirmasi"}
+              />
+
+              <DetailButtonSubmit
+                onPress={() => setIsAlertOpen(true)}
+                icon={<FaCheck />}
+                title={"Revisi Aduan"}
               />
             </div>
           </>

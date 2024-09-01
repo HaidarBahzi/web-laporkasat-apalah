@@ -17,7 +17,7 @@ export async function GetDashboard(userKtp: string) {
 
   const fetchStatisticSendCount = await prisma.laporan.count({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
       laporan_status: status_laporan.S,
     },
   });

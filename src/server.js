@@ -44,7 +44,7 @@ app.post("/notification/add", async (req, res) => {
   const query = await prisma.notification.create({
     data: {
       notif_id: uuidv4(),
-      user_ktp: user_id,
+      user_mail: user_id,
       notif_title: title,
       notif_description: message,
       notif_tgl_send: date.toISOString(),

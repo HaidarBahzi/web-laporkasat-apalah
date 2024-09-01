@@ -4,6 +4,10 @@ import { verify_status } from "@prisma/client";
 import { addMinutes } from "date-fns";
 import { jwtVerify, SignJWT } from "jose";
 import prisma from "@/utils/lib/prisma";
+import { StatusCodes } from "http-status-codes";
+import { renderToString } from "react-dom/server";
+import { ResetVerifyTemplate } from "@/utils/lib/email/reset-verification-template";
+import nodemailer from "nodemailer";
 
 export async function EditUser(userKtp: string, userNewPass: string) {
   const bcrypt = require("bcrypt");
@@ -14,7 +18,7 @@ export async function EditUser(userKtp: string, userNewPass: string) {
 
   const query = await prisma.users.update({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
     },
     data: {
       user_password: finalPassword,
@@ -28,7 +32,7 @@ export async function EditUser(userKtp: string, userNewPass: string) {
 export async function DeleteOtp(userKtp: string) {
   await prisma.reset_pass_verification.delete({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
     },
   });
 }
@@ -40,7 +44,7 @@ export async function SaveOtp(userKtp: string, userCode: string) {
 
   const query = await prisma.reset_pass_verification.create({
     data: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
       user_code: userCode,
       user_expired: newDate,
 
@@ -56,7 +60,7 @@ export async function EditOtp(userKtp: string) {
 
   const query = await prisma.reset_pass_verification.update({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
     },
     data: {
       user_verify_status: verify_status.V,
@@ -72,7 +76,7 @@ export async function VerifyOtp(userKtp: string, userOtp: string) {
 
   const query = await prisma.reset_pass_verification.findUnique({
     where: {
-      user_ktp: userKtp,
+      user_mail: userKtp,
     },
     select: {
       user_verify_status: true,
@@ -102,7 +106,7 @@ export async function VerifyOtp(userKtp: string, userOtp: string) {
   }
 }
 
-export async function SendOtp(phoneDes: string, ktpDes: string) {
+export async function SendOtp(emailDes: string) {
   const otpGenerator = require("otp-generator");
 
   const otpCode = otpGenerator.generate(6, {
@@ -111,48 +115,38 @@ export async function SendOtp(phoneDes: string, ktpDes: string) {
     specialChars: false,
   });
 
-  let otpMessage = `
-Halo! Berikut adalah kode OTP Anda untuk mereset kata sandi akun LAPOR KASAT:
-
-*${otpCode}*
-
-Kode ini berlaku selama 2 (dua) menit.
-
-Mohon untuk tidak memberikan kode ini kepada siapapun.
-
-Terima kasih!`;
-
-  const data = {
-    target: phoneDes,
-    message: otpMessage,
-  };
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.BOT_EMAIL_SENDER,
+      pass: process.env.BOT_EMAIL_PASS,
+    },
+  });
 
   try {
-    const response = await fetch("https://api.fonnte.com/send", {
-      method: "POST",
-      headers: {
-        Authorization: process.env.WHATSAPP_BOT_TOKEN!,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(data),
+    const emailHtml = renderToString(<ResetVerifyTemplate code={otpCode} />);
+
+    transporter.sendMail({
+      from: '"Satpol PP Kudus" <haidarbahzi07@gmail.com>',
+      to: emailDes,
+      subject: "Konfirmasi Reset Password - Lapor Kasat",
+      html: emailHtml,
     });
 
-    const dbResponse = await SaveOtp(ktpDes, otpCode);
+    await SaveOtp(emailDes, otpCode);
 
-    if (response.ok && dbResponse != null) {
-      return {
-        message: "Successfuly send a OTP Verification SMS",
-        status: "success",
-      };
-    } else {
-      await DeleteOtp(ktpDes);
-      return {
-        message: "Failed to send a OTP Verification SMS",
+    return Response.json(
+      { status: "success", message: `Berhasil mengirim email ke ${emailDes}` },
+      { status: StatusCodes.OK }
+    );
+  } catch (e) {
+    return Response.json(
+      {
         status: "error",
-      };
-    }
-  } catch (e: any) {
-    return { message: "Something Went Wrong", status: "error" };
+        message: `Sepertinya ada yang salah, silahkan coba lagi`,
+      },
+      { status: StatusCodes.INTERNAL_SERVER_ERROR }
+    );
   }
 }
 
