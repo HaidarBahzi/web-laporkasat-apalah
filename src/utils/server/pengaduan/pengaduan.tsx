@@ -217,6 +217,25 @@ export async function DoneLaporan(pengaduanId: string) {
   return query;
 }
 
+export async function RejectLaporan(pengaduanId: string) {
+  await updateSession();
+
+  const date = new Date();
+
+  const query = await prisma.laporan.update({
+    where: {
+      laporan_id: pengaduanId,
+    },
+    data: {
+      laporan_status: status_laporan.D,
+      laporan_tgl_reject: date.toISOString(),
+      updated_at: date.toISOString(),
+    },
+  });
+
+  return query;
+}
+
 export async function UploadImage(formData: FormData) {
   const pengaduanFoto = formData.get("pengaduanFoto") as File;
 

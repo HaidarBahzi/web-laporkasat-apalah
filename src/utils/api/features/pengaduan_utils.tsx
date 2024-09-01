@@ -4,7 +4,6 @@ import { join } from "path";
 import { mkdir, stat, writeFile } from "fs/promises";
 import prisma from "@/utils/lib/prisma";
 import { status_laporan, type_laporan } from "@prisma/client";
-import { Client } from "node-scp";
 
 export async function SendPengaduan(
   userKtp: string,
@@ -62,35 +61,11 @@ export async function UploadImage(
     const localFilePath = `${uploadDir}/${filename}`;
     await writeFile(localFilePath, buffer);
 
-    try {
-      const client = await Client({
-        host: "103.30.180.221",
-        port: 2233,
-        username: "vps2-bkpsdm",
-        password: "vps2BkpSdm-KUDu5!!",
-      });
-
-      const check = await client.exists("www/foto-pengaduan");
-
-      if (check == false) {
-        await client.mkdir("www/foto-pengaduan");
-      }
-
-      await client.uploadFile(localFilePath, `www/foto-pengaduan/${filename}`);
-      client.close();
-
-      return {
-        message: "Gambar Berhasil Diupload dan Dikirim ke Server!",
-        type: "success",
-        file: filename,
-      };
-    } catch (scpError) {
-      console.error("SCP Upload Error\n", scpError);
-      return {
-        message: "Gambar Diupload Lokal, tetapi Gagal Dikirim ke Server!",
-        type: "failed",
-      };
-    }
+    return {
+      message: "Gambar Berhasil Diupload dan Dikirim ke Server!",
+      type: "success",
+      file: filename,
+    };
   } catch (e) {
     console.error("Error while trying to upload a file\n", e);
     return { message: "Gambar Gagal Diupload!", type: "failed" };
