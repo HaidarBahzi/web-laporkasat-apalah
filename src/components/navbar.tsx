@@ -411,7 +411,7 @@ function NavbarComponentProfile({
       <img
         className="h-10 w-10 rounded"
         alt="User Profile Image"
-        src={`http://103.30.180.221:3000/assets/foto-pegawai/${userImage}`}
+        src={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pegawai/${userImage}`}
       />
     </Link>
   );

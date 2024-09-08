@@ -207,7 +207,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <Link
                 target="_blank"
-                href={`http://103.30.180.221:3000/assets/pdf-uploads/${permohonanValues.laporan_document}`}
+                href={`http://103.30.180.221/web-laporkasat-apalah/assets/pdf-uploads/${permohonanValues.laporan_document}`}
                 className="bg-gray-100 w-fit h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
               >
                 <i>

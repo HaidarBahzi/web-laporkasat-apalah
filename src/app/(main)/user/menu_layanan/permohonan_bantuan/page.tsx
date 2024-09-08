@@ -322,7 +322,7 @@ export default function Page() {
                                 value.laporan_title,
                                 value.laporan_location,
                                 value.laporan_description,
-                                `http://103.30.180.221:3000/assets/pdf-uploads/${value.laporan_document}`
+                                `http://103.30.180.221/web-laporkasat-apalah/assets/pdf-uploads/${value.laporan_document}`
                               )
                             }
                             btnType={"btn-info"}

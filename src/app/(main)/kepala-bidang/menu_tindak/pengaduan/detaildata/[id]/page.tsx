@@ -958,7 +958,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Bukti-Kejadian/${formDataWizard.bukti.bukti_kejadian}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Bukti-Kejadian/${formDataWizard.bukti.bukti_kejadian}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -975,7 +975,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Bukti-Barang/${formDataWizard.bukti.bukti_barang}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Bukti-Barang/${formDataWizard.bukti.bukti_barang}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -992,7 +992,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Bukti-Penyegelan/${formDataWizard.bukti.bukti_penyegelan}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Bukti-Penyegelan/${formDataWizard.bukti.bukti_penyegelan}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1025,7 +1025,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Ktp/${formDataWizard.bukti.dokumen_ktp}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Ktp/${formDataWizard.bukti.dokumen_ktp}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1041,7 +1041,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Pernyataan/${formDataWizard.bukti.dokumen_sp}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Pernyataan/${formDataWizard.bukti.dokumen_sp}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1057,7 +1057,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Peringatan-1/${formDataWizard.bukti.dokumen_sp1}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Peringatan-1/${formDataWizard.bukti.dokumen_sp1}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1073,7 +1073,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Peringatan-2/${formDataWizard.bukti.dokumen_sp2}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Peringatan-2/${formDataWizard.bukti.dokumen_sp2}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1089,7 +1089,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Peringatan-3/${formDataWizard.bukti.dokumen_sp3}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Peringatan-3/${formDataWizard.bukti.dokumen_sp3}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1105,7 +1105,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Laporan-Kejadian/${formDataWizard.bukti.dokumen_lk}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Laporan-Kejadian/${formDataWizard.bukti.dokumen_lk}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1121,7 +1121,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Perintah-Penyitaan/${formDataWizard.bukti.dokumen_spp}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Perintah-Penyitaan/${formDataWizard.bukti.dokumen_spp}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1137,7 +1137,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Berita-Acara-Penyitaan/${formDataWizard.bukti.dokumen_bap}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Berita-Acara-Penyitaan/${formDataWizard.bukti.dokumen_bap}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1153,7 +1153,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Permohonan-Persetujuan/${formDataWizard.bukti.dokumen_p3bb}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Permohonan-Persetujuan/${formDataWizard.bukti.dokumen_p3bb}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1169,7 +1169,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Kuasa/${formDataWizard.bukti.dokumen_psk}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Surat-Kuasa/${formDataWizard.bukti.dokumen_psk}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1185,7 +1185,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Berita-Acara-Pemeriksaan/${formDataWizard.bukti.dokumen_bapc}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Berita-Acara-Pemeriksaan/${formDataWizard.bukti.dokumen_bapc}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>
@@ -1201,7 +1201,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <td>
                       <Link
                         target="_blank"
-                        href={`http://103.30.180.221:3000/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Permohonan-Sidang/${formDataWizard.bukti.dokumen_pst}`}
+                        href={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pelanggaran/${pengaduanValues.laporan_id}/Permohonan-Sidang/${formDataWizard.bukti.dokumen_pst}`}
                         className="bg-gray-300 w-full justify-center h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
                       >
                         <i>

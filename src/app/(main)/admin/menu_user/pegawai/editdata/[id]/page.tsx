@@ -547,7 +547,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     width={0}
                     height={0}
                     sizes="100vw"
-                    src={`http://103.30.180.221:3000/assets/foto-pegawai/${formValues.pegawai_foto}`}
+                    src={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pegawai/${formValues.pegawai_foto}`}
                     className="w-40 h-40 shadow-lg"
                     alt={"Current Image"}
                   />
