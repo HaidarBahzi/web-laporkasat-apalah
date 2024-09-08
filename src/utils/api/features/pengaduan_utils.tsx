@@ -26,6 +26,7 @@ export async function SendPengaduan(
       laporan_type: type_laporan.P,
       laporan_status: status_laporan.S,
       pegawai_nip: "",
+      bidang_id: 0,
       laporan_tgl_send: date.toISOString(),
 
       created_at: date.toISOString(),
@@ -41,7 +42,7 @@ export async function UploadImage(
   const buffer = Buffer.from(base64Image, "base64");
   const relativeUploadDir = "/foto-pengaduan";
   const filename = `pengaduan-${Date.now()}.jpg`;
-  const uploadDir = join(process.cwd(), "/home/haidar", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await stat(uploadDir);

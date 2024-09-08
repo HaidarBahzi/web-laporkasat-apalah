@@ -390,7 +390,7 @@ async function UploadImage(formData: FormData) {
     ""
   )}-${Date.now()}.${image.type.split("/")[1]}`;
 
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await stat(uploadDir);
@@ -425,7 +425,7 @@ async function EditImage(file: File, imgOri: string) {
   const relativeUploadDir = "/foto-pegawai";
   const buffer = await file.arrayBuffer();
 
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await stat(uploadDir);
@@ -458,7 +458,7 @@ async function EditImage(file: File, imgOri: string) {
 export async function DeleteImagePegawai(filename: string) {
   const relativeUploadDir = "/foto-pegawai";
 
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await unlink(`${uploadDir}/${filename}`);

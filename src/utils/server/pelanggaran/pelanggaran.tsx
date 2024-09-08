@@ -346,7 +346,7 @@ async function UploadDocument(
   const relativeUploadDir = `/foto-pelanggaran/${laporanId}/${typeDoc}`;
   let filename = `dokumen-${typeDoc}.jpg`;
 
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await stat(uploadDir);

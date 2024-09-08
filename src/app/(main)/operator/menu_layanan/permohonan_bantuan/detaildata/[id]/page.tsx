@@ -20,7 +20,9 @@ import Link from "next/link";
 import { status_laporan } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { ModalAlertApprove } from "@/components/modal";
+import { ModalAlertApprove, ModalAlertReturn } from "@/components/modal";
+import { FaX } from "react-icons/fa6";
+import { RejectLaporan } from "@/utils/server/pengaduan/pengaduan";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pemohonValues, setPemohonValues] = useState({
@@ -40,6 +42,8 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
   const router = useRouter();
 
   async function approvePermohonan(userKtp: string) {
@@ -52,6 +56,25 @@ export default function Page({ params }: { params: { id: string } }) {
           title: "Konfirmasi Permohonan Bantuan",
           message:
             "Permohonan Bantuan Anda telah dikonfirmasi, terima kasih atas laporannya!",
+        })
+        .then(() => {
+          router.push("/operator/menu_layanan/permohonan_bantuan");
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function rejectPengaduan(userKtp: string) {
+    try {
+      await RejectLaporan(params.id);
+
+      axios
+        .post("http://103.30.180.221:4000/notification/add", {
+          user_id: userKtp,
+          title: "Penolakan Permohonan",
+          message:
+            "Terima kasih sudah mengirimkan permohonan. Setelah kami cek, sayangnya permohonan ini belum bisa kami proses lebih lanjut. Jika ada yang ingin ditanyakan atau ada hal lain yang perlu disampaikan, jangan ragu untuk menghubungi kami.",
         })
         .then(() => {
           router.push("/operator/menu_layanan/permohonan_bantuan");
@@ -82,6 +105,14 @@ export default function Page({ params }: { params: { id: string } }) {
         onClose={() => setIsModalOpen(false)}
         onSubmit={async () => {
           await approvePermohonan(pemohonValues.user_mail);
+        }}
+      />
+
+      <ModalAlertReturn
+        isOpen={isAlertOpen}
+        onClose={() => setIsAlertOpen(false)}
+        onSubmit={async () => {
+          await rejectPengaduan(pemohonValues.user_mail);
         }}
       />
 
@@ -176,7 +207,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <Link
                 target="_blank"
-                href={`${window.location.origin}/pdf-uploads/${permohonanValues.laporan_document}`}
+                href={`http://103.30.180.221:3000/assets/pdf-uploads/${permohonanValues.laporan_document}`}
                 className="bg-gray-100 w-fit h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
               >
                 <i>
@@ -191,7 +222,7 @@ export default function Page({ params }: { params: { id: string } }) {
             <>
               <hr />
 
-              <div className="flex justify-center">
+              <div className="flex justify-center gap-5">
                 <DetailButtonSubmit
                   onPress={() => setIsModalOpen(true)}
                   icon={<FaCheck />}
@@ -199,9 +230,9 @@ export default function Page({ params }: { params: { id: string } }) {
                 />
 
                 <DetailButtonSubmit
-                  onPress={() => setIsModalOpen(true)}
-                  icon={<FaCheck />}
-                  title={"Revisi Aduan"}
+                  onPress={() => setIsAlertOpen(true)}
+                  icon={<FaX />}
+                  title={"Tolak"}
                 />
               </div>
             </>

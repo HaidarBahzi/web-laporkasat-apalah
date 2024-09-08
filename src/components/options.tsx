@@ -26,6 +26,7 @@ const inputDataType: any = {
   S: status_laporan.S,
   C: status_laporan.C,
   P: status_laporan.P,
+  R: status_laporan.R,
   D: status_laporan.D,
 };
 
@@ -35,6 +36,12 @@ const roleType: any = {
   O: "Operator",
   U: "User",
   KB: "Kepala Bidang",
+};
+
+const bidangType: any = {
+  1: "Gakda",
+  2: "Tibum",
+  3: "Lindam",
 };
 
 const inputRoleType: any = {
@@ -55,13 +62,13 @@ const jkType: any = {
   P: "Perempuan",
 };
 
-const userStatus = {
+const userStatus: any = {
   A: "Aktif",
   S: "Suspended",
   B: "Banned",
 };
 
-const pegawaiStatusType = {
+const pegawaiStatusType: any = {
   A: "Aktif",
   TA: "Tidak Aktif",
 };
@@ -260,6 +267,7 @@ export {
   inputDataType,
   tindakStatus,
   inputTindakStatus,
+  bidangType,
 };
 export type {
   PelanggaranTindakForm,

@@ -10,7 +10,7 @@ export default function BidangLayout({
 }) {
   return (
     <>
-      <NavbarBidang link={"gakda"} />
+      <NavbarBidang link={"user"} />
       <Suspense fallback={<Loading />}>
         <main className="bg-slate-200 min-h-128 pb-10">{children}</main>
       </Suspense>

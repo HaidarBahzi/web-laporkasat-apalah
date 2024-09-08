@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   ApproveLaporan,
   GetDetailPengaduan,
+  RejectLaporan,
 } from "@/utils/server/pengaduan/pengaduan";
 import {
   DetailButtonSubmit,
@@ -21,6 +22,7 @@ import { FaCheck } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { ModalAlertApprove, ModalAlertReturn } from "@/components/modal";
+import { FaX } from "react-icons/fa6";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({
@@ -63,6 +65,25 @@ export default function Page({ params }: { params: { id: string } }) {
     }
   }
 
+  async function rejectPengaduan(userKtp: string) {
+    try {
+      await RejectLaporan(params.id);
+
+      axios
+        .post("http://103.30.180.221:4000/notification/add", {
+          user_id: userKtp,
+          title: "Penolakan Pengaduan",
+          message:
+            "Terima kasih sudah mengirimkan laporan. Setelah kami cek, sayangnya laporan ini belum bisa kami proses lebih lanjut. Jika ada yang ingin ditanyakan atau ada hal lain yang perlu disampaikan, jangan ragu untuk menghubungi kami.",
+        })
+        .then(() => {
+          router.push("/operator/menu_layanan/pengaduan");
+        });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   const fetchFormValue = useCallback(async () => {
     try {
       const fetch = await GetDetailPengaduan(params.id);
@@ -92,7 +113,7 @@ export default function Page({ params }: { params: { id: string } }) {
         isOpen={isAlertOpen}
         onClose={() => setIsAlertOpen(false)}
         onSubmit={async () => {
-          // await approvePengaduan(pelaporValues.user_mail);
+          await rejectPengaduan(pelaporValues.user_mail);
         }}
       />
 
@@ -191,7 +212,7 @@ export default function Page({ params }: { params: { id: string } }) {
           <>
             <hr />
 
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-5">
               <DetailButtonSubmit
                 onPress={() => setIsModalOpen(true)}
                 icon={<FaCheck />}
@@ -200,8 +221,8 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <DetailButtonSubmit
                 onPress={() => setIsAlertOpen(true)}
-                icon={<FaCheck />}
-                title={"Revisi Aduan"}
+                icon={<FaX />}
+                title={"Tolak"}
               />
             </div>
           </>

@@ -5,13 +5,12 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["relationJoins"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:@localhost:3306/db_laporkasat_"
+  url      = env("DATABASE_URL")
 }
 
 // * Khusus WebAdmin
@@ -283,6 +282,7 @@ enum status_laporan {
   S // Terkirim
   C // Terkonfirmasi
   P // Sedang Ditindak
+  R // Ditolak
   D // Selesai
 }
 
@@ -300,7 +300,9 @@ model laporan {
   laporan_document    String         @db.Text
   laporan_status      status_laporan @default(S)
   laporan_type        type_laporan
-  pegawai_nip         String         @db.VarChar(20)
+
+  bidang_id   Int    @db.Int
+  pegawai_nip String @db.VarChar(20)
 
   laporan_tgl_send     DateTime  @db.Timestamp()
   laporan_tgl_confirm  DateTime? @db.Timestamp(0)

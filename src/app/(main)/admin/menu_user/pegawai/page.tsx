@@ -171,7 +171,6 @@ export default function Page() {
               <table className="table table-auto">
                 <thead>
                   <tr>
-                    <th></th>
                     <th className="font-semibold">NO</th>
                     <th className="font-semibold">
                       <button
@@ -245,6 +244,29 @@ export default function Page() {
                   {displayedPegawai.map((user, index) => (
                     <tr key={index}>
                       <td>
+                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
+                      </td>
+                      <td>{user.pegawai_nip}</td>
+                      <td>{user.pegawai_nama}</td>
+                      <td>{pegawaiBidang[user.bidang_id]?.bidang_nama}</td>
+                      <td>{user.pegawai_jabatan}</td>
+                      <td>{jkType[user.pegawai_jk]}</td>
+                      <td>
+                        {pegawaiPendidikan[user.pendidikan_id]?.pendidikan_nama}
+                      </td>
+                      <td>{roleType[user.pegawai_role]}</td>
+                      <td>
+                        <div className="flex gap-1 justify-center">
+                          <div>
+                            {
+                              pegawaiStatus[user.status_pegawai_id]
+                                ?.status_pegawai_nama
+                            }
+                          </div>
+                          - <div>{pegawaiStatusType[user.pegawai_status]}</div>
+                        </div>
+                      </td>
+                      <td>
                         <div className={"flex gap-2 justify-center"}>
                           <ButtonActionLinkMenu
                             link={`/admin/menu_user/pegawai/editdata/${user.pegawai_nip}`}
@@ -291,29 +313,6 @@ export default function Page() {
                             isOpen={isAlertOpen}
                             onClose={() => setIsAlertOpen(false)}
                           />
-                        </div>
-                      </td>
-                      <td>
-                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
-                      </td>
-                      <td>{user.pegawai_nip}</td>
-                      <td>{user.pegawai_nama}</td>
-                      <td>{pegawaiBidang[user.bidang_id]?.bidang_nama}</td>
-                      <td>{user.pegawai_jabatan}</td>
-                      <td>{jkType[user.pegawai_jk]}</td>
-                      <td>
-                        {pegawaiPendidikan[user.pendidikan_id]?.pendidikan_nama}
-                      </td>
-                      <td>{roleType[user.pegawai_role]}</td>
-                      <td>
-                        <div className="flex gap-1 justify-center">
-                          <div>
-                            {
-                              pegawaiStatus[user.status_pegawai_id]
-                                ?.status_pegawai_nama
-                            }
-                          </div>
-                          - <div>{pegawaiStatusType[user.pegawai_status]}</div>
                         </div>
                       </td>
                     </tr>

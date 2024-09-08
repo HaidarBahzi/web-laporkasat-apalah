@@ -303,24 +303,8 @@ export default function Page() {
                   value: setup_role.K,
                 },
                 {
-                  title: "Bupati",
-                  value: setup_role.B,
-                },
-                {
-                  title: "Gakda",
-                  value: setup_role.G,
-                },
-                {
-                  title: "Lindam",
-                  value: setup_role.L,
-                },
-                {
-                  title: "Tibum",
-                  value: setup_role.T,
-                },
-                {
-                  title: "Sekretariat",
-                  value: setup_role.S,
+                  title: "User",
+                  value: setup_role.U,
                 },
                 {
                   title: "Operator",

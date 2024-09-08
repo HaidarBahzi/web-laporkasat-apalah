@@ -17,6 +17,7 @@ export async function middleware(request: NextRequest) {
     U: "/user/", // User
     K: "/kasat/", // Kasat
     O: "/operator/", // Operator
+    KB: "/kepala-bidang/",
   };
 
   const rolePaths = Object.values(rolePath);

@@ -8,7 +8,10 @@ import MenuContainer, {
 } from "@/components/menu";
 import { CiViewList } from "react-icons/ci";
 import { useEffect, useState } from "react";
-import { GetAllPermohonanBantuan } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
+import {
+  GetAllPermohonanBantuan,
+  GetAllPermohonanBantuanDate,
+} from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
 import { IoMdInformationCircle } from "react-icons/io";
 import { MdLocalPrintshop } from "react-icons/md";
 import {
@@ -20,11 +23,18 @@ import {
 } from "react-icons/fa";
 import { formatter, laporanStatus, PermohonanType } from "@/components/options";
 import { PrintLaporanPermohonanDetail } from "@/utils/server/print_laporan/print_detail";
+import { ModalSearchDate } from "@/components/modal";
+import { LaporanPermohonanAllNoDate } from "@/utils/lib/pdf/permohonan/laporan_full";
+import { pdf } from "@react-pdf/renderer";
+import saveAs from "file-saver";
 
 type SortKey = keyof PermohonanType;
 
 export default function Page() {
   const [permohonan, setPermohonan] = useState<PermohonanType[]>([]);
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";
@@ -149,6 +159,58 @@ export default function Page() {
         <MenuNothing
           title="Daftar Permohonan Bantuan"
           titleIcon={<CiViewList />}
+          printAction={async () => {
+            interface DataProps {
+              tanggalPengaduan: string;
+              namaPelapor: string;
+              alamatPelapor: string;
+              noHandphone: string;
+              judul: string;
+              lokasi: string;
+              keterangan: string;
+              status: string;
+            }
+
+            const dataProps: DataProps[] = sortedPermohonan().map(
+              (value, index) => {
+                return {
+                  tanggalPengaduan: value.laporan_tgl_send.toString(),
+                  namaPelapor: value.user_fullname?.toString()!,
+                  alamatPelapor: value.user_alamat?.toString()!,
+                  noHandphone: value.user_phone?.toString()!,
+                  judul: value.laporan_title?.toString()!,
+                  lokasi: value.laporan_location?.toString()!,
+                  keterangan: value.laporan_description?.toString()!,
+                  status: value.laporan_status,
+                };
+              }
+            );
+
+            const blob = await pdf(
+              <LaporanPermohonanAllNoDate data={dataProps} />
+            ).toBlob();
+
+            saveAs(blob, `laporan-pengaduan.pdf`);
+          }}
+          filterAction={() => {
+            setIsFilterOpen(true);
+          }}
+        />
+
+        <ModalSearchDate
+          isOpen={isFilterOpen}
+          onClose={() => {
+            setIsFilterOpen(false);
+          }}
+          onSubmit={async (dateFirst: Date, dateSec: Date) => {
+            const callAllPermohonan = await GetAllPermohonanBantuanDate(
+              dateFirst,
+              dateSec
+            );
+            setPermohonan(callAllPermohonan!);
+
+            setIsFilterOpen(false);
+          }}
         />
 
         <hr />
@@ -159,7 +221,6 @@ export default function Page() {
               <table className="table table-sm">
                 <thead>
                   <tr>
-                    <th></th>
                     <th>NO</th>
                     <th>
                       <button
@@ -198,7 +259,7 @@ export default function Page() {
                         className="flex items-center gap-2"
                         onClick={() => sortData("pegawai_nama")}
                       >
-                        ACTION {getSortIcon("pegawai_nama")}
+                        PENINDAK {getSortIcon("pegawai_nama")}
                       </button>
                     </th>
                     <th>
@@ -209,12 +270,26 @@ export default function Page() {
                         STATUS {getSortIcon("laporan_status")}
                       </button>
                     </th>
+                    <th></th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {displayedPermohonan.map((value, index) => (
                     <tr key={index}>
+                      <td>
+                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
+                      </td>
+                      <td>{formatter.format(value.laporan_tgl_send)}</td>
+                      <td>{value.user_fullname}</td>
+                      <td>{value.laporan_title}</td>
+                      <td>{value.laporan_location}</td>
+                      <td>
+                        {value.pegawai_nama == null
+                          ? "Belum ditindak"
+                          : value.pegawai_nama}
+                      </td>
+                      <td>{laporanStatus[value.laporan_status]}</td>
                       <td>
                         <div className={"flex gap-2 justify-center"}>
                           <ButtonActionLinkMenu
@@ -234,7 +309,7 @@ export default function Page() {
                                 value.laporan_title,
                                 value.laporan_location,
                                 value.laporan_description,
-                                `${window.location.origin}/pdf-uploads/${value.laporan_document}`
+                                `http://103.30.180.221:3000/assets/pdf-uploads/${value.laporan_document}`
                               )
                             }
                             btnType={"btn-info"}
@@ -242,19 +317,6 @@ export default function Page() {
                           />
                         </div>
                       </td>
-                      <td>
-                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
-                      </td>
-                      <td>{formatter.format(value.laporan_tgl_send)}</td>
-                      <td>{value.user_fullname}</td>
-                      <td>{value.laporan_title}</td>
-                      <td>{value.laporan_location}</td>
-                      <td>
-                        {value.pegawai_nama == null
-                          ? "Belum ditindak"
-                          : value.pegawai_nama}
-                      </td>
-                      <td>{laporanStatus[value.laporan_status]}</td>
                     </tr>
                   ))}
                 </tbody>

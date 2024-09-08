@@ -14,11 +14,11 @@ import {
 } from "@/components/form";
 import { FaCheck, FaPaperclip } from "react-icons/fa";
 import Link from "next/link";
-import { setup_role, status_laporan } from "@prisma/client";
+import { status_laporan } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { ApproveLaporanKasat } from "@/utils/server/pengaduan/pengaduan";
 import axios from "axios";
-import { roleType } from "@/components/options";
+import { bidangType } from "@/components/options";
 import { ModalAlertApproveBidang } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
@@ -38,7 +38,7 @@ export default function Page({ params }: { params: { id: string } }) {
   });
 
   const [formValues, setFormValues] = useState({
-    input_role: "",
+    input_role: 0,
   });
 
   const handleDropdownChange = (selectedValue: any, inputName: string) => {
@@ -52,15 +52,15 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const router = useRouter();
 
-  async function approvePermohonan(role: string, userKtp: string) {
+  async function approvePermohonan(bidang: number, userKtp: string) {
     try {
-      await ApproveLaporanKasat(params.id, role);
+      await ApproveLaporanKasat(params.id, bidang);
 
       axios
         .post("http://103.30.180.221:4000/notification/add", {
           user_id: userKtp,
           title: "Tindak Laporan",
-          message: `Laporan Anda sedang ditindak oleh ${roleType[role]}, terima kasih atas laporannya!`,
+          message: `Laporan Anda sedang ditindak oleh ${bidangType[bidang]}, terima kasih atas laporannya!`,
         })
         .then(() => {
           router.push("/kasat/menu_layanan/permohonan_bantuan");
@@ -103,19 +103,16 @@ export default function Page({ params }: { params: { id: string } }) {
         optionValue={[
           {
             title: "Gakda",
-            value: setup_role.G,
+            value: 1,
+          },
+
+          {
+            title: "Tibum",
+            value: 2,
           },
           {
             title: "Lindam",
-            value: setup_role.L,
-          },
-          {
-            title: "Tibum",
-            value: setup_role.T,
-          },
-          {
-            title: "Sekretariat",
-            value: setup_role.S,
+            value: 3,
           },
         ]}
         defaultValue={""}
@@ -212,7 +209,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <Link
                 target="_blank"
-                href={`${window.location.origin}/pdf-uploads/${permohonanValues.laporan_document}`}
+                href={`http://103.30.180.221:3000/assets/pdf-uploads/${permohonanValues.laporan_document}`}
                 className="bg-gray-100 w-fit h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
               >
                 <i>

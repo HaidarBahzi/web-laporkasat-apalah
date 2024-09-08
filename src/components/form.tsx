@@ -549,7 +549,7 @@ export function ImageShow({
     <>
       <label className="text-xs font-normal text-gray-900">{labelText}</label>
       <img
-        src={`${window.location.origin}/foto-pengaduan/${imageSrc}`}
+        src={`http://103.30.180.221:3000/assets/foto-pengaduan/${imageSrc}`}
         alt="Selected Image"
         className="w-60 h-40 shadow-lg"
       />
@@ -568,7 +568,7 @@ export function ImagePelanggaranShow({
     <>
       <label className="text-xs font-normal text-gray-900">{labelText}</label>
       <img
-        src={`${window.location.origin}/${imageSrc}`}
+        src={`http://103.30.180.221:3000/assets/${imageSrc}`}
         alt="Selected Image"
         className="w-60 h-40 shadow-lg"
       />

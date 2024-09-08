@@ -68,7 +68,7 @@ export default function Page({ params }: { params: { id: string } }) {
                 width={0}
                 height={0}
                 sizes="100vw"
-                src={`${window.location.origin}/foto-pegawai/${formValues.pegawai_foto}`}
+                src={`http://103.30.180.221:3000/assets/foto-pegawai/${formValues.pegawai_foto}`}
                 alt={"User Profile Picture"}
               />
             </div>

@@ -158,7 +158,7 @@ async function UploadImage(file: File) {
   const buffer = await file.arrayBuffer();
   let filename = `aset-${Date.now()}.${file.type.split("/")[1]}`;
 
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await stat(uploadDir);
@@ -192,7 +192,7 @@ async function EditImage(file: File, oriFile: string) {
   const relativeUploadDir = "/foto-aset";
   const buffer = await file.arrayBuffer();
 
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await stat(uploadDir);
@@ -225,7 +225,7 @@ async function EditImage(file: File, oriFile: string) {
 export async function DeleteImageAsset(filename: string) {
   const relativeUploadDir = "/foto-aset";
 
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await unlink(`${uploadDir}/${filename}`);

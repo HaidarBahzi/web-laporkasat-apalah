@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 import { GetAllPegawai } from "@/utils/server/pegawai/pegawai";
+import { ButtonExport, DateLaporanInput } from "./form";
 
 export function ModalAlertDelete({
   isOpen,
@@ -1551,6 +1552,82 @@ export function ModalSearchPegawai({
       <form method="dialog" className="modal-backdrop">
         <button>close</button>
       </form>
+    </dialog>
+  );
+}
+
+export function ModalSearchDate({
+  isOpen,
+  onClose,
+  onSubmit,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (dateFirst: Date, dateSec: Date) => void;
+}) {
+  const modalRef = useRef<HTMLDialogElement>(null);
+
+  function handleClientSubmit(formData: FormData) {
+    const dateFirst = formData.get("dateFirst");
+    const dateSec = formData.get("dateSec");
+
+    onSubmit(new Date(dateFirst?.toString()!), new Date(dateSec?.toString()!));
+  }
+
+  useEffect(() => {
+    const dialog = modalRef.current;
+
+    if (isOpen && dialog) {
+      dialog.showModal();
+    } else if (!isOpen && dialog) {
+      dialog.close();
+    }
+
+    const handleClose = () => {
+      onClose();
+    };
+
+    if (dialog) {
+      dialog.addEventListener("close", handleClose);
+    }
+
+    return () => {
+      if (dialog) {
+        dialog.removeEventListener("close", handleClose);
+      }
+    };
+  }, [isOpen, onClose]);
+
+  return (
+    <dialog
+      id="modal_alert"
+      className="modal modal-bottom sm:modal-middle"
+      ref={modalRef}
+    >
+      <div className="modal-box !w-96 !rounded">
+        <form method="dialog">
+          <button
+            type="button"
+            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            onClick={onClose}
+          >
+            ✕
+          </button>
+        </form>
+
+        <form className="form-control gap-4 px-8" action={handleClientSubmit}>
+          <DateLaporanInput
+            inputNameFirst={"dateFirst"}
+            inputNameSec={"dateSec"}
+          />
+
+          <hr />
+
+          <div className="flex justify-center">
+            <ButtonExport />
+          </div>
+        </form>
+      </div>
     </dialog>
   );
 }

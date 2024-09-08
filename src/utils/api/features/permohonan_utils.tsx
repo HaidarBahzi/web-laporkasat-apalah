@@ -25,6 +25,8 @@ export async function SubmitPermohonan(
       laporan_document: permohonanDocument,
       laporan_type: type_laporan.B,
       pegawai_nip: "",
+      bidang_id: 0,
+
       laporan_tgl_send: date.toISOString(),
 
       created_at: date.toISOString(),
@@ -40,7 +42,7 @@ export async function UploadPDF(
   const buffer = Buffer.from(base64PDF, "base64");
   const relativeUploadDir = "/pdf-uploads";
   const filename = `surat_permohonan-${Date.now()}.pdf`;
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await stat(uploadDir);

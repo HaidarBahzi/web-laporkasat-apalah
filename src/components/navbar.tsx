@@ -134,25 +134,6 @@ export function NavbarAdmin({ link }: { link: string }) {
               />
             </NavbarComponentDropdownSingle>
           </li>
-
-          <li>
-            <NavbarComponentDropdownSingle
-              link={`/${link}/menu_laporan`}
-              title={"Menu Laporan"}
-              icon={<FaWindowRestore />}
-            >
-              <NavbarComponentDropdownLink
-                link={`/${link}/menu_laporan/lap_pengaduan`}
-                title={"Lap. Pengaduan"}
-                icon={<IoDocumentTextSharp />}
-              />
-              <NavbarComponentDropdownLink
-                link={`/${link}/menu_laporan/lap_permohonan`}
-                title={"Lap. Permohonan"}
-                icon={<IoDocumentTextSharp />}
-              />
-            </NavbarComponentDropdownSingle>
-          </li>
         </ul>
       </div>
     </nav>
@@ -218,25 +199,6 @@ export function NavbarOperator({ link }: { link: string }) {
                 link={`/${link}/menu_layanan/permohonan_bantuan`}
                 title={"Permohonan Bantuan"}
                 icon={<FaHandsHelping />}
-              />
-            </NavbarComponentDropdownSingle>
-          </li>
-
-          <li>
-            <NavbarComponentDropdownSingle
-              link={`/${link}/menu_laporan`}
-              title={"Menu Laporan"}
-              icon={<FaWindowRestore />}
-            >
-              <NavbarComponentDropdownLink
-                link={`/${link}/menu_laporan/lap_pengaduan`}
-                title={"Lap. Pengaduan"}
-                icon={<IoDocumentTextSharp />}
-              />
-              <NavbarComponentDropdownLink
-                link={`/${link}/menu_laporan/lap_permohonan`}
-                title={"Lap. Permohonan"}
-                icon={<IoDocumentTextSharp />}
               />
             </NavbarComponentDropdownSingle>
           </li>
@@ -325,25 +287,6 @@ export function NavbarBidang({ link }: { link: string }) {
                 link={`/${link}/menu_tindak/permohonan_bantuan`}
                 title={"Permohonan Bantuan"}
                 icon={<FaHandsHelping />}
-              />
-            </NavbarComponentDropdownSingle>
-          </li>
-
-          <li>
-            <NavbarComponentDropdownSingle
-              link={`/${link}/menu_laporan`}
-              title={"Menu Laporan"}
-              icon={<FaWindowRestore />}
-            >
-              <NavbarComponentDropdownLink
-                link={`/${link}/menu_laporan/lap_pengaduan`}
-                title={"Lap. Pengaduan"}
-                icon={<IoDocumentTextSharp />}
-              />
-              <NavbarComponentDropdownLink
-                link={`/${link}/menu_laporan/lap_permohonan`}
-                title={"Lap. Permohonan"}
-                icon={<IoDocumentTextSharp />}
               />
             </NavbarComponentDropdownSingle>
           </li>
@@ -458,18 +401,6 @@ function NavbarComponentProfile({
   userImage: string;
   link: string;
 }) {
-  const [origin, setOrigin] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setOrigin(window.location.origin);
-    }
-  }, []);
-
-  if (!origin) {
-    return null;
-  }
-
   return (
     <Link href={link} className="flex items-center gap-5">
       <h2 className="text-white text-sm">
@@ -480,7 +411,7 @@ function NavbarComponentProfile({
       <img
         className="h-10 w-10 rounded"
         alt="User Profile Image"
-        src={`${origin}/foto-pegawai/${userImage}`}
+        src={`http://103.30.180.221:3000/assets/foto-pegawai/${userImage}`}
       />
     </Link>
   );

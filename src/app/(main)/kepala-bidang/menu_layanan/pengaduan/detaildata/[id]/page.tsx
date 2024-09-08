@@ -1,0 +1,190 @@
+"use client";
+
+import MenuContainer, {
+  MenuBreadCrumbs,
+  MenuEditTitle,
+} from "@/components/menu";
+import { CiViewList } from "react-icons/ci";
+import { useCallback, useEffect, useState } from "react";
+import { GetDetailPermohonanBantuan } from "@/utils/server/permohonan_bantuan/permohonan_bantuan";
+import {
+  DetailButtonSubmit,
+  ImageShow,
+  TextareaInput,
+  TextInput,
+} from "@/components/form";
+import { FaCheck, FaPaperclip } from "react-icons/fa";
+import Link from "next/link";
+import { status_laporan } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import {
+  ApproveLaporanKepalaBidang,
+  GetDetailPengaduan,
+} from "@/utils/server/pengaduan/pengaduan";
+import { ModalSearchPegawai } from "@/components/modal";
+
+export default function Page({ params }: { params: { id: string } }) {
+  const [pemohonValues, setPemohonValues] = useState({
+    user_mail: "",
+    user_fullname: "",
+    user_alamat: "",
+    user_phone: "",
+  });
+
+  const [permohonanValues, setPermohonanValues] = useState({
+    laporan_title: "",
+    laporan_description: "",
+    laporan_location: "",
+    laporan_document: "",
+    laporan_status: "",
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const router = useRouter();
+
+  async function approvePermohonan(pegawaiNip: string) {
+    try {
+      await ApproveLaporanKepalaBidang(params.id, pegawaiNip);
+      router.push("/kepala-bidang/menu_layanan/pengaduan");
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const FetchDetailData = useCallback(async () => {
+    try {
+      const callAllPermohonan = await GetDetailPengaduan(params.id);
+      setPermohonanValues(callAllPermohonan.pengaduan!);
+      setPemohonValues(callAllPermohonan.pelapor!);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [params.id]);
+
+  useEffect(() => {
+    FetchDetailData();
+  }, [params.id, FetchDetailData]);
+
+  return (
+    <section className="container mx-auto px-16">
+      <ModalSearchPegawai
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={async (pegawaiNip: string) => {
+          setIsModalOpen(false);
+
+          await approvePermohonan(pegawaiNip);
+        }}
+      />
+
+      <MenuBreadCrumbs
+        title={"Permohonan Bantuan"}
+        linkArray={["Dashboard", "Menu Layanan", "Permohonan Bantuan"]}
+        titleLinkArray={[
+          "/kepala-bidang/dashboard",
+          "/kepala-bidang/menu_layanan/permohonan_bantuan",
+          "/kepala-bidang/menu_layanan/permohonan_bantuan",
+        ]}
+        endTitle={"Detail Permohonan"}
+      />
+
+      <MenuContainer>
+        <MenuEditTitle
+          title="Detail Permohonan Bantuan"
+          titleIcon={<CiViewList />}
+          linkButton="/kepala-bidang/menu_layanan/permohonan_bantuan"
+        />
+
+        <hr />
+
+        <div className="form-control gap-5">
+          <span className="text-lg font-semibold">Data Pemohon</span>
+          <div className="grid grid-cols-6 gap-5">
+            <TextInput
+              labelText={"Email Pemohon"}
+              inputName={""}
+              readOnly={true}
+              inputPlaceholder={""}
+              defValue={pemohonValues.user_mail}
+            />
+
+            <TextInput
+              labelText={"Nama Pemohon"}
+              inputName={""}
+              readOnly={true}
+              inputPlaceholder={""}
+              defValue={pemohonValues.user_fullname}
+            />
+
+            <TextInput
+              labelText={"Alamat Pemohon"}
+              inputName={""}
+              readOnly={true}
+              inputPlaceholder={""}
+              defValue={pemohonValues.user_alamat}
+            />
+
+            <TextInput
+              labelText={"No. HP Pemohon"}
+              inputName={""}
+              readOnly={true}
+              inputPlaceholder={""}
+              defValue={pemohonValues.user_phone}
+            />
+          </div>
+        </div>
+
+        <div className="form-control gap-5">
+          <span className="text-lg font-semibold">Data Permohonan</span>
+          <div className="grid grid-cols-6 gap-5">
+            <TextInput
+              labelText={"Judul"}
+              inputName={""}
+              readOnly={true}
+              inputPlaceholder={""}
+              defValue={permohonanValues.laporan_title}
+            />
+
+            <TextInput
+              labelText={"Lokasi"}
+              inputName={""}
+              readOnly={true}
+              inputPlaceholder={""}
+              defValue={permohonanValues.laporan_location}
+            />
+
+            <TextareaInput
+              labelText={"Keterangan"}
+              inputName={""}
+              readOnly={true}
+              inputPlaceholder={""}
+              defValue={permohonanValues.laporan_description}
+            />
+
+            <ImageShow
+              labelText={"Bukti Foto"}
+              imageSrc={permohonanValues.laporan_document}
+            />
+          </div>
+
+          {permohonanValues.laporan_status == status_laporan.P ? (
+            <>
+              <hr />
+
+              <div className="flex justify-center">
+                <DetailButtonSubmit
+                  onPress={() => setIsModalOpen(true)}
+                  icon={<FaCheck />}
+                  title={"Approve"}
+                />
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
+      </MenuContainer>
+    </section>
+  );
+}

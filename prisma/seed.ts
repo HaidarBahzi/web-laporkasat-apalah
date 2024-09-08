@@ -300,6 +300,30 @@ async function main() {
 
         created_at: date.toISOString(),
       },
+      {
+        pegawai_nik: "1234567890123422",
+        pegawai_nip: "123456789012345661",
+        pegawai_password: passwordHash,
+        pegawai_nama: "Mas Operator",
+        pegawai_jk: setup_kelamin.L,
+        pegawai_tempat_lahir: "Jl. Ganesha Barat No. 41",
+        pegawai_tanggal_lahir: date.toISOString(),
+        pegawai_phone: "081226226318",
+        pegawai_email: "biglamp.gang@gmail.com",
+        pegawai_alamat: "Jl. Ganesha Barat No. 41",
+        pegawai_foto: "imagesucok.jpeg",
+        pegawai_jabatan: "KEPALA BIDANG",
+        agama_id: 1,
+        pendidikan_id: 1,
+        status_pegawai_id: 1,
+        status_kawin_id: 1,
+        pegawai_kewarganegaraan: "WNI",
+        pegawai_status: setup_status_aktif.A,
+        pegawai_role: setup_role.O,
+        bidang_id: 1,
+
+        created_at: date.toISOString(),
+      },
     ],
   });
 

@@ -39,6 +39,8 @@ export async function GetDetailHistory(userKtp: string, id: string) {
       laporan_status: true,
       laporan_tgl_send: true,
       laporan_tgl_confirm: true,
+      laporan_tgl_progress: true,
+      laporan_tgl_reject: true,
       laporan_tgl_done: true,
     },
   });

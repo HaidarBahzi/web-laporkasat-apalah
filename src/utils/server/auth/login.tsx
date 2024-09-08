@@ -30,6 +30,7 @@ export async function WebLoginProcess(formData: FormData) {
       pegawai_status: true,
       pegawai_role: true,
       pegawai_password: true,
+      bidang_id: true,
     },
   });
 
@@ -59,6 +60,7 @@ export async function WebLoginProcess(formData: FormData) {
   session.username = checkLogin.pegawai_nama;
   session.img = checkLogin.pegawai_foto;
   session.role = checkLogin.pegawai_role;
+  session.bidangId = checkLogin.bidang_id;
   session.expires = newDate;
 
   await session.save();
@@ -68,6 +70,7 @@ export async function WebLoginProcess(formData: FormData) {
     U: "/user/", // User
     K: "/kasat/", // Kasat
     O: "/operator/", // Operator
+    KB: "/kepala-bidang/",
   };
 
   redirect(`${rolePath[session.role!]}dashboard`);

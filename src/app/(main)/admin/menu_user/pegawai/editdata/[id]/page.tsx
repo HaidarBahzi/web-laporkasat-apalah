@@ -407,24 +407,8 @@ export default function Page({ params }: { params: { id: string } }) {
                   value: setup_role.K,
                 },
                 {
-                  title: "Bupati",
-                  value: setup_role.B,
-                },
-                {
-                  title: "Gakda",
-                  value: setup_role.G,
-                },
-                {
-                  title: "Lindam",
-                  value: setup_role.L,
-                },
-                {
-                  title: "Tibum",
-                  value: setup_role.T,
-                },
-                {
-                  title: "Sekretariat",
-                  value: setup_role.S,
+                  title: "User",
+                  value: setup_role.U,
                 },
                 {
                   title: "Operator",
@@ -563,7 +547,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     width={0}
                     height={0}
                     sizes="100vw"
-                    src={`${window.location.origin}/foto-pegawai/${formValues.pegawai_foto}`}
+                    src={`http://103.30.180.221:3000/assets/foto-pegawai/${formValues.pegawai_foto}`}
                     className="w-40 h-40 shadow-lg"
                     alt={"Current Image"}
                   />

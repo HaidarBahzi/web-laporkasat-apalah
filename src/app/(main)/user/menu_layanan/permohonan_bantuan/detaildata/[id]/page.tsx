@@ -36,7 +36,7 @@ export default function Page({ params }: { params: { id: string } }) {
   });
 
   const [formValues, setFormValues] = useState({
-    input_role: "",
+    input_role: 0,
   });
 
   const handleDropdownChange = (selectedValue: any, inputName: string) => {
@@ -50,10 +50,10 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const router = useRouter();
 
-  async function approvePermohonan(role: string) {
+  async function approvePermohonan(bidangId: number) {
     try {
-      await ApproveLaporanKasat(params.id, role);
-      router.push("/kasat/menu_layanan/permohonan_bantuan");
+      await ApproveLaporanKasat(params.id, bidangId);
+      router.push("/user/menu_layanan/permohonan_bantuan");
     } catch (err) {
       console.error(err);
     }
@@ -89,19 +89,16 @@ export default function Page({ params }: { params: { id: string } }) {
         optionValue={[
           {
             title: "Gakda",
-            value: setup_role.G,
+            value: 1,
+          },
+
+          {
+            title: "Tibum",
+            value: 2,
           },
           {
             title: "Lindam",
-            value: setup_role.L,
-          },
-          {
-            title: "Tibum",
-            value: setup_role.T,
-          },
-          {
-            title: "Sekretariat",
-            value: setup_role.S,
+            value: 3,
           },
         ]}
         defaultValue={""}
@@ -111,9 +108,9 @@ export default function Page({ params }: { params: { id: string } }) {
         title={"Permohonan Bantuan"}
         linkArray={["Dashboard", "Menu Layanan", "Permohonan Bantuan"]}
         titleLinkArray={[
-          "/kasat/dashboard",
-          "/kasat/menu_layanan/permohonan_bantuan",
-          "/kasat/menu_layanan/permohonan_bantuan",
+          "/user/dashboard",
+          "/user/menu_layanan/permohonan_bantuan",
+          "/user/menu_layanan/permohonan_bantuan",
         ]}
         endTitle={"Detail Permohonan"}
       />
@@ -122,7 +119,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <MenuEditTitle
           title="Detail Permohonan Bantuan"
           titleIcon={<CiViewList />}
-          linkButton="/kasat/menu_layanan/permohonan_bantuan"
+          linkButton="/user/menu_layanan/permohonan_bantuan"
         />
 
         <hr />
@@ -198,7 +195,7 @@ export default function Page({ params }: { params: { id: string } }) {
 
               <Link
                 target="_blank"
-                href={`${window.location.origin}/pdf-uploads/${permohonanValues.laporan_document}`}
+                href={`http://103.30.180.221:3000/assets/pdf-uploads/${permohonanValues.laporan_document}`}
                 className="bg-gray-100 w-fit h-fit gap-2 items-center flex col-span-2 text-gray-900 text-xs rounded p-2.5"
               >
                 <i>

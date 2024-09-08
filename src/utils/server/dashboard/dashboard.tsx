@@ -129,6 +129,109 @@ export async function GetDashboardAdmin() {
   };
 }
 
+export async function GetDashboardKepalaBidang(bidangId: number) {
+  const queryPengaduan = await prisma.laporan.count({
+    where: {
+      laporan_type: type_laporan.P,
+      bidang_id: bidangId,
+    },
+  });
+
+  const queryPermohonan = await prisma.laporan.count({
+    where: {
+      laporan_type: type_laporan.B,
+      bidang_id: bidangId,
+    },
+  });
+
+  const currentYear = new Date().getFullYear();
+
+  const queryCountsUnconfirm = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.S,
+          bidang_id: bidangId,
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsConfirmed = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.C,
+          bidang_id: bidangId,
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsProgress = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.P,
+          bidang_id: bidangId,
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  const queryCountsDone = await Promise.all(
+    Array.from({ length: 12 }, async (_, i) => {
+      const month = i + 1;
+      const { startDate, endDate } = getMonthDateRange(currentYear, month);
+
+      const count = await prisma.laporan.count({
+        where: {
+          laporan_status: status_laporan.D,
+          bidang_id: bidangId,
+          laporan_tgl_send: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+      return { month, count };
+    })
+  );
+
+  return {
+    pengaduan: queryPengaduan,
+    permohonan: queryPermohonan,
+    statistkUnconfirm: queryCountsUnconfirm,
+    statistikConfirmed: queryCountsConfirmed,
+    statistikProgress: queryCountsProgress,
+    statistkDone: queryCountsDone,
+  };
+}
+
 export async function GetDashboardPegawai(pegawaiNip: string) {
   const queryPengaduan = await prisma.laporan.count({
     where: {

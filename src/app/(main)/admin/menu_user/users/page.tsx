@@ -1,6 +1,6 @@
 "use client";
 
-import { ModalAlertDelete } from "@/components/modal";
+import { ModalAlertDelete, ModalSearchDate } from "@/components/modal";
 import MenuContainer, {
   MenuBreadCrumbs,
   MenuAddTitle,
@@ -38,6 +38,13 @@ export default function Page() {
       console.log("Gagal dalam menapat data");
     }
   };
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const [dateFilter, setDateFilter] = useState({
+    first: new Date(),
+    sec: new Date(),
+  });
 
   const [isModalOpen, setIsModalOpen] = useState({ value: "", bolean: false });
 
@@ -115,7 +122,22 @@ export default function Page() {
       />
 
       <MenuContainer>
-        <MenuNothing title="Daftar Users" titleIcon={<CiViewList />} />
+        <MenuNothing
+          title="Daftar Users"
+          titleIcon={<CiViewList />}
+          printAction={() => {}}
+          filterAction={() => {
+            setIsFilterOpen(true);
+          }}
+        />
+
+        <ModalSearchDate
+          isOpen={isFilterOpen}
+          onClose={() => {}}
+          onSubmit={(dateFirst: Date, dateSec: Date) => {
+            setIsFilterOpen(false);
+          }}
+        />
 
         <hr />
 
@@ -125,7 +147,6 @@ export default function Page() {
               <table className="table table-sm">
                 <thead>
                   <tr>
-                    <th></th>
                     <th className="font-semibold">NO</th>
                     <th className="font-semibold">
                       <button
@@ -167,12 +188,21 @@ export default function Page() {
                         STATUS {getSortIcon("user_status")}
                       </button>
                     </th>
+                    <th></th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {displayedSortedUser.map((user, index) => (
                     <tr key={index}>
+                      <td>
+                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
+                      </td>
+                      <td>{user.user_mail}</td>
+                      <td>{user.user_fullname}</td>
+                      <td>{user.user_phone}</td>
+                      <td>{user.user_alamat}</td>
+                      <td>{userStatus[user.user_status]}</td>
                       <td>
                         <div className="flex gap-2 justify-center">
                           <ButtonActionLinkMenu
@@ -182,14 +212,6 @@ export default function Page() {
                           />
                         </div>
                       </td>
-                      <td>
-                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
-                      </td>
-                      <td>{user.user_mail}</td>
-                      <td>{user.user_fullname}</td>
-                      <td>{user.user_phone}</td>
-                      <td>{user.user_alamat}</td>
-                      <td>{userStatus[user.user_status]}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -145,7 +145,6 @@ export default function Page() {
               <table className="table table-sm">
                 <thead>
                   <tr>
-                    <th></th>
                     <th className="font-semibold">NO</th>
                     <th className="font-semibold">
                       <button
@@ -187,12 +186,23 @@ export default function Page() {
                         TANGGAL SK {getSortIcon("penyidik_tgl_sk")}
                       </button>
                     </th>
+                    <th></th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {sortedPenyidik().map((value, index) => (
                     <tr key={index}>
+                      <td>
+                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
+                      </td>
+                      <td>{value.pegawai_nip}</td>
+                      <td>{value.pegawai_nama}</td>
+                      <td>{value.pegawai_jabatan}</td>
+                      <td>{value.penyidik_sk}</td>
+                      <td>
+                        {formatter.format(new Date(value.penyidik_tgl_sk))}
+                      </td>
                       <td>
                         <div className="flex gap-2 justify-center">
                           <ButtonActionLinkMenu
@@ -225,16 +235,6 @@ export default function Page() {
                             }
                           />
                         </div>
-                      </td>
-                      <td>
-                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
-                      </td>
-                      <td>{value.pegawai_nip}</td>
-                      <td>{value.pegawai_nama}</td>
-                      <td>{value.pegawai_jabatan}</td>
-                      <td>{value.penyidik_sk}</td>
-                      <td>
-                        {formatter.format(new Date(value.penyidik_tgl_sk))}
                       </td>
                     </tr>
                   ))}

@@ -38,6 +38,9 @@ type SortKey = keyof PengaduanType;
 
 export default function Page() {
   const [permohonan, setPermohonan] = useState<PengaduanType[]>([]);
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";
@@ -153,6 +156,10 @@ export default function Page() {
         <MenuNothing
           title="Daftar Permohonan Masyarakat"
           titleIcon={<CiViewList />}
+          printAction={() => {}}
+          filterAction={() => {
+            setIsFilterOpen(true);
+          }}
         />
 
         <hr />
@@ -176,9 +183,9 @@ export default function Page() {
                     <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
-                        onClick={() => sortData("laporan_action")}
+                        onClick={() => sortData("pegawai_nip")}
                       >
-                        BIDANG PENINDAK {getSortIcon("laporan_action")}
+                        BIDANG PENINDAK {getSortIcon("pegawai_nip")}
                       </button>
                     </th>
                     <th className="font-semibold">
@@ -242,7 +249,7 @@ export default function Page() {
                         {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
                       </td>
                       <td>{formatter.format(value.laporan_tgl_send)}</td>
-                      <td>{roleType[value.laporan_action!]}</td>
+                      <td>{value.pegawai_nip}</td>
                       <td>{value.laporan_title}</td>
                       <td>{value.laporan_location}</td>
                     </tr>

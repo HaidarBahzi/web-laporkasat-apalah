@@ -59,11 +59,246 @@ export async function GetAllPengaduan() {
   return pengaduanWithUser;
 }
 
+export async function GetAllPengaduanDate(dateFirst: Date, dateSec: Date) {
+  const queryPengaduan = await prisma.laporan.findMany({
+    where: {
+      laporan_type: type_laporan.P,
+      created_at: {
+        gte: dateFirst,
+        lte: dateSec,
+      },
+    },
+    select: {
+      laporan_id: true,
+      laporan_tgl_send: true,
+      user_mail: true,
+      laporan_title: true,
+      laporan_description: true,
+      laporan_location: true,
+      pegawai_nip: true,
+      laporan_status: true,
+      laporan_document: true,
+    },
+  });
+
+  const pengaduanWithUser = await Promise.all(
+    queryPengaduan.map(async (pengaduan) => {
+      const queryUser = await prisma.users.findUnique({
+        where: {
+          user_mail: pengaduan.user_mail,
+        },
+        select: {
+          user_fullname: true,
+          user_alamat: true,
+          user_phone: true,
+        },
+      });
+
+      const queryPegawai = await prisma.pegawai.findUnique({
+        where: {
+          pegawai_nip: pengaduan.pegawai_nip,
+        },
+        select: {
+          pegawai_nama: true,
+        },
+      });
+
+      return {
+        ...pengaduan,
+        user_fullname: queryUser ? queryUser.user_fullname : null,
+        user_alamat: queryUser ? queryUser.user_alamat : null,
+        user_phone: queryUser ? queryUser.user_phone : null,
+        pegawai_nama: queryPegawai ? queryPegawai.pegawai_nama : null,
+      };
+    })
+  );
+
+  return pengaduanWithUser;
+}
+
+export async function GetAllPengaduanKepalaBidang(bidangId: number) {
+  const queryPengaduan = await prisma.laporan.findMany({
+    where: {
+      laporan_type: type_laporan.P,
+      bidang_id: bidangId,
+    },
+    select: {
+      laporan_id: true,
+      laporan_tgl_send: true,
+      user_mail: true,
+      laporan_title: true,
+      laporan_description: true,
+      laporan_location: true,
+      pegawai_nip: true,
+      laporan_status: true,
+      laporan_document: true,
+    },
+  });
+
+  const pengaduanWithUser = await Promise.all(
+    queryPengaduan.map(async (pengaduan) => {
+      const queryUser = await prisma.users.findUnique({
+        where: {
+          user_mail: pengaduan.user_mail,
+        },
+        select: {
+          user_fullname: true,
+          user_alamat: true,
+          user_phone: true,
+        },
+      });
+
+      const queryPegawai = await prisma.pegawai.findUnique({
+        where: {
+          pegawai_nip: pengaduan.pegawai_nip,
+        },
+        select: {
+          pegawai_nama: true,
+        },
+      });
+
+      return {
+        ...pengaduan,
+        user_fullname: queryUser ? queryUser.user_fullname : null,
+        user_alamat: queryUser ? queryUser.user_alamat : null,
+        user_phone: queryUser ? queryUser.user_phone : null,
+        pegawai_nama: queryPegawai ? queryPegawai.pegawai_nama : null,
+      };
+    })
+  );
+
+  return pengaduanWithUser;
+}
+
+export async function GetAllPengaduanKepalaBidangDate(
+  bidangId: number,
+  dateFirst: Date,
+  dateSec: Date
+) {
+  const queryPengaduan = await prisma.laporan.findMany({
+    where: {
+      laporan_type: type_laporan.P,
+      bidang_id: bidangId,
+      created_at: {
+        gte: dateFirst,
+        lte: dateSec,
+      },
+    },
+    select: {
+      laporan_id: true,
+      laporan_tgl_send: true,
+      user_mail: true,
+      laporan_title: true,
+      laporan_description: true,
+      laporan_location: true,
+      pegawai_nip: true,
+      laporan_status: true,
+      laporan_document: true,
+    },
+  });
+
+  const pengaduanWithUser = await Promise.all(
+    queryPengaduan.map(async (pengaduan) => {
+      const queryUser = await prisma.users.findUnique({
+        where: {
+          user_mail: pengaduan.user_mail,
+        },
+        select: {
+          user_fullname: true,
+          user_alamat: true,
+          user_phone: true,
+        },
+      });
+
+      const queryPegawai = await prisma.pegawai.findUnique({
+        where: {
+          pegawai_nip: pengaduan.pegawai_nip,
+        },
+        select: {
+          pegawai_nama: true,
+        },
+      });
+
+      return {
+        ...pengaduan,
+        user_fullname: queryUser ? queryUser.user_fullname : null,
+        user_alamat: queryUser ? queryUser.user_alamat : null,
+        user_phone: queryUser ? queryUser.user_phone : null,
+        pegawai_nama: queryPegawai ? queryPegawai.pegawai_nama : null,
+      };
+    })
+  );
+
+  return pengaduanWithUser;
+}
+
 export async function GetAllPengaduanBidang(pegawaiNip: string) {
   const queryPengaduan = await prisma.laporan.findMany({
     where: {
       laporan_type: type_laporan.P,
       pegawai_nip: pegawaiNip,
+    },
+    select: {
+      laporan_id: true,
+      laporan_tgl_send: true,
+      user_mail: true,
+      laporan_title: true,
+      laporan_description: true,
+      laporan_location: true,
+      pegawai_nip: true,
+      laporan_status: true,
+      laporan_document: true,
+    },
+  });
+
+  const pengaduanWithUser = await Promise.all(
+    queryPengaduan.map(async (pengaduan) => {
+      const queryUser = await prisma.users.findUnique({
+        where: {
+          user_mail: pengaduan.user_mail,
+        },
+        select: {
+          user_fullname: true,
+          user_alamat: true,
+          user_phone: true,
+        },
+      });
+
+      const queryPegawai = await prisma.pegawai.findUnique({
+        where: {
+          pegawai_nip: pengaduan.pegawai_nip,
+        },
+        select: {
+          pegawai_nama: true,
+        },
+      });
+
+      return {
+        ...pengaduan,
+        user_fullname: queryUser ? queryUser.user_fullname : null,
+        user_alamat: queryUser ? queryUser.user_alamat : null,
+        user_phone: queryUser ? queryUser.user_phone : null,
+        pegawai_nama: queryPegawai ? queryPegawai.pegawai_nama : null,
+      };
+    })
+  );
+
+  return pengaduanWithUser;
+}
+
+export async function GetAllPengaduanBidangDate(
+  pegawaiNip: string,
+  dateFirst: Date,
+  dateSec: Date
+) {
+  const queryPengaduan = await prisma.laporan.findMany({
+    where: {
+      laporan_type: type_laporan.P,
+      pegawai_nip: pegawaiNip,
+      created_at: {
+        gte: dateFirst,
+        lte: dateSec,
+      },
     },
     select: {
       laporan_id: true,
@@ -176,7 +411,7 @@ export async function ApproveLaporan(
   return query;
 }
 
-export async function ApproveLaporanKasat(
+export async function ApproveLaporanKepalaBidang(
   pengaduanId: string,
   pegawaiNip: string
 ) {
@@ -190,7 +425,32 @@ export async function ApproveLaporanKasat(
     },
     data: {
       pegawai_nip: pegawaiNip,
+      updated_at: date.toISOString(),
+    },
+  });
+
+  return query;
+}
+
+export async function ApproveLaporanKasat(
+  pengaduanId: string,
+  bidangId: number
+) {
+  await updateSession();
+
+  const session = await getSession();
+
+  const date = new Date();
+
+  const query = await prisma.laporan.update({
+    where: {
+      laporan_id: pengaduanId,
+    },
+    data: {
+      bidang_id: Number(bidangId),
+      pegawai_nip: session.userId,
       laporan_status: status_laporan.P,
+      laporan_tgl_progress: date.toISOString(),
       updated_at: date.toISOString(),
     },
   });
@@ -227,7 +487,7 @@ export async function RejectLaporan(pengaduanId: string) {
       laporan_id: pengaduanId,
     },
     data: {
-      laporan_status: status_laporan.D,
+      laporan_status: status_laporan.R,
       laporan_tgl_reject: date.toISOString(),
       updated_at: date.toISOString(),
     },
@@ -243,7 +503,7 @@ export async function UploadImage(formData: FormData) {
   const buffer = await pengaduanFoto.arrayBuffer();
   let filename = `pengaduan-${Date.now()}.${pengaduanFoto.type.split("/")[1]}`;
 
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await stat(uploadDir);
@@ -276,7 +536,7 @@ export async function UploadImage(formData: FormData) {
 export async function DeleteImagePengaduan(filename: string) {
   const relativeUploadDir = "/foto-pengaduan";
 
-  const uploadDir = join(process.cwd(), "public", relativeUploadDir);
+  const uploadDir = join(process.cwd(), "/assets", relativeUploadDir);
 
   try {
     await unlink(`${uploadDir}/${filename}`);

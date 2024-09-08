@@ -167,4 +167,47 @@ function LaporanPermohonanAll({
   );
 }
 
-export default LaporanPermohonanAll;
+function LaporanPermohonanAllNoDate({ data }: { data: DataProps[] }) {
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <LaporanTitle />
+
+        <View>
+          <Text style={styles.bodytitle}>LAPORAN PERMOHONAN BANTUAN</Text>
+
+          <Table style={styles.table}>
+            <TH>
+              <TD weighting={0.3}>NO</TD>
+              <TD weighting={1}>TANGGAL</TD>
+              <TD weighting={1}>NAMA PELAPOR</TD>
+              <TD weighting={1}>NO. HANDPHONE</TD>
+              <TD weighting={1}>JUDUL</TD>
+              <TD weighting={1}>KETERANGAN</TD>
+              <TD weighting={1}>LOKASI</TD>
+              <TD weighting={1}>STATUS</TD>
+            </TH>
+            {data.map((value) => {
+              return (
+                <TR>
+                  <TD weighting={0.3}>1</TD>
+                  <TD weighting={1}>
+                    {formatter.format(new Date(value.tanggalPengaduan))}
+                  </TD>
+                  <TD weighting={1}>{value.namaPelapor}</TD>
+                  <TD weighting={1}>{value.noHandphone}</TD>
+                  <TD weighting={1}>{value.judul}</TD>
+                  <TD weighting={1}>{value.keterangan}</TD>
+                  <TD weighting={1}>{value.lokasi}</TD>
+                  <TD weighting={1}>{laporanStatus[value.status]}</TD>
+                </TR>
+              );
+            })}
+          </Table>
+        </View>
+      </Page>
+    </Document>
+  );
+}
+
+export { LaporanPermohonanAll, LaporanPermohonanAllNoDate };

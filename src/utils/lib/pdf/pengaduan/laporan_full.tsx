@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     marginTop: 10,
+    marginBottom: 10,
   },
   bodysubtitle: { fontSize: 10, textAlign: "center", marginVertical: 10 },
   section: {
@@ -164,4 +165,47 @@ function LaporanPengaduanAll({
   );
 }
 
-export default LaporanPengaduanAll;
+function LaporanPengaduanAllNoDate({ data }: { data: DataProps[] }) {
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <LaporanTitle />
+
+        <View>
+          <Text style={styles.bodytitle}>LAPORAN PENGADUAN MASYARAKAT</Text>
+
+          <Table style={styles.table}>
+            <TH>
+              <TD weighting={0.3}>NO</TD>
+              <TD weighting={1}>TANGGAL</TD>
+              <TD weighting={1}>NAMA PELAPOR</TD>
+              <TD weighting={1}>NO. HANDPHONE</TD>
+              <TD weighting={1}>JUDUL</TD>
+              <TD weighting={1}>KETERANGAN</TD>
+              <TD weighting={1}>LOKASI</TD>
+              <TD weighting={1}>STATUS</TD>
+            </TH>
+            {data.map((value, index) => {
+              return (
+                <TR key={index}>
+                  <TD weighting={0.3}>1</TD>
+                  <TD weighting={1}>
+                    {formatter.format(new Date(value.tanggalPengaduan))}
+                  </TD>
+                  <TD weighting={1}>{value.namaPelapor}</TD>
+                  <TD weighting={1}>{value.noHandphone}</TD>
+                  <TD weighting={1}>{value.judul}</TD>
+                  <TD weighting={1}>{value.keterangan}</TD>
+                  <TD weighting={1}>{value.lokasi}</TD>
+                  <TD weighting={1}>{laporanStatus[value.status]}</TD>
+                </TR>
+              );
+            })}
+          </Table>
+        </View>
+      </Page>
+    </Document>
+  );
+}
+
+export { LaporanPengaduanAll, LaporanPengaduanAllNoDate };

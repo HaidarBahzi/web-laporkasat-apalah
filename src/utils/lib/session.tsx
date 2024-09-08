@@ -23,6 +23,7 @@ export async function getDataSession() {
     imgUser: session.img,
     namaUser: session.username,
     idUser: session.userId,
+    bidangId: session.bidangId,
     roleUser: session.role,
   };
 }

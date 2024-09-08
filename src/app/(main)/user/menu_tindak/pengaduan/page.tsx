@@ -32,6 +32,8 @@ type SortKey = keyof TindakLaporanType;
 
 export default function Page() {
   const [pengaduan, setPengaduan] = useState<TindakLaporanType[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: "ascending" | "descending";
@@ -147,6 +149,10 @@ export default function Page() {
         <MenuNothing
           title="Daftar Pengaduan Masyarakat"
           titleIcon={<CiViewList />}
+          printAction={() => {}}
+          filterAction={() => {
+            setIsFilterOpen(true);
+          }}
         />
 
         <hr />
@@ -170,9 +176,9 @@ export default function Page() {
                     <th className="font-semibold">
                       <button
                         className="flex items-center gap-2"
-                        onClick={() => sortData("laporan_action")}
+                        onClick={() => sortData("pegawai_nip")}
                       >
-                        NAMA PENINDAK {getSortIcon("laporan_action")}
+                        PENINDAK {getSortIcon("pegawai_nip")}
                       </button>
                     </th>
                     <th className="font-semibold">
@@ -244,7 +250,7 @@ export default function Page() {
                         {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
                       </td>
                       <td>{formatter.format(value.laporan_tgl_send)}</td>
-                      <td>{value.laporan_action}</td>
+                      <td>{value.pegawai_nip}</td>
                       <td>{value.laporan_title}</td>
                       <td>{value.laporan_location}</td>
                       <td>{tindakStatus[value.tindak_lanjut_type]}</td>

@@ -6,6 +6,7 @@ export interface SessionData {
   img?: string;
   role?: string;
   expires?: Date;
+  bidangId?: number;
   isLoggedIn: boolean;
 }
 

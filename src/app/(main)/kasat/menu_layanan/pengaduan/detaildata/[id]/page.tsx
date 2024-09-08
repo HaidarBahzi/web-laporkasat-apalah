@@ -20,7 +20,7 @@ import { setup_role, status_laporan } from "@prisma/client";
 import { FaCheck } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { roleType } from "@/components/options";
+import { bidangType, roleType } from "@/components/options";
 import { ModalAlertApproveBidang } from "@/components/modal";
 
 export default function Page({ params }: { params: { id: string } }) {
@@ -40,7 +40,7 @@ export default function Page({ params }: { params: { id: string } }) {
   });
 
   const [formValues, setFormValues] = useState({
-    input_role: "",
+    input_role: 0,
   });
 
   const handleDropdownChange = (selectedValue: any, inputName: string) => {
@@ -54,15 +54,15 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  async function approvePengaduan(role: string, userKtp: string) {
+  async function approvePengaduan(bidangId: number, userKtp: string) {
     try {
-      await ApproveLaporanKasat(params.id, role);
+      await ApproveLaporanKasat(params.id, bidangId);
 
       axios
         .post("http://103.30.180.221:4000/notification/add", {
           user_id: userKtp,
           title: "Tindak Laporan",
-          message: `Laporan Anda sedang ditindak oleh ${roleType[role]}, terima kasih atas laporannya!`,
+          message: `Laporan Anda sedang ditindak oleh ${bidangType[bidangId]}, terima kasih atas laporannya!`,
         })
         .then(() => {
           router.push("/kasat/menu_layanan/pengaduan");
@@ -106,19 +106,16 @@ export default function Page({ params }: { params: { id: string } }) {
         optionValue={[
           {
             title: "Gakda",
-            value: setup_role.G,
+            value: 1,
+          },
+
+          {
+            title: "Tibum",
+            value: 2,
           },
           {
             title: "Lindam",
-            value: setup_role.L,
-          },
-          {
-            title: "Tibum",
-            value: setup_role.T,
-          },
-          {
-            title: "Sekretariat",
-            value: setup_role.S,
+            value: 3,
           },
         ]}
         defaultValue={""}
