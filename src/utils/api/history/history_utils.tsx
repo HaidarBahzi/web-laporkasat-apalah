@@ -45,5 +45,15 @@ export async function GetDetailHistory(userKtp: string, id: string) {
     },
   });
 
-  return query;
+  const queryBukti = await prisma.pelanggaran.findUnique({
+    where: {
+      laporan_id: query?.laporan_id,
+    },
+    select: {
+      bukti_penyegelan: true,
+      bukti_kejadian: true,
+    },
+  });
+
+  return { query, queryBukti };
 }
