@@ -12,18 +12,11 @@ import {
   FaRegNewspaper,
   FaHeadSideCough,
   FaHandsHelping,
-  FaWindowRestore,
-  FaNetworkWired,
-  FaBookOpen,
   FaBalanceScale,
 } from "react-icons/fa";
 
-import { IoDocumentTextSharp } from "react-icons/io5";
-import { IoMdPhonePortrait } from "react-icons/io";
-import { GoDatabase } from "react-icons/go";
 import { useEffect, useState } from "react";
 import { getDataSession, updateSession } from "@/utils/lib/session";
-import { LuDot } from "react-icons/lu";
 import { PiDetective } from "react-icons/pi";
 
 export function NavbarAdmin({ link }: { link: string }) {
@@ -125,12 +118,6 @@ export function NavbarAdmin({ link }: { link: string }) {
                 link={`/${link}/menu_tindak/pengaduan`}
                 title={"Pengaduan Masyarakat"}
                 icon={<FaHeadSideCough />}
-              />
-
-              <NavbarComponentDropdownLink
-                link={`/${link}/menu_tindak/permohonan_bantuan`}
-                title={"Permohonan Bantuan"}
-                icon={<FaHandsHelping />}
               />
             </NavbarComponentDropdownSingle>
           </li>
@@ -281,12 +268,6 @@ export function NavbarBidang({ link }: { link: string }) {
                 link={`/${link}/menu_tindak/pengaduan`}
                 title={"Pengaduan Masyarakat"}
                 icon={<FaHeadSideCough />}
-              />
-
-              <NavbarComponentDropdownLink
-                link={`/${link}/menu_tindak/permohonan_bantuan`}
-                title={"Permohonan Bantuan"}
-                icon={<FaHandsHelping />}
               />
             </NavbarComponentDropdownSingle>
           </li>

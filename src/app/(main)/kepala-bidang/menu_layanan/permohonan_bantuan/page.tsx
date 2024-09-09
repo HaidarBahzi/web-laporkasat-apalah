@@ -235,7 +235,6 @@ export default function Page() {
               <table className="table table-sm">
                 <thead>
                   <tr>
-                    <th></th>
                     <th>NO</th>
                     <th>
                       <button
@@ -285,12 +284,26 @@ export default function Page() {
                         STATUS {getSortIcon("laporan_status")}
                       </button>
                     </th>
+                    <th></th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {displayedPermohonan.map((value, index) => (
                     <tr key={index}>
+                      <td>
+                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
+                      </td>
+                      <td>{formatter.format(value.laporan_tgl_send)}</td>
+                      <td>{value.user_fullname}</td>
+                      <td>{value.laporan_title}</td>
+                      <td>{value.laporan_location}</td>
+                      <td>
+                        {value.pegawai_nama == null
+                          ? "Belum ditindak"
+                          : value.pegawai_nama}
+                      </td>
+                      <td>{laporanStatus[value.laporan_status]}</td>
                       <td>
                         <div className={"flex gap-2 justify-center"}>
                           <ButtonActionLinkMenu
@@ -318,19 +331,6 @@ export default function Page() {
                           />
                         </div>
                       </td>
-                      <td>
-                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
-                      </td>
-                      <td>{formatter.format(value.laporan_tgl_send)}</td>
-                      <td>{value.user_fullname}</td>
-                      <td>{value.laporan_title}</td>
-                      <td>{value.laporan_location}</td>
-                      <td>
-                        {value.pegawai_nama == null
-                          ? "Belum ditindak"
-                          : value.pegawai_nama}
-                      </td>
-                      <td>{laporanStatus[value.laporan_status]}</td>
                     </tr>
                   ))}
                 </tbody>

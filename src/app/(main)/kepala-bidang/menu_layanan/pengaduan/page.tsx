@@ -302,6 +302,19 @@ export default function Page() {
                   {displayedPengaduan.map((value, index) => (
                     <tr key={index}>
                       <td>
+                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
+                      </td>
+                      <td>{formatter.format(value.laporan_tgl_send)}</td>
+                      <td>{value.user_fullname}</td>
+                      <td>{value.laporan_title}</td>
+                      <td>{value.laporan_location}</td>
+                      <td>
+                        {value.pegawai_nama == null
+                          ? "Belum ditindak"
+                          : value.pegawai_nama}
+                      </td>
+                      <td>{laporanStatus[value.laporan_status]}</td>
+                      <td>
                         <div className={"flex gap-2 justify-center"}>
                           {pelanggaran[value.laporan_id] === 0 ? (
                             <ButtonActionLinkMenu
@@ -332,19 +345,6 @@ export default function Page() {
                           />
                         </div>
                       </td>
-                      <td>
-                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
-                      </td>
-                      <td>{formatter.format(value.laporan_tgl_send)}</td>
-                      <td>{value.user_fullname}</td>
-                      <td>{value.laporan_title}</td>
-                      <td>{value.laporan_location}</td>
-                      <td>
-                        {value.pegawai_nama == null
-                          ? "Belum ditindak"
-                          : value.pegawai_nama}
-                      </td>
-                      <td>{laporanStatus[value.laporan_status]}</td>
                     </tr>
                   ))}
                 </tbody>
