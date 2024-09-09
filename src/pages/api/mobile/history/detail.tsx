@@ -8,9 +8,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const { email, pengaduan, auth } = req.body;
+    const { email, id, auth } = req.body;
 
-    if (!email || !pengaduan || !auth) {
+    if (!email || !id || !auth) {
       return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
         status: "error",
         message: "Tolong masukkan email dan token anda",
@@ -35,7 +35,7 @@ export default async function handler(
         .json({ status: "error", message: "Pengguna ini tidak ada" });
     }
 
-    const dbQuery = await GetDetailHistory(email, pengaduan);
+    const dbQuery = await GetDetailHistory(email, id);
 
     if (dbQuery == null) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
