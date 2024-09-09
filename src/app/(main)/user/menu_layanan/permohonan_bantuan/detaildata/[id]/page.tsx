@@ -12,12 +12,18 @@ import {
   TextareaInput,
   TextInput,
 } from "@/components/form";
-import { FaCheck, FaPaperclip } from "react-icons/fa";
+import { FaBalanceScale, FaCheck, FaPaperclip } from "react-icons/fa";
 import Link from "next/link";
 import { setup_role, status_laporan } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { ApproveLaporanKasat } from "@/utils/server/pengaduan/pengaduan";
-import { ModalAlertApproveBidang } from "@/components/modal";
+import {
+  ApproveLaporanKasat,
+  DoneLaporan,
+  RejectLaporan,
+} from "@/utils/server/pengaduan/pengaduan";
+import { ModalAlertApproveBidang, ModalAlertTindak } from "@/components/modal";
+import { inputDataType } from "@/components/options";
+import axios from "axios";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pemohonValues, setPemohonValues] = useState({
@@ -36,7 +42,7 @@ export default function Page({ params }: { params: { id: string } }) {
   });
 
   const [formValues, setFormValues] = useState({
-    input_role: 0,
+    input_action: "",
   });
 
   const handleDropdownChange = (selectedValue: any, inputName: string) => {
@@ -50,12 +56,43 @@ export default function Page({ params }: { params: { id: string } }) {
 
   const router = useRouter();
 
-  async function approvePermohonan(bidangId: number) {
-    try {
-      await ApproveLaporanKasat(params.id, bidangId);
-      router.push("/user/menu_layanan/permohonan_bantuan");
-    } catch (err) {
-      console.error(err);
+  async function handleSubmitClient() {
+    setIsModalOpen(false);
+
+    if (inputDataType[formValues.input_action] == status_laporan.D) {
+      try {
+        await DoneLaporan(params.id);
+
+        axios
+          .post("http://103.30.180.221:4000/notification/add", {
+            user_id: pemohonValues.user_mail,
+            title: "Permohonan Selesai",
+            message:
+              "Permohonan Anda sudah selesai ditindak lanjut, terima kasih atas laporannya!",
+          })
+          .then(() => {
+            router.push("/user/menu_tindak/pengaduan");
+          });
+      } catch (err) {
+        console.error(err);
+      }
+    } else if (inputDataType[formValues.input_action] == status_laporan.R) {
+      try {
+        await RejectLaporan(params.id);
+
+        axios
+          .post("http://103.30.180.221:4000/notification/add", {
+            user_id: pemohonValues.user_mail,
+            title: "Permohonan Ditolak",
+            message:
+              "Permohonan Anda ditolak, mohon periksa kembali laporan anda!",
+          })
+          .then(() => {
+            router.push("/user/menu_tindak/pengaduan");
+          });
+      } catch (err) {
+        console.error(err);
+      }
     }
   }
 
@@ -75,33 +112,26 @@ export default function Page({ params }: { params: { id: string } }) {
 
   return (
     <section className="container mx-auto px-16">
-      <ModalAlertApproveBidang
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={async () => {
-          await approvePermohonan(formValues.input_role);
-        }}
-        handleChange={(selectedValue) =>
-          handleDropdownChange(selectedValue, "input_role")
-        }
-        inputName={"inputRole"}
-        optionTitle={"Silahkan Pilih Bidang"}
+      <ModalAlertTindak
+        inputName={"inputAction"}
+        optionTitle={"Silahkan Pilih Tindakan Akhir"}
         optionValue={[
           {
-            title: "Gakda",
-            value: 1,
-          },
-
-          {
-            title: "Tibum",
-            value: 2,
+            title: "Tolak",
+            value: status_laporan.R,
           },
           {
-            title: "Lindam",
-            value: 3,
+            title: "Selesai",
+            value: status_laporan.D,
           },
         ]}
+        handleChange={(selectedValue) =>
+          handleDropdownChange(selectedValue, "input_action")
+        }
         defaultValue={""}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={() => handleSubmitClient()}
       />
 
       <MenuBreadCrumbs
@@ -206,15 +236,15 @@ export default function Page({ params }: { params: { id: string } }) {
             </>
           </div>
 
-          {permohonanValues.laporan_status == status_laporan.C ? (
+          {permohonanValues.laporan_status == status_laporan.P ? (
             <>
               <hr />
 
               <div className="flex justify-center">
                 <DetailButtonSubmit
                   onPress={() => setIsModalOpen(true)}
-                  icon={<FaCheck />}
-                  title={"Approve"}
+                  icon={<FaBalanceScale />}
+                  title={"TINDAK LANJUT"}
                 />
               </div>
             </>

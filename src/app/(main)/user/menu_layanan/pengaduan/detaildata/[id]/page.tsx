@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 import { PelanggaranTindakForm } from "@/components/options";
 import { ModalAlertTindak } from "@/components/modal";
 import { getDataSession } from "@/utils/lib/session";
+import { IoImageOutline } from "react-icons/io5";
 
 export default function Page({ params }: { params: { id: string } }) {
   const [pelaporValues, setPelaporValues] = useState({
@@ -833,15 +834,50 @@ export default function Page({ params }: { params: { id: string } }) {
               <table className="table table-sm">
                 <thead>
                   <tr>
-                    <th></th>
                     <th className="font-semibold">NO</th>
                     <th className="font-semibold">NAMA DOKUMEN</th>
+                    <th className="font-semibold">PREVIEW</th>
                     <th className="font-semibold">STATUS</th>
+                    <th></th>
                   </tr>
                 </thead>
 
                 <tbody>
                   <tr>
+                    <td>1</td>
+                    <td>Bukti Kejadian</td>
+                    <td>
+                      {formDataWizard.bukti.bukti_kejadian == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.bukti_kejadian])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
+                    <td>
+                      <div
+                        role="alert"
+                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
+                          formDataWizard.bukti.bukti_kejadian == ""
+                            ? "alert-warning"
+                            : "alert-info"
+                        }`}
+                      >
+                        {formDataWizard.bukti.bukti_kejadian == ""
+                          ? "BELUM UPLOAD"
+                          : "SUDAH UPLOAD"}
+                      </div>
+                    </td>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -859,25 +895,43 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>1</td>
-                    <td>Bukti Kejadian</td>
+                  </tr>
+
+                  <tr>
+                    <td>2</td>
+                    <td>Bukti Barang</td>
+                    <td>
+                      {formDataWizard.bukti.bukti_barang == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.bukti_barang])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.bukti_kejadian == ""
+                          formDataWizard.bukti.bukti_barang == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.bukti_kejadian == ""
+                        {formDataWizard.bukti.bukti_barang == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-
-                  <tr>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -895,25 +949,43 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>2</td>
-                    <td>Bukti Barang</td>
+                  </tr>
+
+                  <tr>
+                    <td>3</td>
+                    <td>Bukti Penyegelan</td>
+                    <td>
+                      {formDataWizard.bukti.bukti_penyegelan == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.bukti_penyegelan])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.bukti_barang == ""
+                          formDataWizard.bukti.bukti_penyegelan == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.bukti_barang == ""
+                        {formDataWizard.bukti.bukti_penyegelan == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-
-                  <tr>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -931,42 +1003,61 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>3</td>
-                    <td>Bukti Penyegelan</td>
-                    <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.bukti_penyegelan == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
-                      >
-                        {formDataWizard.bukti.bukti_penyegelan == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
-                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <div className="form-control gap-5">
+            <div className="form-control gap-2.5">
               <span className="text-lg font-semibold">Dokumen</span>
 
               <table className="table table-sm">
                 <thead>
                   <tr>
-                    <th></th>
                     <th className="font-semibold">NO</th>
                     <th className="font-semibold">NAMA DOKUMEN</th>
+                    <th className="font-semibold">PREVIEW</th>
                     <th className="font-semibold">STATUS</th>
+                    <th></th>
                   </tr>
                 </thead>
 
                 <tbody>
                   <tr>
+                    <td>1</td>
+                    <td>KTP</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_ktp == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_ktp])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
+                    <td>
+                      <div
+                        role="alert"
+                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
+                          formDataWizard.bukti.dokumen_ktp == ""
+                            ? "alert-warning"
+                            : "alert-info"
+                        }`}
+                      >
+                        {formDataWizard.bukti.dokumen_ktp == ""
+                          ? "BELUM UPLOAD"
+                          : "SUDAH UPLOAD"}
+                      </div>
+                    </td>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -984,24 +1075,42 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>1</td>
-                    <td>KTP</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>SURAT PERNYATAAN</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_sp == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_sp])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_ktp == ""
+                          formDataWizard.bukti.dokumen_sp == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_ktp == ""
+                        {formDataWizard.bukti.dokumen_sp == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1019,24 +1128,42 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>2</td>
-                    <td>SURAT PERNYATAAN</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>SURAT PERINGATAN 1</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_sp1 == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_sp1])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_sp == ""
+                          formDataWizard.bukti.dokumen_sp1 == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_sp == ""
+                        {formDataWizard.bukti.dokumen_sp1 == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1054,24 +1181,42 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>3</td>
-                    <td>SURAT PERINGATAN 1</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>SURAT PERINGATAN 2</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_sp2 == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_sp2])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_sp1 == ""
+                          formDataWizard.bukti.dokumen_sp2 == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_sp1 == ""
+                        {formDataWizard.bukti.dokumen_sp2 == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1089,24 +1234,42 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>4</td>
-                    <td>SURAT PERINGATAN 2</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>SURAT PERINGATAN 3</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_sp3 == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_sp3])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_sp2 == ""
+                          formDataWizard.bukti.dokumen_sp3 == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_sp2 == ""
+                        {formDataWizard.bukti.dokumen_sp3 == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1124,24 +1287,42 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>5</td>
-                    <td>SURAT PERINGATAN 3</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>LAPORAN KEJADIAN</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_lk == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_lk])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_sp3 == ""
+                          formDataWizard.bukti.dokumen_lk == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_sp3 == ""
+                        {formDataWizard.bukti.dokumen_lk == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1159,24 +1340,42 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>6</td>
-                    <td>LAPORAN KEJADIAN</td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td>SURAT PERINTAH PENYITAAN</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_spp == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_spp])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_lk == ""
+                          formDataWizard.bukti.dokumen_spp == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_lk == ""
+                        {formDataWizard.bukti.dokumen_spp == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1194,24 +1393,42 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>7</td>
-                    <td>SURAT PERINTAH PENYITAAN</td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td>BERITA ACARA PENYITAAN</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_bap == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_bap])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_spp == ""
+                          formDataWizard.bukti.dokumen_bap == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_spp == ""
+                        {formDataWizard.bukti.dokumen_bap == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1229,24 +1446,43 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>8</td>
-                    <td>BERITA ACARA PENYITAAN</td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td>PERMOHONAN PERSETUJUAN PENYITAAN BARANG BUKTI</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_p3bb == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_p3bb])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_bap == ""
+                          formDataWizard.bukti.dokumen_p3bb == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_bap == ""
+                        {formDataWizard.bukti.dokumen_p3bb == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
+
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1264,24 +1500,43 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>9</td>
-                    <td>PERMOHONAN PERSETUJUAN PENYITAAN BARANG BUKTI</td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td>PERMINTAAN SURAT KUASA</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_psk == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_psk])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_p3bb == ""
+                          formDataWizard.bukti.dokumen_psk == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_p3bb == ""
+                        {formDataWizard.bukti.dokumen_psk == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
+
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1299,24 +1554,43 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>10</td>
-                    <td>PERMINTAAN SURAT KUASA</td>
+                  </tr>
+                  <tr>
+                    <td>11</td>
+                    <td>BERITA ACARA PEMERIKSAAN CEPAT</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_bapc == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_bapc])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_psk == ""
+                          formDataWizard.bukti.dokumen_bapc == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_psk == ""
+                        {formDataWizard.bukti.dokumen_bapc == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
+
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1334,24 +1608,43 @@ export default function Page({ params }: { params: { id: string } }) {
                         />
                       </label>
                     </td>
-                    <td>11</td>
-                    <td>BERITA ACARA PEMERIKSAAN CEPAT</td>
+                  </tr>
+                  <tr>
+                    <td>12</td>
+                    <td>PERMOHONAN SIDANG TIPIRING</td>
+                    <td>
+                      {formDataWizard.bukti.dokumen_pst == "" ? (
+                        <div className="w-36 h-20 rounded flex flex-col justify-center items-center bg-gray-300">
+                          <i className="text-2xl">
+                            <IoImageOutline />
+                          </i>
+                          No Image
+                        </div>
+                      ) : (
+                        <img
+                          className="w-36 h-20 rounded"
+                          src={URL.createObjectURL(
+                            new Blob([formDataWizard.bukti.dokumen_pst])
+                          )}
+                          alt="E"
+                        />
+                      )}
+                    </td>
                     <td>
                       <div
                         role="alert"
                         className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_bapc == ""
+                          formDataWizard.bukti.dokumen_pst == ""
                             ? "alert-warning"
                             : "alert-info"
                         }`}
                       >
-                        {formDataWizard.bukti.dokumen_bapc == ""
+                        {formDataWizard.bukti.dokumen_pst == ""
                           ? "BELUM UPLOAD"
                           : "SUDAH UPLOAD"}
                       </div>
                     </td>
-                  </tr>
-                  <tr>
+
                     <td>
                       <label className="btn btn-sm btn-secondary min-h-6 min-w-6 w-6 h-6 rounded">
                         <i className="text-white text-base">
@@ -1368,22 +1661,6 @@ export default function Page({ params }: { params: { id: string } }) {
                           name="dokumen_pst"
                         />
                       </label>
-                    </td>
-                    <td>12</td>
-                    <td>PERMOHONAN SIDANG TIPIRING</td>
-                    <td>
-                      <div
-                        role="alert"
-                        className={`alert flex justify-center p-0.5 text-xs rounded-md ${
-                          formDataWizard.bukti.dokumen_pst == ""
-                            ? "alert-warning"
-                            : "alert-info"
-                        }`}
-                      >
-                        {formDataWizard.bukti.dokumen_pst == ""
-                          ? "BELUM UPLOAD"
-                          : "SUDAH UPLOAD"}
-                      </div>
                     </td>
                   </tr>
                 </tbody>

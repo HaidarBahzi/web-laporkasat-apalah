@@ -64,10 +64,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <div className="flex gap-10 items-center ">
           <div className="avatar">
             <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-              <Image
-                width={0}
-                height={0}
-                sizes="100vw"
+              <img
                 src={`http://103.30.180.221/web-laporkasat-apalah/assets/foto-pegawai/${formValues.pegawai_foto}`}
                 alt={"User Profile Picture"}
               />

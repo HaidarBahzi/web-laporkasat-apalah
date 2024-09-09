@@ -163,7 +163,6 @@ export default function Page() {
               <table className="table table-sm">
                 <thead>
                   <tr>
-                    <th></th>
                     <th className="font-semibold">NO</th>
                     <th className="font-semibold">
                       <button
@@ -205,12 +204,21 @@ export default function Page() {
                         STATUS {getSortIcon("laporan_status")}
                       </button>
                     </th>
+                    <th></th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {displayedPengaduan.map((value, index) => (
                     <tr key={index}>
+                      <td>
+                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
+                      </td>
+                      <td>{formatter.format(value.laporan_tgl_send)}</td>
+                      <td>{value.pegawai_nip}</td>
+                      <td>{value.laporan_title}</td>
+                      <td>{value.laporan_location}</td>
+                      <td>{tindakStatus[value.tindak_lanjut_type]}</td>
                       <td>
                         <div className={"flex gap-2 justify-center"}>
                           {tindak[value.laporan_id] === 0 ? (
@@ -246,14 +254,6 @@ export default function Page() {
                           />
                         </div>
                       </td>
-                      <td>
-                        {(currentPage - 1) * RESULTS_PER_PAGE + index + 1}
-                      </td>
-                      <td>{formatter.format(value.laporan_tgl_send)}</td>
-                      <td>{value.pegawai_nip}</td>
-                      <td>{value.laporan_title}</td>
-                      <td>{value.laporan_location}</td>
-                      <td>{tindakStatus[value.tindak_lanjut_type]}</td>
                     </tr>
                   ))}
                 </tbody>
